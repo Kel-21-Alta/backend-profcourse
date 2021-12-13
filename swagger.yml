@@ -1,0 +1,204 @@
+openapi: 3.0.0
+info:
+  description: 
+    Prof Course adalah sebuah aplikasi LMS yang digunakan untuk<br>
+    meningkatkan kompetensi dari kariyawan sebuah perusahaan
+  version: "1.0.0-beta"
+  title: Prof Course
+tags:
+  - name: Auth - User
+    description: Endpoint untuk authentication user
+paths:
+  /api/v1/login: 
+    post: 
+      tags:
+        - Auth - User
+      summary: Login user
+      operationId: loginUser
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties: 
+                title: 
+                  type: string
+                  example: "test@gmail.com"
+                  pattern: "email"
+                password: 
+                  type: string
+                  example: "1234567"
+      responses:
+        '200':
+          description: user berhasil login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data: 
+                    type: object
+                    properties:
+                      token: 
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                      id: 
+                        type: string
+                      name: 
+                        type: string
+                      email: 
+                        type: string
+                      profile:
+                        type: string
+        '401':
+          description: user tidak dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '500':
+          description: internal server error
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+  /api/v1/forgetpassword:
+    post:
+      tags:
+        - Auth - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@gmail.com"
+      responses:
+        '200':
+          description: success mengirimkan email
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                  data: 
+                    type: object
+                    properties:
+                      message: 
+                        type: string
+                        example: Berhasil mengirim email forget password
+        '500': 
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /api/v1/home:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+       - Home - User
+      summary: Mendapatkan data untuk halaman home user
+      responses:
+        '200':
+          description: success mendapatkan data untuk halaman home page user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data: 
+                    type: object
+                    properties:
+                      new_course:
+                        type: array
+                        items: 
+                          type: object
+                          properties:
+                            url_image: 
+                              type: string
+                            title: 
+                              type: string
+                            id: 
+                              type: string
+                      budle_spialisation:
+                        type: array
+                        items: 
+                          type: object
+                          properties:
+                            url_image: 
+                              type: string
+                            title: 
+                              type: string
+                            id: 
+                              type: string
+        '401':
+          description: user tidak dapat dikenali
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /api/v1/detailcourse/{courseid}:
+    get:
+      security:
+        - bearerAuth: []
+      tags: 
+        - Detail Course - User
+      
+
+components: 
+  securitySchemes:
+    bearerAuth:            
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
+  schemas:
+    InternalServerError:
+      type: object
+      properties:
+        code: 
+          type: integer
+          example: 500
+        message:
+          type: string
+          example: Internal server error
+    Unauthenticated:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 401
+        message: 
+          type: string
+          example: Unauthenticated
+
+
+
+
