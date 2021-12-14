@@ -155,63 +155,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
-  /api/v1/home:
-    get:
-      security:
-        - bearerAuth: []
-      tags:
-       - Kursus - User
-      summary: Mendapatkan data untuk halaman home user
-      responses:
-        '200':
-          description: success mendapatkan data untuk halaman home page user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code: 
-                    type: integer
-                    example: 200
-                  message:
-                    type: string
-                  data: 
-                    type: object
-                    properties:
-                      new_course:
-                        type: array
-                        items: 
-                          type: object
-                          properties:
-                            url_image: 
-                              type: string
-                            title: 
-                              type: string
-                            id: 
-                              type: string
-                      budle_spialisation:
-                        type: array
-                        items: 
-                          type: object
-                          properties:
-                            url_image: 
-                              type: string
-                            title: 
-                              type: string
-                            id: 
-                              type: string
-        '401':
-          description: user tidak dapat dikenali
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Unauthenticated'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternalServerError'
   /api/v1/detailcourse/{courseid}:
     get:
       security:
@@ -309,6 +252,28 @@ paths:
         - bearerAuth: []
       tags: 
         - Kursus - User 
+      summary: Mengambil data kursus sesuai keperluan
+      parameters:
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: nilai pada sort adalah asc/dsc by created_at
+        - name: s
+          in: query
+          schema: 
+            type: string
+          description: query untuk search kursus
+        - name: limit
+          in: query
+          description: batas jumlah dari konten items
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Menentukan nilai halaman konten yang akan ditampilkan
+          schema:
+            type: integer
       responses:
         '200': 
           description: Berhasil mengambil data course terbaru
@@ -333,17 +298,118 @@ paths:
                           type: string
                         id_course: 
                           type: string
+        '401':
+          description: User tidak dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '415':
+          description: nilai parameters tidak sesuai
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsupportedMediaType'
         '500':
           description: Internal server error
           content: 
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+  /api/v1/specialization:
+    get:
+      security:
+        - bearerAuth: []
+      tags: 
+        - Kursus - User 
+      summary: Mengambil data spesialisasi sesuai keperluan
+      parameters:
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: nilai pada sort adalah asc/dsc by created_at
+        - name: s
+          in: query
+          schema: 
+            type: string
+          description: query untuk search spesialisasi
+        - name: limit
+          in: query
+          description: batas jumlah dari konten items
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Menentukan nilai halaman konten yang akan ditampilkan
+          schema:
+            type: integer
+      responses:
+        '200': 
+          description: Berhasil mengambil data spesialisasi terbaru
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data: 
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        url_image: 
+                          type: string
+                        id_course: 
+                          type: string
+        '401':
+          description: User tidak dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '415':
+          description: nilai parameters tidak sesuai
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsupportedMediaType'
+        '500':
+          description: Internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /api/v1/user/{userid}:
+    get:
+      tags: 
+        - User - User 
+      summary: mengambil data kursus dari halaman kursus saya
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: success mengambil data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
 
 
-                      
-
-      
 
 components: 
   securitySchemes:
@@ -379,6 +445,15 @@ components:
         message:
           type: string
           example: Invalid request
+    UnsupportedMediaType:
+      type: object
+      properties:
+        code: 
+          type: integer
+          example: 415
+        message:
+          type: string
+          example: Jenis Media tidak didukung tidak sesuai
 
 
 
