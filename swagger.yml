@@ -64,6 +64,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Unauthenticated'
+        '400':
+          description: user tidak dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequest'
         '500':
           description: internal server error
           content: 
@@ -102,18 +108,59 @@ paths:
                       message: 
                         type: string
                         example: Berhasil mengirim email forget password
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequest'
         '500': 
           description: internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+  /api/v1/logout:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Auth - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                token: 
+                  type: string
+      responses: 
+        '200':
+          description: Success logout user
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: User berhasil logout
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
   /api/v1/home:
     get:
       security:
         - bearerAuth: []
       tags:
-       - Home - User
+       - Kursus - User
       summary: Mendapatkan data untuk halaman home user
       responses:
         '200':
@@ -170,7 +217,132 @@ paths:
       security:
         - bearerAuth: []
       tags: 
-        - Detail Course - User
+        - Kursus - User
+      summary: Mendapatkan data detail dari salah satu kursus
+      responses:
+        '200':
+          description: success mengirim data detail kursus
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code:
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                  data: 
+                    type: object
+                    properties:
+                      id_course:
+                        type: string
+                      name_course: 
+                        type: string
+                      description: 
+                        type: string
+                      url_image:
+                        type: string
+                      moduls:
+                        type: array
+                        items: 
+                          type: object
+                          properties: 
+                            name_modul: 
+                              type: string
+                            videos:
+                              type: array
+                              items: 
+                                type: object
+                                properties:
+                                  title: 
+                                    type: string
+                                  url_video:
+                                    type: string
+                      rating_all: 
+                        type: number
+                        example: 4.5
+                      review: 
+                        type: array
+                        items: 
+                          type: object
+                          properties:
+                            name_user: 
+                              type: string 
+                              example: Sujadi
+                            url_image: 
+                              type: string
+                            body:
+                              type: string
+                            rating: 
+                              type: number
+                              example: 4.5
+                      user_taken_course: 
+                        type: integer
+                        example: 20
+                      rangking: 
+                        type: array
+                        items:
+                          type: object
+                          properties: 
+                            id_user: 
+                              type: string
+                            name_user: 
+                              type: string
+                            skor:
+                              type: number
+        '401':
+          description: user tidak dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '500':
+          description: Internal server error    
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /api/v1/courses:
+    get: 
+      security:
+        - bearerAuth: []
+      tags: 
+        - Kursus - User 
+      responses:
+        '200': 
+          description: Berhasil mengambil data course terbaru
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data: 
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        url_image: 
+                          type: string
+                        id_course: 
+                          type: string
+        '500':
+          description: Internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+
+                      
+
       
 
 components: 
@@ -198,7 +370,15 @@ components:
         message: 
           type: string
           example: Unauthenticated
-
+    InvalidRequest:
+      type: object
+      properties:
+        code: 
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Invalid request
 
 
 
