@@ -161,6 +161,12 @@ paths:
       tags: 
         - Kursus - User
       summary: Mendapatkan data detail dari salah satu kursus
+      parameters:
+        - name: courseid
+          in: path
+          required: true
+          schema: 
+            type: string
       responses:
         '200':
           description: success mengirim data detail kursus
@@ -242,13 +248,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /api/v1/course/{course_id}/feedback:
+  /api/v1/course/{courseid}/feedback:
     get: 
       tags: 
         - Kursus - User
       summary: untuk mendapatkan data feedbeck dari sebuah course
       security:
         - bearerAuth: []
+      parameters:
+        - name: courseid
+          in: path
+          required: true
+          schema: 
+            type: string
       responses:
         '200':
           description: Success mendapatkan data review 
@@ -257,27 +269,35 @@ paths:
               schema:
                 type: object
                 properties:
-                  course_id: 
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
                     type: string
-                    example: yrfiw88qlq1fgpm40lguz6u43gksfj4a
-                  rating_all: 
-                    type: number
-                    example: 4.5
-                  review: 
-                    type: array
-                    items: 
-                      type: object
-                      properties:
-                        name_user: 
-                          type: string 
-                          example: Sujadi
-                        url_image: 
-                          type: string
-                        body:
-                          type: string
-                        rating: 
-                          type: number
-                          example: 4.5
+                  data:
+                    type: object
+                    properties:
+                      course_id: 
+                        type: string
+                        example: yrfiw88qlq1fgpm40lguz6u43gksfj4a
+                      rating_all: 
+                        type: number
+                        example: 4.5
+                      review: 
+                        type: array
+                        items: 
+                          type: object
+                          properties:
+                            name_user: 
+                              type: string 
+                              example: Sujadi
+                            url_image: 
+                              type: string
+                            body:
+                              type: string
+                            rating: 
+                              type: number
+                              example: 4.5
         '401':
           description: User tidak dikenali
           content:
@@ -298,11 +318,16 @@ paths:
         - Kursus - User 
       summary: Mengambil data kursus sesuai keperluan
       parameters:
+        - name: sortby
+          in: query
+          schema:
+            type: string
+          description: by default created_at. nilainya boleh => review, popular
         - name: sort
           in: query
           schema:
             type: string
-          description: nilai pada sort adalah asc/dsc by created_at
+          description: nilai pada sort adalah asc/dsc
         - name: s
           in: query
           schema: 
@@ -368,6 +393,11 @@ paths:
         - Kursus - User 
       summary: Mengambil data spesialisasi sesuai keperluan
       parameters:
+        - name: sortby
+          in: query
+          schema:
+            type: string
+          description: by default created_at. nilainya boleh => review, popular
         - name: sort
           in: query
           schema:
@@ -417,7 +447,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 
+                $ref: '#/components/schemas/UnsupportedMediaType'
         '415':
           description: nilai parameters tidak sesuai
           content:
@@ -434,9 +464,17 @@ paths:
     get:
       tags:
         - User - User
+        - Kursus - User
       summary: mengambil data course yang dimiliki user
       security:
         - bearerAuth: []
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id user yang sedang login
       responses:
         '200':
           description: success mengambil data course user
@@ -550,6 +588,12 @@ paths:
       security:
         - bearerAuth: []
       parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id user yang sedang login
         - name: sort
           in: query
           schema:
@@ -576,19 +620,27 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items: 
-                  type: object
-                  properties:
-                    request_id: 
-                      type: string
-                      example: uid
-                    category: 
-                      type: string
-                      example: Kursus Online
-                    body: 
-                      type: string
-                      example: HTML CSS JS
+                type: object
+                properties:
+                  code: 
+                    type: number
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        request_id: 
+                          type: string
+                          example: uid
+                        category: 
+                          type: string
+                          example: Kursus Online
+                        body: 
+                          type: string
+                          example: HTML CSS JS
         '401':
           description: user tidak dikenali
           content: 
@@ -601,7 +653,77 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'           
+    post:
+      tags:
+        - Request - User
+      summary: untuk membuat request dari user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id user yang sedang login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category_request_id
+                - topik
+              properties:
+                category_request_id: 
+                  type: string
+                  example: fjasdfjurwqie34i
+                topik:
+                  type: string
+                  example: HTML CSS
+      responses:
+        '201': 
+          description: berhasil membuat request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: number
+                    example: 201
+                  message: 
+                    type: string
+                    example: berhasil menambahkan request dari user
+                  data: 
+                    type: object
+                    properties:
+                      topik: 
+                        type: string
+                        example: HTML CSS
+                      category_request_id:
+                        type: string
+                        example: dakfjsdifoew
+                      category_request:
+                        type: string
+                        example: One on one
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '401':
+          description: tidak ada user yang dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
 
+
+
+                  
+                  
 
 
                       
