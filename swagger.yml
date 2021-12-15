@@ -580,7 +580,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /api/v1/requestcourse/{userid}:
+  /api/v1/requestcourse/user/{userid}:
     get: 
       tags: 
         - Request - User
@@ -719,16 +719,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Unauthenticated'
-
-
-
-                  
-                  
-
-
-                      
-
-
+  /api/v1/requestcourse/{requestid}:
+    delete:
+      summary: menghapus request user yang sedang active
+      tags: 
+        - Request - User
+      responses:
+        '204':
+          description: berhasil menghapus data request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+                    example: request dengan id 1537463hfaifa telah dihapus
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '401':
+          description: user tidak dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
 
 components: 
   securitySchemes:
