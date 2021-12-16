@@ -154,6 +154,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+  /api/v1/currentuser:
+    get:
+      tags:
+        - Auth - User
+      security:
+        - bearerAuth: []
+      summary: Menampilkan semua data user yang sedang login
+      responses: 
+        '200': 
+          description: Berhasil mendapatkan data user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                  data: 
+                    type: object
+                    
+
 
   /api/v1/detailcourse/{courseid}:
     get:
@@ -386,11 +410,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /api/v1/user/{userid}:
+  /api/v1/courseuser/{userid}:
     get:
       tags: 
         - User - User 
-      summary: mengambil data kursus dari halaman kursus saya
+      summary: mengambil data kursus dari user yang login
       security:
         - bearerAuth: []
       responses:
