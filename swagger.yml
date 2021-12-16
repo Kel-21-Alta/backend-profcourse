@@ -154,38 +154,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /api/v1/currentuser:
-    get:
-      tags:
-        - Auth - User
-      security:
-        - bearerAuth: []
-      summary: Menampilkan semua data user yang sedang login
-      responses: 
-        '200': 
-          description: Berhasil mendapatkan data user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: 
-                  code: 
-                    type: integer
-                    example: 200
-                  message: 
-                    type: string
-                  data: 
-                    type: object
-                    
-
-
-  /api/v1/detailcourse/{courseid}:
+  /api/v1/course/{courseid}/detail:
     get:
       security:
         - bearerAuth: []
       tags: 
         - Kursus - User
       summary: Mendapatkan data detail dari salah satu kursus
+      parameters:
+        - name: courseid
+          in: path
+          required: true
+          schema: 
+            type: string
       responses:
         '200':
           description: success mengirim data detail kursus
@@ -202,6 +183,18 @@ paths:
                   data: 
                     type: object
                     properties:
+                      info_user: 
+                        type: object
+                        properties:
+                          current_user: 
+                            type: string
+                            example: yrfiw88qlq1fgpm40lguz6u43gksfj4s
+                          isRegister: 
+                            type: boolean
+                            example: true
+                          progress:
+                            type: number
+                            example: 30
                       id_course:
                         type: string
                       name_course: 
@@ -210,6 +203,9 @@ paths:
                         type: string
                       url_image:
                         type: string
+                      teacher:
+                        type: string
+                        example: Wagino
                       moduls:
                         type: array
                         items: 
@@ -226,24 +222,6 @@ paths:
                                     type: string
                                   url_video:
                                     type: string
-                      rating_all: 
-                        type: number
-                        example: 4.5
-                      review: 
-                        type: array
-                        items: 
-                          type: object
-                          properties:
-                            name_user: 
-                              type: string 
-                              example: Sujadi
-                            url_image: 
-                              type: string
-                            body:
-                              type: string
-                            rating: 
-                              type: number
-                              example: 4.5
                       user_taken_course: 
                         type: integer
                         example: 20
@@ -270,6 +248,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+  /api/v1/course/{courseid}/feedback:
+    get: 
+      tags: 
+        - Kursus - User
+      summary: untuk mendapatkan data feedbeck dari sebuah course
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: courseid
+          in: path
+          required: true
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: Success mendapatkan data review 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      course_id: 
+                        type: string
+                        example: yrfiw88qlq1fgpm40lguz6u43gksfj4a
+                      rating_all: 
+                        type: number
+                        example: 4.5
+                      review: 
+                        type: array
+                        items: 
+                          type: object
+                          properties:
+                            name_user: 
+                              type: string 
+                              example: Sujadi
+                            url_image: 
+                              type: string
+                            body:
+                              type: string
+                            rating: 
+                              type: number
+                              example: 4.5
+        '401':
+          description: User tidak dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
   /api/v1/courses:
     get: 
       security:
@@ -278,11 +318,16 @@ paths:
         - Kursus - User 
       summary: Mengambil data kursus sesuai keperluan
       parameters:
+        - name: sortby
+          in: query
+          schema:
+            type: string
+          description: by default created_at. nilainya boleh => review, popular
         - name: sort
           in: query
           schema:
             type: string
-          description: nilai pada sort adalah asc/dsc by created_at
+          description: nilai pada sort adalah asc/dsc
         - name: s
           in: query
           schema: 
@@ -348,6 +393,11 @@ paths:
         - Kursus - User 
       summary: Mengambil data spesialisasi sesuai keperluan
       parameters:
+        - name: sortby
+          in: query
+          schema:
+            type: string
+          description: by default created_at. nilainya boleh => review, popular
         - name: sort
           in: query
           schema:
@@ -397,7 +447,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Unauthenticated'
+                $ref: '#/components/schemas/UnsupportedMediaType'
         '415':
           description: nilai parameters tidak sesuai
           content:
@@ -410,11 +460,80 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /api/v1/courseuser/{userid}:
+  /api/v1/course/users/{userid}:
+    get:
+      tags:
+        - User - User
+        - Kursus - User
+      summary: mengambil data course yang dimiliki user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id user yang sedang login
+      responses:
+        '200':
+          description: success mengambil data course user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user_id: 
+                        type: string
+                        example: yrfiw88qlq1fgpm40lguz6u43gksfj4a
+                      name: 
+                        type: string
+                        example: Adi Suci
+                      count_course:
+                        type: integer
+                        example: 20
+                      courses: 
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            title: 
+                              type: string
+                              example: Data Science
+                            course_id:
+                              type: string
+                              example: lljjmo3f39rnjudsgqvzta1rb
+                            progress:
+                              type: number
+                              example: 90
+                            url_image:
+                              type: string  
+        '400':
+          description: request body invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /api/v1/currentuser:
     get:
       tags: 
         - User - User 
-      summary: mengambil data kursus dari user yang login
+        - Auth - User
+      summary: mengambil user yang saat ini login
       security:
         - bearerAuth: []
       responses:
@@ -427,13 +546,210 @@ paths:
                 properties:
                   code:
                     type: integer
+                    example: 200
                   message:
                     type: string
                   data:
                     type: object
                     properties:
-
-
+                      user_id: 
+                        type: string
+                        example: yrfiw88qlq1fgpm40lguz6u43gksfj4a
+                      name: 
+                        type: string
+                        example: bagus
+                      email: 
+                        type: string 
+                        example: email@email.com
+                      noHp:
+                        type: string
+                        example: 0837642453
+                      bio:
+                        type: string
+                      url_image:
+                        type: string
+        '401':
+          description: user tidak dikenali / tidak ada user yang sedang login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /api/v1/requestcourse/user/{userid}:
+    get: 
+      tags: 
+        - Request - User
+      summary: mengambil data request dari user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id user yang sedang login
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: nilai pada sort adalah asc/dsc by created_at
+        - name: s
+          in: query
+          schema: 
+            type: string
+          description: query untuk search spesialisasi
+        - name: limit
+          in: query
+          description: batas jumlah dari konten items
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Menentukan nilai halaman konten yang akan ditampilkan
+          schema:
+            type: integer
+      responses: 
+        '200':
+          description: success mendapatkan data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: number
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        request_id: 
+                          type: string
+                          example: uid
+                        category: 
+                          type: string
+                          example: Kursus Online
+                        body: 
+                          type: string
+                          example: HTML CSS JS
+        '401':
+          description: user tidak dikenali
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '500':
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'           
+    post:
+      tags:
+        - Request - User
+      summary: untuk membuat request dari user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id user yang sedang login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category_request_id
+                - topik
+              properties:
+                category_request_id: 
+                  type: string
+                  example: fjasdfjurwqie34i
+                topik:
+                  type: string
+                  example: HTML CSS
+      responses:
+        '201': 
+          description: berhasil membuat request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: number
+                    example: 201
+                  message: 
+                    type: string
+                    example: berhasil menambahkan request dari user
+                  data: 
+                    type: object
+                    properties:
+                      topik: 
+                        type: string
+                        example: HTML CSS
+                      category_request_id:
+                        type: string
+                        example: dakfjsdifoew
+                      category_request:
+                        type: string
+                        example: One on one
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '401':
+          description: tidak ada user yang dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+  /api/v1/requestcourse/{requestid}:
+    delete:
+      summary: menghapus request user yang sedang active
+      tags: 
+        - Request - User
+      responses:
+        '204':
+          description: berhasil menghapus data request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+                    example: request dengan id 1537463hfaifa telah dihapus
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '401':
+          description: user tidak dikenali
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
 
 components: 
   securitySchemes:
