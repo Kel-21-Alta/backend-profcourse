@@ -167,6 +167,7 @@ paths:
           required: true
           schema: 
             type: string
+            format: uuid
       responses:
         '200':
           description: success mengirim data detail kursus
@@ -195,8 +196,9 @@ paths:
                           progress:
                             type: number
                             example: 30
-                      id_course:
+                      course_id:
                         type: string
+                        format: uuid
                       name_course: 
                         type: string
                       description: 
@@ -230,8 +232,9 @@ paths:
                         items:
                           type: object
                           properties: 
-                            id_user: 
+                            user_id: 
                               type: string
+                              format: uuid
                             name_user: 
                               type: string
                             skor:
@@ -261,6 +264,7 @@ paths:
           required: true
           schema: 
             type: string
+            format: uuid
       responses:
         '200':
           description: Success mendapatkan data review 
@@ -365,8 +369,9 @@ paths:
                           type: string
                         url_image: 
                           type: string
-                        id_course: 
+                        course_id: 
                           type: string
+                          format: uuid
         '401':
           description: User tidak dikenali
           content:
@@ -440,8 +445,9 @@ paths:
                           type: string
                         url_image: 
                           type: string
-                        id_course: 
+                        course_id: 
                           type: string
+                          format: uuid
         '401':
           description: User tidak dikenali
           content:
@@ -474,6 +480,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
           description: id user yang sedang login
       responses:
         '200':
@@ -724,6 +731,15 @@ paths:
       summary: menghapus request user yang sedang active
       tags: 
         - Request - User
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: requestid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '204':
           description: berhasil menghapus data request
@@ -750,6 +766,76 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Unauthenticated'
+    put:
+      tags:
+        - Request - User
+      summary: Melakukan update pada request yang sudah ada
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: requestid
+          in: path
+          schema: 
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_request_id:
+                  type: string
+                  format: uuid
+                topik:
+                  type: string
+                request_id:
+                  type: string
+                  format: uuid
+      responses:
+        '204':
+          description: Berhasil melakukan upadate pada request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      category_request_id: 
+                        type: string
+                        format: uuid
+                      topik:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+                      updated_at:
+                        type: string
+                        format: date-time
+                      user_id: 
+                        type: string
+                        format: uuid
+        '401':
+          description: user tidak dikenali
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthenticated'
+        '500': 
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 
 components: 
   securitySchemes:
