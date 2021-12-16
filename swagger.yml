@@ -352,7 +352,7 @@ paths:
           in: query
           schema:
             type: string
-          description: by default created_at. nilainya boleh => review, popular
+          description: by default created_at. nilainya boleh => review, populer
         - name: sort
           in: query
           schema:
@@ -547,7 +547,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '401':
           $ref: '#/components/responses/Unauthenticated'
-
   /api/v1/requestcourse/user/{userid}:
     get: 
       tags: 
@@ -764,7 +763,6 @@ paths:
           $ref: '#/components/responses/Unauthenticated'
         '500': 
           $ref: '#/components/responses/InternalServerError'
-
   /api/v1/changepassword:
     put:
       summary: untuk mengedit password user yang sedang login
@@ -772,10 +770,38 @@ paths:
         - Auth - User
       security:
         - bearerAuth: []
-      # TODO: 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object 
+              properties:
+                password_old:
+                  type: string
+                  format: hash
+                password_new:
+                  type: string
+                  format: password-hash
       responses:
         '204':
-          description: berhasil
+          description: berhasil mengubah password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+                    example: Password user berhasil diubah
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+        '401':
+          $ref: "#/components/responses/Unauthenticated"
+        '400':
+          $ref: "#/components/responses/InvalidRequest"
 
 components: 
   securitySchemes:
