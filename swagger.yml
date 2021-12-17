@@ -193,15 +193,9 @@ paths:
                           properties: 
                             name_modul: 
                               type: string
-                            videos:
-                              type: array
-                              items: 
-                                type: object
-                                properties:
-                                  title: 
-                                    type: string
-                                  url_video:
-                                    type: string
+                            modul_id:
+                              type: string
+                              format: uuid
                       user_taken_course: 
                         type: integer
                         example: 20
@@ -221,6 +215,44 @@ paths:
           $ref: '#/components/responses/Unauthenticated'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /api/v1/course/{courseid}/modul/{modulid}:
+    get: 
+      summary: Endpoint untuk mengambil data video, kuis, dan materi dari suatu modul
+      security:
+        - bearerAuth: []
+      tags: 
+        - Kursus - User
+        - Page - Detail Couse
+      responses:
+        '200':
+          description: Berhasil mendapatkan data materi dari modul
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        video_url: 
+                          type: string
+                          format: link
+                        title: 
+                          type: string
+                        order: 
+                          type: number
+                          example: 1
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+        '401': 
+          $ref: '#/components/responses/Unauthenticated'
   /api/v1/course/{courseid}/feedback:
     get: 
       tags: 
@@ -284,31 +316,11 @@ paths:
         - Kursus - User 
       summary: Mengambil data kursus sesuai keperluan
       parameters:
-        - name: sortby
-          in: query
-          schema:
-            type: string
-          description: by default created_at. nilainya boleh => review, popular
-        - name: sort
-          in: query
-          schema:
-            type: string
-          description: nilai pada sort adalah asc/dsc
-        - name: s
-          in: query
-          schema: 
-            type: string
-          description: query untuk search kursus
-        - name: limit
-          in: query
-          description: batas jumlah dari konten items
-          schema:
-            type: integer
-        - name: offset
-          in: query
-          description: Menentukan nilai halaman konten yang akan ditampilkan
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/PageOffset'
       responses:
         '200': 
           description: Berhasil mengambil data course terbaru
@@ -348,31 +360,11 @@ paths:
         - Kursus - User 
       summary: Mengambil data spesialisasi sesuai keperluan
       parameters:
-        - name: sortby
-          in: query
-          schema:
-            type: string
-          description: by default created_at. nilainya boleh => review, populer
-        - name: sort
-          in: query
-          schema:
-            type: string
-          description: nilai pada sort adalah asc/dsc by created_at
-        - name: s
-          in: query
-          schema: 
-            type: string
-          description: query untuk search spesialisasi
-        - name: limit
-          in: query
-          description: batas jumlah dari konten items
-          schema:
-            type: integer
-        - name: offset
-          in: query
-          description: Menentukan nilai halaman konten yang akan ditampilkan
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/PageOffset'
       responses:
         '200': 
           description: Berhasil mengambil data spesialisasi terbaru
@@ -404,22 +396,14 @@ paths:
           $ref: '#/components/responses/UnsupportedMediaType'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /api/v1/course/users/{userid}:
+  /api/v1/coursesendroll:
     get:
       tags:
         - User - User
         - Kursus - User
-      summary: mengambil data course yang dimiliki user
+      summary: mengambil data course yang dimiliki user (User endroll coursenya)
       security:
         - bearerAuth: []
-      parameters:
-        - name: userid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: id user yang sedang login
       responses:
         '200':
           description: success mengambil data course user
@@ -547,7 +531,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '401':
           $ref: '#/components/responses/Unauthenticated'
-  /api/v1/requestcourse/user/{userid}:
+  /api/v1/requestusers:
     get: 
       tags: 
         - Request - User
@@ -555,12 +539,6 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: userid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: id user yang sedang login
         - name: sort
           in: query
           schema:
@@ -802,7 +780,49 @@ paths:
           $ref: "#/components/responses/Unauthenticated"
         '400':
           $ref: "#/components/responses/InvalidRequest"
-
+  /api/v1/user/courses: 
+    get:
+      summary: mengambil data course yang telah dibuat user yang sedang login
+      tags:
+        - Kursus - User
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/PageOffset'
+      responses:
+        '200': 
+          description: berhasil mendapatkan data course ang dibuat user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data: 
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        title: 
+                          type: string
+                        status:
+                          type: string
+                        course_id: 
+                          type: string
+                          format: uuid
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+        '401': 
+          $ref: '#/components/responses/Unauthenticated'
+          
+                          
 components: 
   securitySchemes:
     bearerAuth:            
@@ -889,6 +909,35 @@ components:
         message:
           type: string
           example: Jenis Media tidak didukung tidak sesuai
-
-
-
+  parameters:
+    PageLimit:
+      name: limit
+      in: query
+      description: batas jumlah dari konten items
+      schema:
+        type: integer
+    PageOffset:
+      name: offset
+      in: query
+      description: Menentukan nilai halaman konten yang akan ditampilkan
+      schema:
+        type: integer
+    Search:
+      name: s
+      in: query
+      schema: 
+        type: string
+      description: Parameter ini untuk search dengan keyword
+    SortBy: 
+      name: sortby
+      in: query
+      schema:
+        type: string
+      description: by default created_at. nilainya boleh => review, populer
+    Sort: 
+      name: sort
+      in: query
+      schema:
+        type: string
+      description: nilai pada sort adalah asc/dsc by created_at
+        
