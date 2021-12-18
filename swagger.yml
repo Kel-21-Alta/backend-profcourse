@@ -328,7 +328,6 @@ paths:
                             order: 
                               type: number
                               example: 1
-
         '500': 
           $ref: '#/components/responses/InternalServerError'
         '401': 
@@ -990,6 +989,12 @@ paths:
         - Modul - User
       security:
         - bearerAuth: []
+      parameters:
+        - name: modulid
+          in: path
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -1024,6 +1029,12 @@ paths:
         - Modul - User
       security: 
         - bearerAuth: []
+      parameters:
+        - name: modulid
+          in: path
+          schema:
+            type: string
+            format: uuid
       responses:
         '204':
           description: berhasil mendelete data
@@ -1049,10 +1060,76 @@ paths:
     post:
       tags:
         - Materi - User
-      summary: untuk membuat materi 
+      summary: untuk membuat materi baru
       security:
         - bearerAuth: []
-      
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                modul_id:
+                  type: string
+                  format: uuid
+                type_materi:
+                  type: string
+                  example: video
+                title:
+                  type: string
+                file_materi:
+                  type: string
+                  format: binary
+                order: 
+                  type: number
+                  example: 1
+      responses:
+        '201':
+          description: ketika data berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id: 
+                        type: string
+                        example: uuid
+                      title: 
+                        type: string
+                      type: 
+                        type: string
+                        example: video
+                      url_materi:
+                        type: string
+                      order: 
+                        type: number
+                        example: 1
+                      modul_id:
+                        type: string
+                        format: uuid
+                      created_at:
+                        type: string
+                        format: date-time
+                      updated_at:
+                        type: string
+                        format: date-time
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401': 
+          $ref: '#/components/responses/Unauthenticated'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '403':
+          $ref: '#/components/responses/403F'
+
 
 
 components: 
