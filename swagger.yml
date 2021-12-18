@@ -1233,9 +1233,82 @@ paths:
           $ref: '#/components/responses/InvalidRequest'
         '403':
           $ref: '#/components/responses/403F'
-
-
-
+  /api/v1/quizs:
+    post:
+      summary: membuat quiz baru dari modul
+      tags: 
+        - Quiz - User
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pertanyaan
+                - pilihan
+                - jawaban
+                - modul_id
+              properties:
+                pertanyaan:
+                  type: string
+                pilihan:
+                  type: array
+                  items: 
+                    type: string
+                jawaban:
+                  type: string
+                modul_id:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: berhasil menambahkan quiz baru
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                  data: 
+                    type: object
+                    properties:
+                      id: 
+                        type: string
+                        format: uuid
+                      pertanyaan:
+                        type: string
+                      pilihan:
+                        type: array
+                        items: 
+                          type: string
+                      jawaban:
+                        type: string
+                      modul_id: 
+                        type: string
+                        format: uuid
+                      created_at:
+                        type: string
+                        format: date-time
+                      updated_at: 
+                        type: string
+                        format: date-time
+                '500':
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401': 
+          $ref: '#/components/responses/Unauthenticated'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '403':
+          $ref: '#/components/responses/403F'             
+  /api/v1/quizs/modul/{modulid}:
+    get:
 
 
 components: 
