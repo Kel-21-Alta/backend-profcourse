@@ -132,6 +132,63 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '401': 
           $ref: '#/components/responses/Unauthenticated'
+  /api/v1/status/courses/{courseid}:
+    put:
+      summary: untuk mengubah status dari course
+      tags: 
+        - Kursus - User
+      security:
+        - bearerAuth: []
+      description: user hanya bisa mengubahnya menjadi 2 atau 3
+      parameters:
+        - in: path
+          name: courseid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                status: 
+                  type: number
+                  example: 2 
+      responses:
+        '204':
+          description: berhasil melakukan perubahan status
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 204
+                  message: 
+                    type: string
+                  date: 
+                    type: object
+                    properties:
+                      status: 
+                        type: integer
+                        example: 2
+                      course_id:
+                        type: string
+                        format: uuid
+                      status_text:
+                        type: string
+                        example: Draft 
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/403F'
   /api/v1/courses/{courseid}:
     get:
       security:
@@ -221,6 +278,13 @@ paths:
       summary: Untuk mengubah title, description, dan image Kursus
       security:
         - bearerAuth: []
+      parameters:
+        - name: courseid
+          in: path
+          schema:
+            type: string
+            format: uuid
+          required: true
       requestBody:
         content:
           multipart/form-data:
@@ -754,7 +818,40 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '401':
           $ref: '#/components/responses/Unauthenticated'            
-
+    delete:
+      summary: untuk menghapus data spesialisasi
+      tags:
+        - Spesialisasi - Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: spesializationid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: berhasil menghapus data spesialisasi berserta relasinya
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code:
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/403F'      
   /api/v1/coursesendroll:
     get:
       tags:
@@ -1740,7 +1837,212 @@ paths:
           $ref: '#/components/responses/Unauthenticated'
         '400':
           $ref: '#/components/responses/InvalidRequest'             
-
+  /api/v1/users:
+    get: 
+      summary: mendapatkan list data user
+      tags: 
+        - Users - Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/UserSortBy'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/PageOffset'
+      responses: 
+        '200': 
+          description: berhasil mendapatkan data list user
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                  data: 
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        id: 
+                          type: string
+                          format: uuid
+                        name: 
+                          type: string
+                        image_url: 
+                          type: string
+                        taken_course:
+                          type: integer
+                        point:
+                          type: integer
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/403F'                       
+    post:
+      tags: 
+        - Users - Admin
+      summary: untuk membuat user baru
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: 
+                  type: string
+                email:
+                  type: string
+                  format: email
+                role: 
+                  type: integer
+                  example: 2
+      responses:
+        '201': 
+          description: berhasil membuat user
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 201
+                  message: 
+                    type: string
+                  data: 
+                    type: object
+                    properties:
+                      name: 
+                        type: string
+                      email: 
+                        type: string
+                      role: 
+                        type: number
+                        example: 2
+                      role_text:
+                        type: string
+                        example: user
+                      created_at: 
+                        type: string
+                        format: date-time
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/403F'  
+  /api/v1/users/reports:
+    get:
+      tags: 
+        - Users - Admin
+      summary: mengeneret report all user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: berhasil mengeneret data report
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data: 
+                    type: string
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/403F'   
+  /api/v1/users/{userid}:
+    get:
+      tags:
+        - Users - Admin
+      summary: mengambil data detail user
+      responses:
+        '200':
+          description: berhasil mendapatkan data one user
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message:
+                      type: string
+                    data:
+                      type: object
+                      properties:
+                        user_id: 
+                          type: string
+                          example: yrfiw88qlq1fgpm40lguz6u43gksfj4a
+                        name: 
+                          type: string
+                          example: bagus
+                        role: 
+                          type: string
+                          example: user
+                        email: 
+                          type: string 
+                          example: email@email.com
+                        noHp:
+                          type: string
+                          example: 0837642453
+                        bio:
+                          type: string
+                        url_image:
+                          type: string
+                        birth: 
+                          type: string
+                          format: date
+                        birthplace: 
+                          type: string
+                          example: Medan
+                        courses:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name: 
+                                type: string
+                              id: 
+                                type: string
+                                format: uuid
+                              progres:
+                                type: number
+                                example: 90 
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/403F'  
+    put:
+    delete:
 
 components: 
   securitySchemes:
@@ -1857,9 +2159,11 @@ components:
         created_at:
           type: string
           format: date-time
-        updated: 
+        updated_at: 
           type: string
           format: date-time
+        status:
+          type: string
     RequestModul:
       type: object
       properties:
@@ -1982,11 +2286,17 @@ components:
       in: query
       schema:
         type: string
-      description: by default created_at. nilainya boleh => review, populer
+      description: by default created_at. nilainya boleh => review, populer, name
     Sort: 
       name: sort
       in: query
       schema:
         type: string
       description: nilai pada sort adalah asc/dsc by created_at
+    UserSortBy: 
+      name: sortby
+      in: query
+      schema:
+        type: string
+      description: by default paling sesuai. nilainya boleh => jumlah_kursus, point, name, creted_at,
         
