@@ -2237,7 +2237,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '401':
           $ref: '#/components/responses/Unauthenticated'
-  
+
 components: 
   securitySchemes:
     bearerAuth:            
