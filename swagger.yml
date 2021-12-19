@@ -2042,8 +2042,202 @@ paths:
         '403':
           $ref: '#/components/responses/403F'  
     put:
+      tags:
+        - Users - Admin
+      summary: untuk mengubah user data
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userid
+          in: path
+          schema: 
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                name: 
+                  type: string
+                email:
+                  type: string
+                  format: email
+                role: 
+                  type: integer
+                  example: 2
+                noHp:
+                  type: string
+                bio:
+                  type: string
+                birth:
+                  type: string
+                  format: date
+                birthplace:
+                  type: string
+      responses:
+        '204': 
+          description: berhasil membuat user
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 204
+                  message: 
+                    type: string
+                  data: 
+                    type: object
+                    properties:
+                      name: 
+                        type: string
+                      email: 
+                        type: string
+                      role: 
+                        type: number
+                        example: 2
+                      role_text:
+                        type: string
+                        example: user
+                      created_at: 
+                        type: string
+                        format: date-time
+                      updated_at: 
+                        type: string
+                        format: date-time
+                      noHp:
+                        type: string
+                      bio:
+                        type: string
+                      birth:
+                        type: string
+                        format: date
+                      birthplace:
+                        type: string                     
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/403F'  
     delete:
-
+      summary: untuk menghapus data user
+      tags:
+        - Users - Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: berhasil menghapus data user berserta relasinya
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code:
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/403F'    
+  /api/v1/summary:
+    get:
+      summary: mendapatkan data jumalh kursus, user, spesialisasi
+      tags:
+        - All
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: berhasil mendapatkan data summary
+          content:
+            application/json:
+              schema: 
+                type: object 
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                  data: 
+                    type: object
+                    properties:
+                      count_course: 
+                        type: integer
+                      count_user: 
+                        type: integer
+                      count_spesialization:
+                        type: integer
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+  /api/v1/leaderboards:
+    get:
+      tags: 
+        - All
+      summary: mendapatkan list rangking dari setiap user
+      security: 
+        - bearerAuth: []
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                  data:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        id: 
+                          type: string
+                          format: uuid
+                        name: 
+                          type: string
+                        image_url:
+                          type: string
+                        point: 
+                          type: integer
+        '400': 
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+  
 components: 
   securitySchemes:
     bearerAuth:            
