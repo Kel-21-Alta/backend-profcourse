@@ -1,1 +1,4 @@
 .idea/
+.env
+ex.config.json
+.idea
