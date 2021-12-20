@@ -1979,6 +1979,8 @@ paths:
       tags:
         - Users - Admin
       summary: mengambil data detail user
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: berhasil mendapatkan data one user
@@ -2237,6 +2239,101 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '401':
           $ref: '#/components/responses/Unauthenticated'
+  /api/v1/bantuan:
+    post:
+      tags:
+        - Bantuan - User
+      summary: mengirimkan text bantuan
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: mail@main.com
+                message:
+                  type: string
+      responses:
+        '201':
+          description: berhasil mengirim bantuan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      email:
+                        type: string
+                      id:
+                        type: string
+                        format: uuid
+                      user_id:
+                        type: string
+                        format: uuid
+                      created_at:
+                        type: string
+                        format: date-time
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+    get:
+      tags:
+        - Bantuan - User
+      summary: untuk mendapatkan list permintaan bantuan dari user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: berhasil
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                        email:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                        user_id:
+                          type: string
+                          format: uuid
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+
+
 
 components: 
   securitySchemes:
