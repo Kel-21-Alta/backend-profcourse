@@ -7,6 +7,7 @@ import (
 	"profcourse/app/routes"
 	_userUsecase "profcourse/business/users"
 	_userController "profcourse/controllers/users"
+	_dbDriver "profcourse/drivers/mysql"
 )
 
 func init() {
@@ -22,6 +23,17 @@ func init() {
 
 func main() {
 	e := echo.New()
+
+	configDB := _dbDriver.ConfigDB{
+		DB_Username: viper.GetString("database.user"),
+		DB_Password: viper.GetString("database.pass"),
+		DB_Host:     viper.GetString("database.host"),
+		DB_Port:     viper.GetString("database.port"),
+		DB_Database: viper.GetString("database.name"),
+	}
+
+	configDB.InitialDB()
+
 	userUsecase := _userUsecase.NewUserUsecase()
 	userCtrl := _userController.NewUserController(userUsecase)
 
