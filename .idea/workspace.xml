@@ -4,31 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6757338-e036-4062-8c0c-ded79f7cf410" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/development.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/business/users/mocks/Repository.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/business/users/users_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cli/testing-coverage.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/base_responses.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/error_type.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/users/requests/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/users/reseponses/userCreated.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cover.out" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/helpers/encrypt/bcrypt.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/helpers/randomString/randomString.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/helpers/validators/validator.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/business/users/domain.go" beforeDir="false" afterPath="$PROJECT_DIR$/business/users/domain.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/business/users/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/business/users/usecase.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/users/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users/http.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/databases/users/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/databases/users/mysql.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/databases/users/record.go" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/databases/users/record.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-    </list>
+    <list default="true" id="c6757338-e036-4062-8c0c-ded79f7cf410" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
