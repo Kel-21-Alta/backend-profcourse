@@ -1,13 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"log"
 	"profcourse/app/routes"
 	_userUsecase "profcourse/business/users"
 	_userController "profcourse/controllers/users"
+	_userMysqlRepo "profcourse/drivers/databases/users"
 	_dbDriver "profcourse/drivers/mysql"
+	"time"
 )
 
 func init() {
@@ -21,9 +25,17 @@ func init() {
 	}
 }
 
-func main() {
-	e := echo.New()
+func DbMigration(db *gorm.DB) {
+	var err error
+	err = db.AutoMigrate(&_userMysqlRepo.User{})
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Println("Mingration Success")
+	}
+}
 
+func main() {
 	configDB := _dbDriver.ConfigDB{
 		DB_Username: viper.GetString("database.user"),
 		DB_Password: viper.GetString("database.pass"),
@@ -32,14 +44,20 @@ func main() {
 		DB_Database: viper.GetString("database.name"),
 	}
 
-	configDB.InitialDB()
+	conn := configDB.InitialDB()
+	DbMigration(conn)
 
-	userUsecase := _userUsecase.NewUserUsecase()
+	e := echo.New()
+
+	timeout := time.Duration(viper.GetInt("context.timeout")) * time.Second
+
+	mysqlUserRepository := _userMysqlRepo.NewMysqlUserRepository(conn)
+	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	routesInit := routes.ControllerList{UserController: *userCtrl}
 
 	routesInit.RouteRegister(e)
 
-	e.Logger.Fatal(e.Start(viper.GetString("server.address")))
+	log.Fatal(e.Start(viper.GetString("server.address")))
 }

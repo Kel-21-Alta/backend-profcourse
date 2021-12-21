@@ -5,13 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6757338-e036-4062-8c0c-ded79f7cf410" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/cli/docker-mysql.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/drivers/databases/users/mysql.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/drivers/databases/users/record.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/drivers/mysql/driver.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/development.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/business/users/mocks/Repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/business/users/users_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/testing-coverage.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/base_responses.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/error_type.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/users/requests/user.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/users/reseponses/userCreated.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cover.out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/encrypt/bcrypt.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/randomString/randomString.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/validators/validator.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/business/users/domain.go" beforeDir="false" afterPath="$PROJECT_DIR$/business/users/domain.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/business/users/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/business/users/usecase.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/users/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users/http.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/drivers/databases/users/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/databases/users/mysql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/drivers/databases/users/record.go" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/databases/users/record.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
@@ -67,7 +81,7 @@
     <property name="go.watchers.conflict.with.on.save.actions.check.performed" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Test.TestUserUsecase_CreateUser in profcourse/business/users">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="backend-profcourse" />
       <working_directory value="$PROJECT_DIR$" />
@@ -75,6 +89,66 @@
       <kind value="FILE" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser/Test_Case_1_|_Email_Empty in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$/^\QTest_Case_1_|_Email_Empty\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser/Test_Case_3_|_Valid_Email in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$/^\QTest_Case_3_|_Valid_Email\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser/Test_Case_4_|_Error_Mysql_Repository in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$/^\QTest_Case_4_|_Error_Mysql_Repository\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$/^\QTest_Case_4_|_Success_Create_User\E$" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
@@ -103,6 +177,15 @@
       <option name="specificationPath" value="$PROJECT_DIR$/swagger.yml" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser in profcourse/business/users" />
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Error_Mysql_Repository in profcourse/business/users" />
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User in profcourse/business/users" />
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_3_|_Valid_Email in profcourse/business/users" />
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_1_|_Email_Empty in profcourse/business/users" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">

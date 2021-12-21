@@ -1,0 +1,22 @@
+name: CI CD
+on: [push, pull_request]
+
+jobs:
+  unit-test:
+    name: do unit test to project go
+    runs-on: ubuntu-20.04
+    steps:
+      - name: setup github action(CI)
+        uses: actions/checkout@v2
+      - name: setup golang
+        uses: action/setup-go@v2
+      - name: running unit test
+        run: go test -v -covermode=count -coverprofile=coverage.out
+      - name: Convert coverage to lcov
+        uses: jandelgado/gcov2lcov-action@v1.0.5
+      - name: Coveralls
+        uses: coverallsapp/github-action@v1.0.4
+        with:
+          github-token: ${{ secrets.TOKEN_GITHUB }}
+          path-to-lcov: coverage.lcov
+
