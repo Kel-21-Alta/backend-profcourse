@@ -17,6 +17,7 @@ type Domain struct {
 	Bio          string
 	ImgProfile   string
 	Role         int8 // 1 for admin, 2 for user
+	RoleText     string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

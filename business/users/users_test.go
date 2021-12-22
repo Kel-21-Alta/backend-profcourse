@@ -6,6 +6,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	_mockSmtpEmailRepo "profcourse/business/smtpEmail/mocks"
 	"profcourse/business/users"
 	_mockUserMysqlRepo "profcourse/business/users/mocks"
 	controller "profcourse/controllers"
@@ -14,12 +15,13 @@ import (
 )
 
 var userMysqlRepository _mockUserMysqlRepo.Repository
+var smtpEmailRepository _mockSmtpEmailRepo.Repository
 
 var userService users.Usecase
 var userDomain users.Domain
 
 func setUpCreateUser() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository)
 	userDomain = users.Domain{
 		ID:           uuid.NewV4().String(),
 		Name:         "test",
@@ -73,6 +75,7 @@ func TestUserUsecase_CreateUser(t *testing.T) {
 		setUpCreateUser()
 		userMysqlRepository.On("CreateUser", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
 		userMysqlRepository.On("GetUserByEmail", mock.Anything, mock.Anything).Return(users.Domain{}, errors.New("Email sudah digunakan")).Once()
+		smtpEmailRepository.On("SendEmail", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
 
 		user, err := userService.CreateUser(context.Background(), users.Domain{
 			Name:  "test",

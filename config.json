@@ -1,7 +1,14 @@
 {
   "debug": true,
   "email": {
-    "regex": "gmail.com"
+    "regex": "mailinator.com"
+  },
+  "smtp": {
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "name": "Prof Couse support@profcouse.com",
+    "email": "fadilyy540@gmail.com",
+    "password":"fadil25022002"
   },
   "server": {
     "address": ":9090"

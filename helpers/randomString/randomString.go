@@ -9,5 +9,5 @@ func RandomString(n int) string {
 	for i := range s {
 		s[i] = letters[rand.Intn(len(letters))]
 	}
-	return ""
+	return string(s)
 }

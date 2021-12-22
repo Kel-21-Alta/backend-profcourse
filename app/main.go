@@ -12,6 +12,7 @@ import (
 	_driversFectory "profcourse/drivers"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_dbDriver "profcourse/drivers/mysql"
+	"profcourse/drivers/thirdparties/smtp"
 	"time"
 )
 
@@ -45,6 +46,14 @@ func main() {
 		DB_Database: viper.GetString("database.name"),
 	}
 
+	congfigSmtp := smtp.SmtpEmail{
+		ConfigSmtpHost:     viper.GetString("smtp.host"),
+		ConfigSmtpPort:     viper.GetInt("smtp.port"),
+		ConfigSenderName:   viper.GetString("smtp.name"),
+		ConfigAuthEmail:    viper.GetString("smtp.email"),
+		ConfigAuthPassword: viper.GetString("smtp.password"),
+	}
+
 	conn := configDB.InitialDB()
 	DbMigration(conn)
 
@@ -52,8 +61,10 @@ func main() {
 
 	timeout := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
+	smtpRepository := _driversFectory.NewSmtpRepository(congfigSmtp)
+
 	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
-	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout)
+	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	routesInit := routes.ControllerList{UserController: *userCtrl}

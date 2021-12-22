@@ -5,16 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6757338-e036-4062-8c0c-ded79f7cf410" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/business/smtpEmail/domain.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/business/smtpEmail/mocks/Repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drivers/thirdparties/smtp/driver.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drivers/thirdparties/smtp/thirtparty.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/business/users/domain.go" beforeDir="false" afterPath="$PROJECT_DIR$/business/users/domain.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/business/users/mocks/Repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/business/users/mocks/Repository.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/business/users/usecase.go" beforeDir="false" afterPath="$PROJECT_DIR$/business/users/usecase.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/business/users/users_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/business/users/users_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/error_type.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/error_type.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cover.out" beforeDir="false" afterPath="$PROJECT_DIR$/cover.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/databases/users/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/databases/users/mysql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/base_responses.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/base_responses.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/users/requests/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users/requests/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/users/reseponses/userCreated.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users/reseponses/userCreated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/drivers/databases/users/record.go" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/databases/users/record.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/domain_factory.go" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/domain_factory.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/randomString/randomString.go" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/randomString/randomString.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +76,7 @@
     <property name="go.watchers.conflict.with.on.save.actions.check.performed" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Go Test.TestUserUsecase_CreateUser in profcourse/business/users">
+  <component name="RunManager" selected="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User in profcourse/business/users">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="backend-profcourse" />
       <working_directory value="$PROJECT_DIR$" />
@@ -166,9 +174,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User in profcourse/business/users" />
         <item itemvalue="Go Test.TestUserUsecase_CreateUser in profcourse/business/users" />
         <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User#01 in profcourse/business/users" />
-        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User in profcourse/business/users" />
         <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_3_|_Invalid_Email in profcourse/business/users" />
         <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_2_|_Name_Empty in profcourse/business/users" />
       </list>
@@ -194,5 +202,16 @@
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/business/users/users_test.go</url>
+          <line>13</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

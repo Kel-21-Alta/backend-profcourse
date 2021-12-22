@@ -30,7 +30,7 @@ func NewResponseError(c echo.Context, err error) error {
 }
 
 func CheckStatus(err error) int {
-	if err == EMPTY_EMAIL || err == EMPTY_NAME || err == INVALID_EMAIL {
+	if err == EMPTY_EMAIL || err == EMPTY_NAME || err == INVALID_EMAIL || err == EMAIL_UNIQUE {
 		return http.StatusBadRequest
 	}
 	return http.StatusInternalServerError

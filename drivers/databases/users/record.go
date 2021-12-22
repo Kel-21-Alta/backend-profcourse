@@ -36,6 +36,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 
 func (u User) ToDomain() users.Domain {
 	return users.Domain{
+		ID:           u.ID,
 		Name:         u.Name,
 		Email:        u.Email,
 		HashPassword: u.Password,
@@ -45,6 +46,7 @@ func (u User) ToDomain() users.Domain {
 		Bio:          u.Bio,
 		ImgProfile:   u.ImgProfile,
 		Role:         u.Role,
+		RoleText:     u.RoleText,
 		CreatedAt:    u.CreatedAt,
 		UpdatedAt:    u.UpdatedAt,
 	}
@@ -56,6 +58,7 @@ func FromDomain(domain users.Domain) User {
 		Name:       domain.Name,
 		Password:   domain.HashPassword,
 		Role:       domain.Role,
+		RoleText:   domain.RoleText,
 		Email:      domain.Email,
 		NoHp:       domain.NoHp,
 		BirthPlace: domain.BirthPlace,
