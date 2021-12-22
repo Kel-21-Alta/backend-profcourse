@@ -26,4 +26,5 @@ type Usecase interface {
 
 type Repository interface {
 	CreateUser(ctx context.Context, domain Domain) (Domain, error)
+	GetUserByEmail(ctx context.Context, email string) (Domain, error)
 }

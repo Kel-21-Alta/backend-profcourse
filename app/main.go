@@ -9,6 +9,7 @@ import (
 	"profcourse/app/routes"
 	_userUsecase "profcourse/business/users"
 	_userController "profcourse/controllers/users"
+	_driversFectory "profcourse/drivers"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_dbDriver "profcourse/drivers/mysql"
 	"time"
@@ -51,7 +52,7 @@ func main() {
 
 	timeout := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
-	mysqlUserRepository := _userMysqlRepo.NewMysqlUserRepository(conn)
+	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
 	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout)
 	userCtrl := _userController.NewUserController(userUsecase)
 

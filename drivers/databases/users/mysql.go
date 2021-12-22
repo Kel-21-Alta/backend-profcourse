@@ -10,6 +10,18 @@ type mysqlUserRepository struct {
 	Conn *gorm.DB
 }
 
+/*
+	Digunakan untuk mendapatkan User dengan email tertentu
+**/
+func (m mysqlUserRepository) GetUserByEmail(ctx context.Context, email string) (users.Domain, error) {
+	rec := User{}
+	err := m.Conn.Where("email = ?", email).First(&rec).Error
+	if err != nil {
+		return users.Domain{}, err
+	}
+	return rec.ToDomain(), nil
+}
+
 func (m mysqlUserRepository) CreateUser(ctx context.Context, domain users.Domain) (users.Domain, error) {
 	rec := FromDomain(domain)
 	result := m.Conn.Create(&rec)
@@ -19,7 +31,7 @@ func (m mysqlUserRepository) CreateUser(ctx context.Context, domain users.Domain
 	return rec.ToDomain(), nil
 }
 
-func NewMysqlUserRepository(conn *gorm.DB) users.Repository {
+func NewMysqlRepository(conn *gorm.DB) users.Repository {
 	return &mysqlUserRepository{
 		Conn: conn,
 	}

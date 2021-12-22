@@ -16,6 +16,7 @@ type userUsecase struct {
 
 func (u userUsecase) CreateUser(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
+	var existedUser Domain
 	if domain.Name == "" {
 		return Domain{}, controller.EMPTY_NAME
 	}
@@ -24,8 +25,16 @@ func (u userUsecase) CreateUser(ctx context.Context, domain Domain) (Domain, err
 		return Domain{}, controller.EMPTY_EMAIL
 	}
 
+	// Mengecek apakah email yang diberika valid
 	if !validators.CheckEmail(domain.Email) {
 		return Domain{}, controller.INVALID_EMAIL
+	}
+
+	// Mengecek apakan Email telah digunakan atau belum
+	existedUser, err = u.userRepository.GetUserByEmail(ctx, domain.Email)
+
+	if existedUser != (Domain{}) {
+		return Domain{}, controller.EMAIL_UNIQUE
 	}
 
 	domain.Password = randomString.RandomString(8)

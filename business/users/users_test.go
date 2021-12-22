@@ -2,6 +2,7 @@ package users_test
 
 import (
 	"context"
+	"errors"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -39,7 +40,6 @@ func setUpCreateUser() {
 func TestUserUsecase_CreateUser(t *testing.T) {
 	t.Run("Test Case 1 | Email Empty", func(t *testing.T) {
 		setUpCreateUser()
-		userMysqlRepository.On("CreateUser", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
 
 		_, err := userService.CreateUser(context.Background(), users.Domain{
 			Name:  "test",
@@ -50,7 +50,6 @@ func TestUserUsecase_CreateUser(t *testing.T) {
 	})
 	t.Run("Test Case 2 | Name Empty", func(t *testing.T) {
 		setUpCreateUser()
-		userMysqlRepository.On("CreateUser", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
 
 		_, err := userService.CreateUser(context.Background(), users.Domain{
 			Name:  "",
@@ -59,7 +58,7 @@ func TestUserUsecase_CreateUser(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.EMPTY_NAME, err)
 	})
-	t.Run("Test Case 3 | Valid Email", func(t *testing.T) {
+	t.Run("Test Case 3 | Invalid Email", func(t *testing.T) {
 		setUpCreateUser()
 		userMysqlRepository.On("CreateUser", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
 
@@ -73,6 +72,7 @@ func TestUserUsecase_CreateUser(t *testing.T) {
 	t.Run("Test Case 4 | Success Create User", func(t *testing.T) {
 		setUpCreateUser()
 		userMysqlRepository.On("CreateUser", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
+		userMysqlRepository.On("GetUserByEmail", mock.Anything, mock.Anything).Return(users.Domain{}, errors.New("Email sudah digunakan")).Once()
 
 		user, err := userService.CreateUser(context.Background(), users.Domain{
 			Name:  "test",
@@ -81,5 +81,15 @@ func TestUserUsecase_CreateUser(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, "test", user.Name)
 		assert.Equal(t, "test@gmail.com", user.Email)
+	})
+	t.Run("Test Case 4 | Cek Email Unique", func(t *testing.T) {
+		setUpCreateUser()
+		userMysqlRepository.On("GetUserByEmail", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
+
+		_, err := userService.CreateUser(context.Background(), users.Domain{
+			Name:  "test",
+			Email: "test@gmail.com",
+		})
+		assert.NotNil(t, err)
 	})
 }
