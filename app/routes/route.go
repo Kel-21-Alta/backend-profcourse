@@ -10,5 +10,5 @@ type ControllerList struct {
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
-	e.GET("/", cl.UserController.Test)
+	e.POST("/api/v1/users", cl.UserController.CreateUser)
 }

@@ -1,5 +1,15 @@
 {
   "debug": true,
+  "email": {
+    "regex": "mailinator.com"
+  },
+  "smtp": {
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "name": "Prof Couse support@profcouse.com",
+    "email": "fadilyy540@gmail.com",
+    "password":"fadil25022002"
+  },
   "server": {
     "address": ":9090"
   },
@@ -7,11 +17,11 @@
     "timeout": 2
   },
   "database": {
-    "host": "mysql",
-    "port": "3306",
-    "user": "root",
-    "pass": "root",
-    "name": "profcourse_db"
+    "host": "localhost",
+    "port": "3300",
+    "user": "profcourse",
+    "pass": "profcourse",
+    "name": "profcourse"
   },
   "jwt": {
     "secret": "blabla",

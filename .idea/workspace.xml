@@ -10,6 +10,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
   <component name="GOROOT" url="file:///usr/local/go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,6 +45,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -49,7 +57,7 @@
     <property name="go.watchers.conflict.with.on.save.actions.check.performed" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User in profcourse/business/users">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="backend-profcourse" />
       <working_directory value="$PROJECT_DIR$" />
@@ -57,6 +65,66 @@
       <kind value="FILE" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser/Test_Case_2_|_Name_Empty in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$/^\QTest_Case_2_|_Name_Empty\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser/Test_Case_3_|_Invalid_Email in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$/^\QTest_Case_3_|_Invalid_Email\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$/^\QTest_Case_4_|_Success_Create_User\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User#01 in profcourse/business/users" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="backend-profcourse" />
+      <working_directory value="$PROJECT_DIR$/business/users" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="profcourse/business/users" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserUsecase_CreateUser\E$/^\QTest_Case_4_|_Success_Create_User#01\E$" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
@@ -85,6 +153,15 @@
       <option name="specificationPath" value="$PROJECT_DIR$/swagger.yml" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User in profcourse/business/users" />
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser in profcourse/business/users" />
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_4_|_Success_Create_User#01 in profcourse/business/users" />
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_3_|_Invalid_Email in profcourse/business/users" />
+        <item itemvalue="Go Test.TestUserUsecase_CreateUser/Test_Case_2_|_Name_Empty in profcourse/business/users" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
@@ -106,5 +183,16 @@
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/business/users/users_test.go</url>
+          <line>13</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

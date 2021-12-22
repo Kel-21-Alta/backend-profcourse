@@ -4,6 +4,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"profcourse/business/users"
+	controller "profcourse/controllers"
+	"profcourse/controllers/users/requests"
+	"profcourse/controllers/users/reseponses"
 )
 
 type UserController struct {
@@ -14,13 +17,20 @@ func NewUserController(uc users.Usecase) *UserController {
 	return &UserController{userUsecase: uc}
 }
 
-func (ctrl *UserController) Test(c echo.Context) error {
+func (ctrl *UserController) CreateUser(c echo.Context) error {
 
 	ctx := c.Request().Context()
+	req := requests.User{}
 
-	clean, err := ctrl.userUsecase.TestClean(ctx, "ikan")
-	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
 	}
-	return c.String(http.StatusOK, clean)
+
+	clean, err := ctrl.userUsecase.CreateUser(ctx, *req.ToDomain())
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusCreated, reseponses.FromDomain(clean))
 }
