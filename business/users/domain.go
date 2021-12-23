@@ -20,9 +20,11 @@ type Domain struct {
 	RoleText     string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+	Token        string
 }
 type Usecase interface {
 	CreateUser(ctx context.Context, domain Domain) (Domain, error)
+	Login(ctx context.Context, domain Domain) (Domain, error)
 }
 
 type Repository interface {

@@ -30,8 +30,11 @@ func NewResponseError(c echo.Context, err error) error {
 }
 
 func CheckStatus(err error) int {
-	if err == EMPTY_EMAIL || err == EMPTY_NAME || err == INVALID_EMAIL || err == EMAIL_UNIQUE {
+	if err == EMPTY_EMAIL || err == EMPTY_NAME || err == INVALID_EMAIL || err == EMAIL_UNIQUE || err == PASSWORD_EMPTY {
 		return http.StatusBadRequest
+	}
+	if err == FORBIDDIN_USER || err == WRONG_PASSWORD || err == WRONG_EMAIL {
+		return http.StatusForbidden
 	}
 	return http.StatusInternalServerError
 }

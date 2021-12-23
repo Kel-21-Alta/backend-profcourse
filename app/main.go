@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"log"
+	"profcourse/app/middlewares"
 	"profcourse/app/routes"
 	_userUsecase "profcourse/business/users"
 	_userController "profcourse/controllers/users"
@@ -54,6 +55,11 @@ func main() {
 		ConfigAuthPassword: viper.GetString("smtp.password"),
 	}
 
+	configJwt := middlewares.ConfigJwt{
+		SecretJwt:       viper.GetString("jwt.secret"),
+		ExpiredDuration: viper.GetInt("jwt.expired"),
+	}
+
 	conn := configDB.InitialDB()
 	DbMigration(conn)
 
@@ -64,7 +70,7 @@ func main() {
 	smtpRepository := _driversFectory.NewSmtpRepository(congfigSmtp)
 
 	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
-	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository)
+	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository, configJwt)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	routesInit := routes.ControllerList{UserController: *userCtrl}
