@@ -6,6 +6,7 @@ import (
 	"profcourse/business/users"
 	controller "profcourse/controllers"
 	"profcourse/controllers/users/requests"
+	"profcourse/controllers/users/reseponses/forgetPassword"
 	"profcourse/controllers/users/reseponses/login"
 	"profcourse/controllers/users/reseponses/userCreated"
 )
@@ -49,4 +50,19 @@ func (ctrl *UserController) Login(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 	return controller.NewResponseSuccess(c, http.StatusOK, login.FromDomain(clean))
+}
+
+func (ctrl *UserController) ForgetPassword(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := requests.ForgetPasswordRequest{}
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	_, err := ctrl.userUsecase.ForgetPassword(ctx, *req.ToDomain())
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, forgetPassword.GenerateResponses())
 }

@@ -19,6 +19,52 @@ type userUsecase struct {
 	JWTConfig      middlewares.ConfigJwt
 }
 
+func (u userUsecase) ForgetPassword(ctx context.Context, domain Domain) (Domain, error) {
+	var err error
+	var existedUser Domain
+	{
+	}
+	if domain.Email == "" {
+		return Domain{}, controller.EMPTY_EMAIL
+	}
+
+	// cek apakah email tersebut terdaftar
+	existedUser, err = u.UserRepository.GetUserByEmail(ctx, domain.Email)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	if existedUser == (Domain{}) {
+		return Domain{}, controller.WRONG_EMAIL
+	}
+
+	// Membuat password baru
+	domain.Password = randomString.RandomString(8)
+	domain.HashPassword, err = encrypt.Hash(domain.Password)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	resultUser, err := u.UserRepository.UpdatePassword(ctx, existedUser, domain.HashPassword)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	// Mengirim password dengan email
+	to := existedUser.Email
+	subject := "Lupa Password Akun Profcouse"
+	message := "<p>Dear " + resultUser.Name + "</p><br><p>Password anda telah kami reset ulang dan password anda sekarang adalah :" + domain.Password + " "
+
+	err = u.SmtpRepository.SendEmail(ctx, to, subject, message)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return resultUser, nil
+}
+
 func (u userUsecase) Login(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain
