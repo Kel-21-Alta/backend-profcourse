@@ -10,6 +10,15 @@ type mysqlUserRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlUserRepository) GetUserById(ctx context.Context, id string) (users.Domain, error) {
+	rec := User{}
+	err := m.Conn.First(&rec, "id = ?", id).Error
+	if err != nil {
+		return users.Domain{}, err
+	}
+	return rec.ToDomain(), nil
+}
+
 /*
 	Digunakan untuk mendapatkan user dengan email tertentu
 **/

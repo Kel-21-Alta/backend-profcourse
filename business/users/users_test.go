@@ -266,3 +266,39 @@ func TestUserUsecase_ForgetPassword(t *testing.T) {
 		assert.NotNil(t, err)
 	})
 }
+
+func setUpCurrentUser() {
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userDomain = users.Domain{
+		ID:           uuid.NewV4().String(),
+		Name:         "test",
+		Email:        "test1@gmail.com",
+		Password:     "kQPPSkyR",
+		HashPassword: "$2a$04$nHHmj1KfuzixIZ8nf9PFH.szVVWeCDsBG6bYYqbMGKhdAzGwzh35K",
+		NoHp:         "01293143",
+		Birth:        time.Now(),
+		BirthPlace:   "Medan",
+		Bio:          "agheuirhe",
+		ImgProfile:   "fasdfihruie",
+		Role:         2,
+		CreatedAt:    time.Time{},
+		UpdatedAt:    time.Time{},
+	}
+}
+func TestUserUsecase_GetCurrentUser(t *testing.T) {
+	t.Run("Test case 1 | ID tidak ada", func(t *testing.T) {
+		setUpCurrentUser()
+
+		_, err := userService.GetCurrentUser(context.Background(), users.Domain{ID: ""})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+	t.Run("Test case 2 | Success", func(t *testing.T) {
+		setUpCurrentUser()
+		userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(userDomain, nil)
+		result, err := userService.GetCurrentUser(context.Background(), users.Domain{ID: "dsadsd"})
+		assert.Nil(t, err)
+		assert.Equal(t, "test1@gmail.com", result.Email)
+	})
+}
