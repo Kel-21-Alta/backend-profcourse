@@ -2,7 +2,6 @@ package users
 
 import (
 	"context"
-	"fmt"
 	"profcourse/app/middlewares"
 	"profcourse/business/smtpEmail"
 	controller "profcourse/controllers"
@@ -22,21 +21,23 @@ type userUsecase struct {
 func (u userUsecase) ForgetPassword(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain
-	{
-	}
 	if domain.Email == "" {
 		return Domain{}, controller.EMPTY_EMAIL
+	}
+
+	if !validators.CheckEmail(domain.Email) {
+		return Domain{}, controller.INVALID_EMAIL
 	}
 
 	// cek apakah email tersebut terdaftar
 	existedUser, err = u.UserRepository.GetUserByEmail(ctx, domain.Email)
 
-	if err != nil {
-		return Domain{}, err
-	}
-
 	if existedUser == (Domain{}) {
 		return Domain{}, controller.WRONG_EMAIL
+	}
+
+	if err != nil {
+		return Domain{}, err
 	}
 
 	// Membuat password baru
@@ -53,7 +54,7 @@ func (u userUsecase) ForgetPassword(ctx context.Context, domain Domain) (Domain,
 	}
 
 	// Mengirim password dengan email
-	to := existedUser.Email
+	to := resultUser.Email
 	subject := "Lupa Password Akun Profcouse"
 	message := "<p>Dear " + resultUser.Name + "</p><br><p>Password anda telah kami reset ulang dan password anda sekarang adalah :" + domain.Password + " "
 
@@ -82,13 +83,13 @@ func (u userUsecase) Login(ctx context.Context, domain Domain) (Domain, error) {
 
 	existedUser, err = u.UserRepository.GetUserByEmail(ctx, domain.Email)
 
-	if err != nil {
-		return Domain{}, err
-	}
-
 	// Mengecek email apakah benar ada usernya
 	if existedUser == (Domain{}) {
 		return Domain{}, controller.WRONG_EMAIL
+	}
+
+	if err != nil {
+		return Domain{}, err
 	}
 
 	// Mengecek apakan passwordnya benar
@@ -99,7 +100,6 @@ func (u userUsecase) Login(ctx context.Context, domain Domain) (Domain, error) {
 	existedUser.Token, err = u.JWTConfig.GenrateTokenJWT(domain.ID, domain.Role)
 
 	if err != nil {
-		fmt.Println("sini")
 		return Domain{}, err
 	}
 

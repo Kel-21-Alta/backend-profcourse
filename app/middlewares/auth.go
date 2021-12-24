@@ -20,6 +20,12 @@ type ConfigJwt struct {
 	ExpiredDuration int
 }
 
+type JwtRepository interface {
+	Int() middleware.JWTConfig
+	ExtractClaims(c echo.Context) (*JwtCustomClaims, error)
+	GenrateTokenJWT(userId string, role int8) (string, error)
+}
+
 func (configJWT *ConfigJwt) Init() middleware.JWTConfig {
 	return middleware.JWTConfig{
 		Claims:     &JwtCustomClaims{},
