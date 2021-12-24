@@ -26,10 +26,12 @@ type Usecase interface {
 	CreateUser(ctx context.Context, domain Domain) (Domain, error)
 	Login(ctx context.Context, domain Domain) (Domain, error)
 	ForgetPassword(ctx context.Context, domain Domain) (Domain, error)
+	GetCurrentUser(ctx context.Context, domain Domain) (Domain, error)
 }
 
 type Repository interface {
 	CreateUser(ctx context.Context, domain Domain) (Domain, error)
 	GetUserByEmail(ctx context.Context, email string) (Domain, error)
 	UpdatePassword(ctx context.Context, domain Domain, hash string) (Domain, error)
+	GetUserById(ctx context.Context, id string) (Domain, error)
 }

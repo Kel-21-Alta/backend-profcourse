@@ -18,6 +18,17 @@ type userUsecase struct {
 	JWTConfig      middlewares.ConfigJwt
 }
 
+func (u userUsecase) GetCurrentUser(ctx context.Context, domain Domain) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	user, err := u.UserRepository.GetUserById(ctx, domain.ID)
+	if err != nil {
+		return Domain{}, err
+	}
+	return user, nil
+}
+
 func (u userUsecase) ForgetPassword(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain

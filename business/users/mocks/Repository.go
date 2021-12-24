@@ -56,6 +56,27 @@ func (_m *Repository) GetUserByEmail(ctx context.Context, email string) (users.D
 	return r0, r1
 }
 
+// GetUserById provides a mock function with given fields: ctx, id
+func (_m *Repository) GetUserById(ctx context.Context, id string) (users.Domain, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 users.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, string) users.Domain); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(users.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdatePassword provides a mock function with given fields: ctx, domain, hash
 func (_m *Repository) UpdatePassword(ctx context.Context, domain users.Domain, hash string) (users.Domain, error) {
 	ret := _m.Called(ctx, domain, hash)

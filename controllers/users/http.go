@@ -1,13 +1,13 @@
 package users
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"profcourse/app/middlewares"
 	"profcourse/business/users"
 	controller "profcourse/controllers"
 	"profcourse/controllers/users/requests"
+	"profcourse/controllers/users/reseponses/currentUser"
 	"profcourse/controllers/users/reseponses/forgetPassword"
 	"profcourse/controllers/users/reseponses/login"
 	"profcourse/controllers/users/reseponses/userCreated"
@@ -25,7 +25,6 @@ func (ctrl *UserController) CreateUser(c echo.Context) error {
 
 	tokenJwt, _ := middlewares.ExtractClaims(c)
 
-	fmt.Println(tokenJwt)
 	if tokenJwt.Role != int8(1) {
 		return controller.NewResponseError(c, controller.FORBIDDIN_USER)
 	}
@@ -74,4 +73,17 @@ func (ctrl *UserController) ForgetPassword(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, forgetPassword.GenerateResponses())
+}
+
+func (ctrl *UserController) GetCurrentUser(c echo.Context) error {
+	tokenJwt, _ := middlewares.ExtractClaims(c)
+
+	ctx := c.Request().Context()
+	userDomain := users.Domain{ID: tokenJwt.Userid}
+	clean, err := ctrl.userUsecase.GetCurrentUser(ctx, userDomain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, currentUser.FromDomain(clean))
 }

@@ -17,7 +17,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	ev1.POST("login", cl.UserController.Login)
 	ev1.PUT("forget-password", cl.UserController.ForgetPassword)
 
-	withJWT := ev1.Group("users")
+	withJWT := ev1.Group("")
 	withJWT.Use(middleware.JWTWithConfig(cl.JWTMiddleware))
-	withJWT.POST("", cl.UserController.CreateUser)
+	withJWT.POST("users", cl.UserController.CreateUser)
+	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
+
 }
