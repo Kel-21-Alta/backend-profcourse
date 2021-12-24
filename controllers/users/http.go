@@ -1,8 +1,10 @@
 package users
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"profcourse/app/middlewares"
 	"profcourse/business/users"
 	controller "profcourse/controllers"
 	"profcourse/controllers/users/requests"
@@ -20,6 +22,13 @@ func NewUserController(uc users.Usecase) *UserController {
 }
 
 func (ctrl *UserController) CreateUser(c echo.Context) error {
+
+	tokenJwt, _ := middlewares.ExtractClaims(c)
+
+	fmt.Println(tokenJwt)
+	if tokenJwt.Role != int8(1) {
+		return controller.NewResponseError(c, controller.FORBIDDIN_USER)
+	}
 
 	ctx := c.Request().Context()
 	req := requests.UserRequest{}

@@ -73,7 +73,7 @@ func main() {
 	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository, configJwt)
 	userCtrl := _userController.NewUserController(userUsecase)
 
-	routesInit := routes.ControllerList{UserController: *userCtrl}
+	routesInit := routes.ControllerList{UserController: *userCtrl, JWTMiddleware: configJwt.Init()}
 
 	routesInit.RouteRegister(e)
 
