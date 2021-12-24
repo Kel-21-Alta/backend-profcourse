@@ -11,7 +11,7 @@ type mysqlUserRepository struct {
 }
 
 /*
-	Digunakan untuk mendapatkan User dengan email tertentu
+	Digunakan untuk mendapatkan user dengan email tertentu
 **/
 func (m mysqlUserRepository) GetUserByEmail(ctx context.Context, email string) (users.Domain, error) {
 	rec := User{}
@@ -22,11 +22,22 @@ func (m mysqlUserRepository) GetUserByEmail(ctx context.Context, email string) (
 	return rec.ToDomain(), nil
 }
 
+// Digunakan untuk membuat user baru
 func (m mysqlUserRepository) CreateUser(ctx context.Context, domain users.Domain) (users.Domain, error) {
 	rec := FromDomain(domain)
 	result := m.Conn.Create(&rec)
 	if result.Error != nil {
 		return rec.ToDomain(), result.Error
+	}
+	return rec.ToDomain(), nil
+}
+
+// untuk mengupdate password
+func (m mysqlUserRepository) UpdatePassword(ctx context.Context, domain users.Domain, hash string) (users.Domain, error) {
+	rec := FromDomain(domain)
+	err := m.Conn.Model(&rec).Update("password", hash).Error
+	if err != nil {
+		return users.Domain{}, err
 	}
 	return rec.ToDomain(), nil
 }

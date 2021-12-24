@@ -1,4 +1,4 @@
-package reseponses
+package userCreated
 
 import (
 	"profcourse/business/users"

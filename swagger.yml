@@ -24,7 +24,7 @@ paths:
                 - email
                 - password
               properties: 
-                title: 
+                email:
                   type: string
                   example: "test@gmail.com"
                   pattern: "email"
@@ -65,7 +65,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   /api/v1/forgetpassword:
-    post:
+    put:
       tags:
         - Auth - User
       requestBody:
@@ -1572,6 +1572,67 @@ paths:
           $ref: '#/components/responses/InvalidRequest'
         '403':
           $ref: '#/components/responses/403F'
+    get:
+      tags:
+        - Materi - User
+      summary: mengambil satu materi berdasarkan id dan user nya
+      responses:
+        '200':
+          description: berhasil mendapatkan data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      title:
+                        type: string
+                      modul_id:
+                        type: string
+                        format: uuid
+                      order:
+                        type: integer
+                      url_materi:
+                        type: string
+                      'type':
+                        type: integer
+                      type_text:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+                      updated_at:
+                        type: string
+                        format: date-time
+                      user:
+                        type: object
+                        properties:
+                          user_id:
+                            type: string
+                          current_time:
+                            type: string
+                          is_complate:
+                            type: boolean
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '403':
+          $ref: '#/components/responses/403F'
+
+
   /api/v1/quizs:
     post:
       summary: membuat quiz baru dari modul
@@ -2332,6 +2393,9 @@ paths:
                         updated_at:
                           type: string
                           format: date-time
+
+
+
 
 
 
