@@ -97,7 +97,7 @@ func (u userUsecase) Login(ctx context.Context, domain Domain) (Domain, error) {
 		return Domain{}, controller.WRONG_PASSWORD
 	}
 
-	existedUser.Token, err = u.JWTConfig.GenrateTokenJWT(domain.ID, domain.Role)
+	existedUser.Token, err = u.JWTConfig.GenrateTokenJWT(existedUser.ID, existedUser.Role, existedUser.RoleText)
 
 	if err != nil {
 		return Domain{}, err
@@ -109,6 +109,7 @@ func (u userUsecase) Login(ctx context.Context, domain Domain) (Domain, error) {
 func (u userUsecase) CreateUser(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain
+
 	if domain.Name == "" {
 		return Domain{}, controller.EMPTY_NAME
 	}
