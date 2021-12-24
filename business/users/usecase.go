@@ -18,6 +18,38 @@ type userUsecase struct {
 	JWTConfig      middlewares.ConfigJwt
 }
 
+func (u userUsecase) ChangePassword(ctx context.Context, domain Domain) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	// Cocokkan password lama dengan password yang sekarang
+	user, err := u.UserRepository.GetUserById(ctx, domain.ID)
+
+	if user == (Domain{}) {
+		return Domain{}, controller.EMPTY_USER
+	}
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	if !encrypt.ValidateHash(domain.Password, user.HashPassword) {
+		return Domain{}, controller.WRONG_PASSWORD
+	}
+
+	// Update password lama dengan password baru
+	hashPasswordNew, err := encrypt.Hash(domain.PasswordNew)
+	if err != nil {
+		return Domain{}, err
+	}
+	user, err = u.UserRepository.UpdatePassword(ctx, user, hashPasswordNew)
+
+	if err != nil {
+		return Domain{}, err
+	}
+	return user, nil
+}
+
 func (u userUsecase) GetCurrentUser(ctx context.Context, domain Domain) (Domain, error) {
 	if domain.ID == "" {
 		return Domain{}, controller.ID_EMPTY

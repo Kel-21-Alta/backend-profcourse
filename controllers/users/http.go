@@ -7,6 +7,7 @@ import (
 	"profcourse/business/users"
 	controller "profcourse/controllers"
 	"profcourse/controllers/users/requests"
+	"profcourse/controllers/users/reseponses/changePassword"
 	"profcourse/controllers/users/reseponses/currentUser"
 	"profcourse/controllers/users/reseponses/forgetPassword"
 	"profcourse/controllers/users/reseponses/login"
@@ -86,4 +87,24 @@ func (ctrl *UserController) GetCurrentUser(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 	return controller.NewResponseSuccess(c, http.StatusOK, currentUser.FromDomain(clean))
+}
+
+func (ctrl *UserController) ChangePassword(c echo.Context) error {
+	tokenJwt, _ := middlewares.ExtractClaims(c)
+	req := requests.ChangePasswordRequest{}
+	if err := c.Bind(&req); err != nil {
+
+		return controller.NewResponseError(c, err)
+	}
+
+	ctx := c.Request().Context()
+
+	domain := req.ToDomain()
+	domain.ID = tokenJwt.Userid
+	_, err := ctrl.userUsecase.ChangePassword(ctx, domain)
+	if err != nil {
+		return err
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, changePassword.GenerateMessage())
 }

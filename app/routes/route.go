@@ -21,5 +21,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.Use(middleware.JWTWithConfig(cl.JWTMiddleware))
 	withJWT.POST("users", cl.UserController.CreateUser)
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
+	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
 }

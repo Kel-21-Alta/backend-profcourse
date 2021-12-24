@@ -21,12 +21,14 @@ type Domain struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	Token        string
+	PasswordNew  string
 }
 type Usecase interface {
 	CreateUser(ctx context.Context, domain Domain) (Domain, error)
 	Login(ctx context.Context, domain Domain) (Domain, error)
 	ForgetPassword(ctx context.Context, domain Domain) (Domain, error)
 	GetCurrentUser(ctx context.Context, domain Domain) (Domain, error)
+	ChangePassword(ctx context.Context, domain Domain) (Domain, error)
 }
 
 type Repository interface {

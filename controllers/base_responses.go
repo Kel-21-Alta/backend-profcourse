@@ -36,7 +36,7 @@ func CheckStatus(err error) int {
 	if err == FORBIDDIN_USER || err == WRONG_PASSWORD || err == WRONG_EMAIL {
 		return http.StatusForbidden
 	}
-	if err == ID_EMPTY {
+	if err == ID_EMPTY || err == EMPTY_USER {
 		return http.StatusUnauthorized
 	}
 	return http.StatusInternalServerError
