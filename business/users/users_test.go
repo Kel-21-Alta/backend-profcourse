@@ -330,35 +330,59 @@ func TestUserUsecase_ChangePassword(t *testing.T) {
 		assert.Equal(t, controller.ID_EMPTY, err)
 	})
 
-	t.Run("Test Case 2 | Handle error db Get User By ID tidak ada record", func(t *testing.T) {
+	t.Run("Test Case 2 | Handle error salah password", func(t *testing.T) {
 		setUpChangePassword()
-		userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(users.Domain{}, errors.New("Record Not Found"))
-		user, err := userService.ChangePassword(context.Background(), users.Domain{ID: "adfdafawe", Password: "kQPPSkyR", PasswordNew: "test1"})
-		assert.NotNil(t, err)
-		assert.Equal(t, users.Domain{}, user)
-	})
-
-	//t.Run("Test Case 3 | Handle error db get user by id lainya ", func(t *testing.T) {
-	//	setUpChangePassword()
-	//	userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(userDomain, errors.New("Record Not Found")).Once()
-	//	_, err := userService.ChangePassword(context.Background(), users.Domain{ID: "adfdafawe", Password: "kQPPSkyR", PasswordNew: "test1"})
-	//	assert.NotNil(t, err)
-	//})
-
-	t.Run("Test Case 4 | Handle error salah password", func(t *testing.T) {
-		userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
-		userDomain = users.Domain{
-			ID:           "756f702e-69ae-45e2-8ab2-870c11f7ba51",
-			Name:         "test",
-			Email:        "test1@gmail.com",
-			Password:     "kQPPSkyR",
-			HashPassword: "$2a$04$nHHmj1KfuzixIZ8nf9PFH.szVVWeCDsBG6bYYqbMGKhdAzGwzh35K",
-			PasswordNew:  "test1",
-		}
 		userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(userDomain, nil).Once()
 		_, err := userService.ChangePassword(context.Background(), users.Domain{ID: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Password: "kQPPSkyRs", PasswordNew: "test1"})
 
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.WRONG_PASSWORD, err)
+	})
+
+	t.Run("Test Case 3 | Handle error salah password", func(t *testing.T) {
+		setUpChangePassword()
+		userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(userDomain, errors.New("DB error")).Once()
+		_, err := userService.ChangePassword(context.Background(), users.Domain{ID: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Password: "kQPPSkyRs", PasswordNew: "test1"})
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("Test Case 4 | Handle error db Get User By ID tidak ada record", func(t *testing.T) {
+		setUpChangePassword()
+		userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(users.Domain{}, errors.New("Record Not Found")).Once()
+		user, err := userService.ChangePassword(context.Background(), users.Domain{ID: "adfdafawe", Password: "kQPPSkyR", PasswordNew: "test1"})
+		assert.NotNil(t, err)
+		assert.Equal(t, users.Domain{}, user)
+	})
+
+	t.Run("Test Case 5 | Handle error db upload password", func(t *testing.T) {
+		setUpChangePassword()
+		userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(userDomain, nil).Once()
+		userMysqlRepository.On("UpdatePassword", mock.Anything, mock.Anything, mock.AnythingOfType("string")).Return(users.Domain{}, errors.New("Db Error")).Once()
+
+		_, err := userService.ChangePassword(context.Background(), users.Domain{ID: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Password: "kQPPSkyR", PasswordNew: "test1"})
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("Test Case 6 | Handle Db error update password", func(t *testing.T) {
+		setUpChangePassword()
+
+		userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(userDomain, nil).Once()
+		userMysqlRepository.On("UpdatePassword", mock.Anything, mock.Anything, mock.AnythingOfType("string")).Return(users.Domain{}, errors.New("Db Error")).Once()
+
+		_, err := userService.ChangePassword(context.Background(), users.Domain{ID: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Password: "kQPPSkyR", PasswordNew: "test1"})
+		assert.NotNil(t, err)
+	})
+
+	t.Run("Test Case 7 | Handle Success", func(t *testing.T) {
+		setUpChangePassword()
+
+		userMysqlRepository.On("GetUserById", mock.Anything, mock.AnythingOfType("string")).Return(userDomain, nil).Once()
+		userMysqlRepository.On("UpdatePassword", mock.Anything, mock.Anything, mock.AnythingOfType("string")).Return(userDomain, nil).Once()
+
+		user, err := userService.ChangePassword(context.Background(), users.Domain{ID: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Password: "kQPPSkyR", PasswordNew: "test1"})
+		assert.Nil(t, err)
+		assert.Equal(t, userDomain.Email, user.Email)
 	})
 }

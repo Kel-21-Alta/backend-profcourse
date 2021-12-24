@@ -1,17 +1,17 @@
 mode: set
 profcourse/business/users/usecase.go:21.89,22.21 1 1
 profcourse/business/users/usecase.go:26.2,28.24 2 1
-profcourse/business/users/usecase.go:32.2,32.16 1 0
-profcourse/business/users/usecase.go:36.2,36.63 1 0
-profcourse/business/users/usecase.go:41.2,42.16 2 0
-profcourse/business/users/usecase.go:45.2,47.16 2 0
-profcourse/business/users/usecase.go:50.2,50.18 1 0
+profcourse/business/users/usecase.go:32.2,32.16 1 1
+profcourse/business/users/usecase.go:36.2,36.63 1 1
+profcourse/business/users/usecase.go:41.2,42.16 2 1
+profcourse/business/users/usecase.go:45.2,47.16 2 1
+profcourse/business/users/usecase.go:50.2,50.18 1 1
 profcourse/business/users/usecase.go:22.21,24.3 1 1
 profcourse/business/users/usecase.go:28.24,30.3 1 1
-profcourse/business/users/usecase.go:32.16,34.3 1 0
-profcourse/business/users/usecase.go:36.63,38.3 1 0
+profcourse/business/users/usecase.go:32.16,34.3 1 1
+profcourse/business/users/usecase.go:36.63,38.3 1 1
 profcourse/business/users/usecase.go:42.16,44.3 1 0
-profcourse/business/users/usecase.go:47.16,49.3 1 0
+profcourse/business/users/usecase.go:47.16,49.3 1 1
 profcourse/business/users/usecase.go:53.89,54.21 1 1
 profcourse/business/users/usecase.go:57.2,58.16 2 1
 profcourse/business/users/usecase.go:61.2,61.18 1 1
