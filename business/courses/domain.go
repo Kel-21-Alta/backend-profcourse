@@ -11,7 +11,8 @@ type Domain struct {
 	Title       string
 	Description string
 	ImgUrl      string
-	Teacher     string
+	TeacherId   string
+	TeacherName string
 	Status      int8
 	StatusText  string
 	FileImage   *multipart.FileHeader
@@ -23,9 +24,9 @@ type Domain struct {
 }
 
 type Usecase interface {
-	CreateCourse(ctx context.Context, domain Domain) (Domain, error)
+	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
 }
 
 type Repository interface {
-	CreateCouse(ctx context.Context, domain Domain) (Domain, error)
+	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
 }

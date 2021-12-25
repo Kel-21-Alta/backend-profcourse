@@ -26,12 +26,19 @@ type User struct {
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	u.ID = uuid.NewV4().String()
+	u.CreatedAt = time.Now().Local()
+
 	if u.Role == 1 {
 		u.RoleText = "Admin"
 	} else {
 		u.RoleText = "User"
 	}
 	return
+}
+
+func (u *User) BeforeUpdate(db *gorm.DB) error {
+	u.UpdatedAt = time.Now().Local()
+	return nil
 }
 
 func (u User) ToDomain() users.Domain {

@@ -8,7 +8,9 @@ import (
 	"log"
 	"profcourse/app/middlewares"
 	"profcourse/app/routes"
+	_coursesUsecase "profcourse/business/courses"
 	_userUsecase "profcourse/business/users"
+	"profcourse/controllers/courses"
 	_userController "profcourse/controllers/users"
 	_driversFectory "profcourse/drivers"
 	_userMysqlRepo "profcourse/drivers/databases/users"
@@ -68,12 +70,17 @@ func main() {
 	timeout := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	smtpRepository := _driversFectory.NewSmtpRepository(congfigSmtp)
+	localRepository := _driversFectory.NewLocalRepository()
 
 	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
 	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository, configJwt)
 	userCtrl := _userController.NewUserController(userUsecase)
 
-	routesInit := routes.ControllerList{UserController: *userCtrl, JWTMiddleware: configJwt.Init()}
+	mysqlCourseRepository := _driversFectory.NewMysqlCourseRepository(conn)
+	courseUsecase := _coursesUsecase.NewCourseUseCase(mysqlCourseRepository, timeout, localRepository)
+	couserCtrl := courses.NewCourseController(courseUsecase)
+
+	routesInit := routes.ControllerList{UserController: *userCtrl, CourseController: *couserCtrl, JWTMiddleware: configJwt.Init()}
 
 	routesInit.RouteRegister(e)
 
