@@ -15,7 +15,7 @@ import (
 type Locals struct {
 }
 
-func (l Locals) UploadImage(ctx context.Context, header multipart.FileHeader, destination string) (locals.Domain, error) {
+func (l Locals) UploadImage(ctx context.Context, header *multipart.FileHeader, destination string) (locals.Domain, error) {
 	domain := locals.Domain{}
 	domain.File = header
 

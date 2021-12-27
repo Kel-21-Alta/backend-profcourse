@@ -6,12 +6,12 @@ import (
 )
 
 type Domain struct {
-	File        multipart.FileHeader
+	File        *multipart.FileHeader
 	Destination string
 	ResultUrl   string
 	FileName    string
 }
 
 type Repository interface {
-	UploadImage(ctx context.Context, header multipart.FileHeader, destination string) (Domain, error)
+	UploadImage(ctx context.Context, header *multipart.FileHeader, destination string) (Domain, error)
 }
