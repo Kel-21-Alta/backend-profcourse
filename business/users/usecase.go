@@ -3,7 +3,7 @@ package users
 import (
 	"context"
 	"profcourse/app/middlewares"
-	"profcourse/business/smtpEmail"
+	"profcourse/business/smtp_email"
 	controller "profcourse/controllers"
 	"profcourse/helpers/encrypt"
 	"profcourse/helpers/randomString"
@@ -14,7 +14,7 @@ import (
 type userUsecase struct {
 	ContextTimeout time.Duration
 	UserRepository Repository
-	SmtpRepository smtpEmail.Repository
+	SmtpRepository smtp_email.Repository
 	JWTConfig      middlewares.ConfigJwt
 }
 
@@ -204,7 +204,7 @@ func (u userUsecase) CreateUser(ctx context.Context, domain Domain) (Domain, err
 	return resultDomain, nil
 }
 
-func NewUserUsecase(r Repository, timeout time.Duration, smtpRepo smtpEmail.Repository, configJwt middlewares.ConfigJwt) Usecase {
+func NewUserUsecase(r Repository, timeout time.Duration, smtpRepo smtp_email.Repository, configJwt middlewares.ConfigJwt) Usecase {
 	return &userUsecase{
 		ContextTimeout: timeout,
 		UserRepository: r,

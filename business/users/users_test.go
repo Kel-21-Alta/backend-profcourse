@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"profcourse/app/middlewares"
-	_mockSmtpEmailRepo "profcourse/business/smtpEmail/mocks"
+	_mockSmtpEmailRepo "profcourse/business/smtp_email/mocks"
 	"profcourse/business/users"
 	_mockUserMysqlRepo "profcourse/business/users/mocks"
 	controller "profcourse/controllers"

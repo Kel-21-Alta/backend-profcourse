@@ -3,12 +3,14 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"profcourse/controllers/courses"
 	"profcourse/controllers/users"
 )
 
 type ControllerList struct {
-	JWTMiddleware  middleware.JWTConfig
-	UserController users.UserController
+	JWTMiddleware    middleware.JWTConfig
+	UserController   users.UserController
+	CourseController courses.CourseController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -23,4 +25,5 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
+	withJWT.POST("courses", cl.CourseController.CreateCourse)
 }
