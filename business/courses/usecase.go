@@ -20,17 +20,22 @@ func (c coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]D
 		domain.SortBy = "asc"
 	}
 
+	if domain.SortBy == "dsc" {
+		domain.SortBy = "desc"
+	}
+
 	if domain.Sort == "" {
 		domain.Sort = "created_at"
 	}
 
+	// menvalidasi sort by yang diizinkan
 	sortByAllow := []string{"asc", "desc"}
-	sortAllow := []string{"created_at", "title"}
-
 	if !helpers.CheckItemInSlice(sortByAllow, domain.SortBy) {
 		return &[]Domain{}, controller.INVALID_PARAMS
 	}
 
+	// Menvalidasi sort yang diizinkan
+	sortAllow := []string{"created_at", "title"} // TODO: disini kurang sort review dan sort popular
 	if !helpers.CheckItemInSlice(sortAllow, domain.Sort) {
 		return &[]Domain{}, controller.INVALID_PARAMS
 	}

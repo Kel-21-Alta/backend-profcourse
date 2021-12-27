@@ -10,6 +10,7 @@ type mysqlCourseRepository struct {
 	Conn *gorm.DB
 }
 
+// Fungsi ini untuk mengimplementasikan pagination pada list course
 func Paginate(domain courses.Domain) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		offset := domain.Offset
@@ -21,6 +22,7 @@ func Paginate(domain courses.Domain) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
+// Untuk mendapatkan semua list course sesuai keperluan
 func (r mysqlCourseRepository) GetAllCourses(ctx context.Context, domain *courses.Domain) (*[]courses.Domain, error) {
 	var coursesResult []Courses
 	var err error

@@ -55,6 +55,7 @@ func (cc CourseController) GetAllCourses(c echo.Context) error {
 	domain.SortBy = c.QueryParam("sortby")
 	domain.KeywordSearch = c.QueryParam("s")
 
+	// Usecase
 	clean, err := cc.CourseUsecase.GetAllCourses(ctx, &domain)
 
 	if err != nil {

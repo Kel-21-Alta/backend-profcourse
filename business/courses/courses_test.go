@@ -22,6 +22,7 @@ var localyRepository _mocksLocalRepository.Repository
 var courseService courses.Usecase
 var courseDomain courses.Domain
 var localDomain locals.Domain
+var listCourse []courses.Domain
 
 func setupCreateCouse() {
 	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1, &localyRepository)
@@ -95,6 +96,66 @@ func TestCoursesUsecase_CreateCourse(t *testing.T) {
 		courseMysqlRepository.On("CreateCourse", mock.Anything, mock.Anything).Return(&courses.Domain{}, errors.New("Error DB")).Once()
 		_, err := courseService.CreateCourse(context.Background(), &courses.Domain{Title: "Docker Pemula",
 			Description: "Docker untuk pemula", TeacherId: uuid.NewV4().String(), FileImage: &multipart.FileHeader{}})
+		assert.NotNil(t, err)
+	})
+
+}
+
+func setupGetAllCourses() {
+	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1, &localyRepository)
+	courseDomain = courses.Domain{
+		ID:            uuid.NewV4().String(),
+		Title:         "Docker Pemula",
+		Description:   "Docker untuk pemula",
+		ImgUrl:        "./public/img/courses/iahguid.png",
+		TeacherId:     uuid.NewV4().String(),
+		TeacherName:   "",
+		Status:        2,
+		StatusText:    "",
+		FileImage:     nil,
+		CertificateId: "",
+		CreatedAt:     time.Time{},
+		UpdatedAt:     time.Time{},
+	}
+	listCourse = []courses.Domain{
+		courseDomain, courseDomain,
+	}
+}
+
+func TestCoursesUsecase_GetAllCourses(t *testing.T) {
+	t.Run("Test case 1 | invalid params sort", func(t *testing.T) {
+		setupGetAllCourses()
+
+		_, err := courseService.GetAllCourses(context.Background(), &courses.Domain{Sort: "adfsd", SortBy: "asc"})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.INVALID_PARAMS, err)
+	})
+
+	t.Run("Test case 2 | invalid params sort by", func(t *testing.T) {
+		setupGetAllCourses()
+
+		_, err := courseService.GetAllCourses(context.Background(), &courses.Domain{Sort: "", SortBy: "ascsd"})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.INVALID_PARAMS, err)
+	})
+
+	t.Run("Test case 3 | success get list courses with limit 2", func(t *testing.T) {
+		setupGetAllCourses()
+		courseMysqlRepository.On("GetAllCourses", mock.Anything, mock.Anything).Return(&listCourse, nil).Once()
+		coursesList, err := courseService.GetAllCourses(context.Background(), &courses.Domain{
+			Limit: 2,
+			SortBy:  "dsc",
+		})
+		assert.Nil(t, err)
+		assert.Len(t, *coursesList, 2)
+	})
+
+	t.Run("Test case 4 | Handle error db get all courses", func(t *testing.T) {
+		setupGetAllCourses()
+		courseMysqlRepository.On("GetAllCourses", mock.Anything, mock.Anything).Return(&[]courses.Domain{}, errors.New("Error DB")).Once()
+		_, err := courseService.GetAllCourses(context.Background(), &courses.Domain{
+			Limit: 2,
+		})
 		assert.NotNil(t, err)
 	})
 
