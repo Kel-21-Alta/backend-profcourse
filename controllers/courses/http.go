@@ -3,6 +3,7 @@ package courses
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"profcourse/app/middlewares"
 	"profcourse/business/courses"
 	controller "profcourse/controllers"
 	"profcourse/controllers/courses/requests"
@@ -19,6 +20,7 @@ func NewCourseController(cc courses.Usecase) *CourseController {
 
 func (cc CourseController) CreateCourse(c echo.Context) error {
 	ctx := c.Request().Context()
+	token, _ := middlewares.ExtractClaims(c)
 	var err error
 
 	req := requests.CreateCourseRequest{}
@@ -27,6 +29,7 @@ func (cc CourseController) CreateCourse(c echo.Context) error {
 	}
 
 	req.FileImage, err = c.FormFile("file_image")
+	req.UserId = token.Userid
 	if err != nil {
 		return controller.NewResponseError(c, err)
 	}

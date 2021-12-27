@@ -13,5 +13,5 @@ type Domain struct {
 }
 
 type Repository interface {
-	UploadImage(ctx context.Context, header multipart.FileHeader) (Domain, error)
+	UploadImage(ctx context.Context, header multipart.FileHeader, destination string) (Domain, error)
 }

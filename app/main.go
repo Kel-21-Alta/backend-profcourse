@@ -13,6 +13,7 @@ import (
 	"profcourse/controllers/courses"
 	_userController "profcourse/controllers/users"
 	_driversFectory "profcourse/drivers"
+	_coursesMysqlRepo "profcourse/drivers/databases/courses"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_dbDriver "profcourse/drivers/mysql"
 	"profcourse/drivers/thirdparties/smtp"
@@ -32,7 +33,7 @@ func init() {
 
 func DbMigration(db *gorm.DB) {
 	var err error
-	err = db.AutoMigrate(&_userMysqlRepo.User{})
+	err = db.AutoMigrate(&_userMysqlRepo.User{}, &_coursesMysqlRepo.Courses{})
 	if err != nil {
 		panic(err)
 	} else {

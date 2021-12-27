@@ -12,7 +12,7 @@ type CreateCourseResponse struct {
 	UrlImage    string    `json:"url_image"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
-	Status      string    `json:"status"`
+	Status      int8      `json:"status"`
 }
 
 func FromDomain(domain *courses.Domain) *CreateCourseResponse {
@@ -23,6 +23,6 @@ func FromDomain(domain *courses.Domain) *CreateCourseResponse {
 		UrlImage:    domain.ImgUrl,
 		CreatedAt:   domain.CreatedAt,
 		UpdatedAt:   domain.UpdatedAt,
-		Status:      domain.StatusText,
+		Status:      domain.Status,
 	}
 }

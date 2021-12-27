@@ -21,7 +21,7 @@ type Courses struct {
 	Title       string `gorm:"not null"`
 	Description string `gorm:"not null"`
 	ImgUrl      string
-	TeacherId   string
+	TeacherId   string `gorm:"size:191"`
 	Status      STATUS `gorm:"default:2"`
 	StatusText  string
 

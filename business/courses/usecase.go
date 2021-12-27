@@ -27,7 +27,7 @@ func (c coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Doma
 		return &Domain{}, controller.FILE_IMAGE_EMPTY
 	}
 
-	localRepoDomain, err := c.LocalRepository.UploadImage(ctx, *domain.FileImage)
+	localRepoDomain, err := c.LocalRepository.UploadImage(ctx, *domain.FileImage, "/img/courses/")
 	if err != nil {
 		return &Domain{}, err
 	}

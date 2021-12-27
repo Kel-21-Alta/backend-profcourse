@@ -15,7 +15,7 @@ import (
 type Locals struct {
 }
 
-func (l Locals) UploadImage(ctx context.Context, header multipart.FileHeader) (locals.Domain, error) {
+func (l Locals) UploadImage(ctx context.Context, header multipart.FileHeader, destination string) (locals.Domain, error) {
 	domain := locals.Domain{}
 	domain.File = header
 
@@ -37,7 +37,7 @@ func (l Locals) UploadImage(ctx context.Context, header multipart.FileHeader) (l
 	}
 	newFileName := randomString.RandomString(10) + "." + extention
 
-	dstFile, err := os.Create("./public/" + domain.Destination + newFileName)
+	dstFile, err := os.Create("./public" + destination + domain.Destination + newFileName)
 	if err != nil {
 		return locals.Domain{}, err
 	}
