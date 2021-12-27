@@ -2393,6 +2393,44 @@ paths:
                         updated_at:
                           type: string
                           format: date-time
+  /api/v1/course/register:
+    post:
+      summary: untuk mendaftar course user
+      tags:
+        - Kursus - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: success mendaftarkan user pada course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
 
 
 
