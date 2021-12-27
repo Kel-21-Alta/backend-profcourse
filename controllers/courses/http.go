@@ -8,6 +8,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/courses/requests"
 	"profcourse/controllers/courses/responses/createCourse"
+	"profcourse/controllers/courses/responses/getAllCourses"
 )
 
 type CourseController struct {
@@ -40,4 +41,16 @@ func (cc CourseController) CreateCourse(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusCreated, createCourse.FromDomain(clean))
+}
+
+func (cc CourseController) GetAllCourses(c echo.Context) error {
+	ctx := c.Request().Context()
+	var domain courses.Domain
+	clean, err := cc.CourseUsecase.GetAllCourses(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllCourses.FromListDomain(clean))
 }
