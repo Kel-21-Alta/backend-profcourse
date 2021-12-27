@@ -4,6 +4,7 @@ import (
 	"context"
 	"profcourse/business/locals"
 	controller "profcourse/controllers"
+	"profcourse/helpers"
 	"time"
 )
 
@@ -14,6 +15,26 @@ type coursesUsecase struct {
 }
 
 func (c coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error) {
+
+	if domain.SortBy == "" {
+		domain.SortBy = "asc"
+	}
+
+	if domain.Sort == "" {
+		domain.Sort = "created_at"
+	}
+
+	sortByAllow := []string{"asc", "desc"}
+	sortAllow := []string{"created_at", "title"}
+
+	if !helpers.CheckItemInSlice(sortByAllow, domain.SortBy) {
+		return &[]Domain{}, controller.INVALID_PARAMS
+	}
+
+	if !helpers.CheckItemInSlice(sortAllow, domain.Sort) {
+		return &[]Domain{}, controller.INVALID_PARAMS
+	}
+
 	listCourseDomain, err := c.CourseMysqlRepository.GetAllCourses(ctx, domain)
 	if err != nil {
 		return &[]Domain{}, err

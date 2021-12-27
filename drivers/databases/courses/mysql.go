@@ -10,10 +10,22 @@ type mysqlCourseRepository struct {
 	Conn *gorm.DB
 }
 
+func Paginate(domain courses.Domain) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		offset := domain.Offset
+		limit := domain.Limit
+		if limit == 0 {
+			limit = 10
+		}
+		return db.Offset(offset).Limit(limit)
+	}
+}
+
 func (r mysqlCourseRepository) GetAllCourses(ctx context.Context, domain *courses.Domain) (*[]courses.Domain, error) {
 	var coursesResult []Courses
+	var err error
+	err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&coursesResult).Error
 
-	err := r.Conn.Find(&coursesResult).Error
 	if err != nil {
 		return &[]courses.Domain{}, err
 	}
