@@ -2685,7 +2685,7 @@ components:
       in: query
       schema:
         type: string
-      description: nilai pada sort adalah asc/dsc by created_at
+      description: nilai pada sort adalah asc/desc by created_at
     UserSortBy: 
       name: sortby
       in: query

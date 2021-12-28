@@ -26,5 +26,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
 	withJWT.POST("courses", cl.CourseController.CreateCourse)
+
 	withJWT.GET("courses/:courseid", cl.CourseController.GetOneCourse)
+	withJWT.GET("courses", cl.CourseController.GetAllCourses)
 }
