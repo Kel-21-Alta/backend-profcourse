@@ -14,7 +14,7 @@ type mysqlCourseRepository struct {
 func (r mysqlCourseRepository) GetOneCourse(ctx context.Context, domain *courses.Domain) (*courses.Domain, error) {
 	rec := Courses{}
 
-	err := r.Conn.Preload(clause.Associations).First(&rec, domain.ID).Error
+	err := r.Conn.Preload(clause.Associations).First(&rec, " id = ?", domain.ID).Error
 	if err != nil {
 		return &courses.Domain{}, err
 	}

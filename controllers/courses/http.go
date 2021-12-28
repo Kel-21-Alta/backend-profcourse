@@ -8,8 +8,8 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/courses/requests"
 	"profcourse/controllers/courses/responses/createCourse"
-	"profcourse/controllers/courses/responses/getOneCourse"
 	"profcourse/controllers/courses/responses/getAllCourses"
+	"profcourse/controllers/courses/responses/getOneCourse"
 	"strconv"
 )
 
@@ -24,7 +24,10 @@ func NewCourseController(cc courses.Usecase) *CourseController {
 func (cc CourseController) GetOneCourse(c echo.Context) error {
 	ctx := c.Request().Context()
 	var domain courses.Domain
+	token, _ := middlewares.ExtractClaims(c)
+
 	domain.ID = c.Param("courseid")
+	domain.InfoUser.CurrentUser = token.Userid
 
 	clean, err := cc.CourseUsecase.GetOneCourse(ctx, &domain)
 

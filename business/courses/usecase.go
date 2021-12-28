@@ -20,6 +20,7 @@ func (c coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Doma
 	if err != nil {
 		return &Domain{}, err
 	}
+	course.InfoUser.CurrentUser = domain.InfoUser.CurrentUser
 	return course, nil
 }
 

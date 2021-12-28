@@ -59,3 +59,26 @@ func (_m *Repository) GetAllCourses(ctx context.Context, domain *courses.Domain)
 
 	return r0, r1
 }
+
+// GetOneCourse provides a mock function with given fields: ctx, domain
+func (_m *Repository) GetOneCourse(ctx context.Context, domain *courses.Domain) (*courses.Domain, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 *courses.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, *courses.Domain) *courses.Domain); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*courses.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *courses.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
