@@ -68,6 +68,7 @@ func (c Courses) ToDomain() *courses.Domain {
 		StatusText:  c.StatusText,
 		CreatedAt:   c.CreatedAt,
 		UpdatedAt:   c.UpdatedAt,
+		TeacherName: c.Teacher.Name,
 	}
 }
 

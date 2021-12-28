@@ -32,10 +32,13 @@ type Domain struct {
 
 type Usecase interface {
 	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
+	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
+
 }
 
 type Repository interface {
 	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
+	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
 }
