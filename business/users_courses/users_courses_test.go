@@ -35,7 +35,7 @@ func setupUserRegisterCourse() {
 func TestUsersCoursesUsecase_UserRegisterCourse(t *testing.T) {
 	t.Run("Test Case 1 | Handle error empty user", func(t *testing.T) {
 		setupUserRegisterCourse()
-		
+
 		_, err := usersCoursesService.UserRegisterCourse(context.Background(), &users_courses.Domain{UserId: "", CourseId: uuid.NewV4().String()})
 
 		assert.NotNil(t, err)
@@ -94,11 +94,13 @@ func TestUsersCoursesUsecase_UserRegisterCourse(t *testing.T) {
 
 		usersCoursesRepository.On("UserRegisterCourse", mock.Anything, mock.Anything).Return(&usersCoursesDomain, nil).Once()
 
-		_, err := usersCoursesService.UserRegisterCourse(context.Background(), &users_courses.Domain{UserId: uuid.NewV4().String(), CourseId: uuid.NewV4().String()})
+		course, err := usersCoursesService.UserRegisterCourse(context.Background(), &users_courses.Domain{UserId: uuid.NewV4().String(), CourseId: uuid.NewV4().String()})
 
 		assert.Nil(t, err)
 		assert.NotEqual(t, controller.EMPTY_COURSE, err)
 		assert.NotEqual(t, controller.EMPTY_USER, err)
 		assert.NotEqual(t, controller.ALREADY_REGISTERED_COURSE, err)
+		assert.Equal(t, usersCoursesDomain.CourseId, course.CourseId)
+		assert.Equal(t, usersCoursesDomain.UserId, course.UserId)
 	})
 }
