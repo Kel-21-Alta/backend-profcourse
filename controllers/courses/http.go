@@ -8,6 +8,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/courses/requests"
 	"profcourse/controllers/courses/responses/createCourse"
+	"profcourse/controllers/courses/responses/getOneCourse"
 )
 
 type CourseController struct {
@@ -16,6 +17,20 @@ type CourseController struct {
 
 func NewCourseController(cc courses.Usecase) *CourseController {
 	return &CourseController{CourseUsecase: cc}
+}
+
+func (cc CourseController) GetOneCourse(c echo.Context) error {
+	ctx := c.Request().Context()
+	var domain courses.Domain
+	domain.ID = c.Param("courseid")
+
+	clean, err := cc.CourseUsecase.GetOneCourse(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getOneCourse.FromDomain(clean))
 }
 
 func (cc CourseController) CreateCourse(c echo.Context) error {

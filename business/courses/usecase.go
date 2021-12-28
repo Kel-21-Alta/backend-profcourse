@@ -13,6 +13,15 @@ type coursesUsecase struct {
 	LocalRepository       locals.Repository
 }
 
+func (c coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error) {
+
+	course, err := c.CourseMysqlRepository.GetOneCourse(ctx, domain)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return course, nil
+}
+
 func (c coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Domain, error) {
 	// Validasi
 	if domain.Title == "" {
