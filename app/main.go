@@ -10,11 +10,14 @@ import (
 	"profcourse/app/routes"
 	_coursesUsecase "profcourse/business/courses"
 	_userUsecase "profcourse/business/users"
+	_usersCourseUsercase "profcourse/business/users_courses"
 	"profcourse/controllers/courses"
 	_userController "profcourse/controllers/users"
+	_usersCourseController "profcourse/controllers/users_courses"
 	_driversFectory "profcourse/drivers"
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
 	_userMysqlRepo "profcourse/drivers/databases/users"
+	_usersCourseMysqlRepo "profcourse/drivers/databases/users_courses"
 	_dbDriver "profcourse/drivers/mysql"
 	"profcourse/drivers/thirdparties/smtp"
 	"time"
@@ -33,7 +36,7 @@ func init() {
 
 func DbMigration(db *gorm.DB) {
 	var err error
-	err = db.AutoMigrate(&_userMysqlRepo.User{}, &_coursesMysqlRepo.Courses{})
+	err = db.AutoMigrate(&_userMysqlRepo.User{}, &_coursesMysqlRepo.Courses{}, &_usersCourseMysqlRepo.UsersCourses{})
 	if err != nil {
 		panic(err)
 	} else {
@@ -81,7 +84,16 @@ func main() {
 	courseUsecase := _coursesUsecase.NewCourseUseCase(mysqlCourseRepository, timeout, localRepository)
 	couserCtrl := courses.NewCourseController(courseUsecase)
 
-	routesInit := routes.ControllerList{UserController: *userCtrl, CourseController: *couserCtrl, JWTMiddleware: configJwt.Init()}
+	mysqlUserCourseRepository := _driversFectory.NewMysqlUserCourseRepository(conn)
+	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository)
+	userCourseController := _usersCourseController.NewUsesrCoursesController(userCourseUsecase)
+
+	routesInit := routes.ControllerList{
+		UserController:       *userCtrl,
+		CourseController:     *couserCtrl,
+		JWTMiddleware:        configJwt.Init(),
+		UserCourseController: *userCourseController,
+	}
 
 	routesInit.RouteRegister(e)
 

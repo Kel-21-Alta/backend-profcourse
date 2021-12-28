@@ -6,8 +6,10 @@ import (
 	_localsRepository "profcourse/business/locals"
 	"profcourse/business/smtp_email"
 	_userUsecase "profcourse/business/users"
+	_usersCoursesUsecase "profcourse/business/users_courses"
 	"profcourse/drivers/databases/courses"
 	"profcourse/drivers/databases/users"
+	"profcourse/drivers/databases/users_courses"
 	"profcourse/drivers/locals"
 	"profcourse/drivers/thirdparties/smtp"
 )
@@ -26,4 +28,8 @@ func NewLocalRepository() _localsRepository.Repository {
 
 func NewMysqlCourseRepository(conn *gorm.DB) _coursesUsecase.Repository {
 	return courses.NewMysqlRepository(conn)
+}
+
+func NewMysqlUserCourseRepository(conn *gorm.DB) _usersCoursesUsecase.Repository {
+	return users_courses.NewMysqlRepository(conn)
 }

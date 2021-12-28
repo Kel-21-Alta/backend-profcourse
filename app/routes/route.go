@@ -5,15 +5,20 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"profcourse/controllers/courses"
 	"profcourse/controllers/users"
+	"profcourse/controllers/users_courses"
 )
 
 type ControllerList struct {
 	JWTMiddleware    middleware.JWTConfig
 	UserController   users.UserController
 	CourseController courses.CourseController
+	UserCourseController users_courses.UsersCoursesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
+	configCors := middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+	}
 
 	ev1 := e.Group("api/v1/")
 	ev1.POST("login", cl.UserController.Login)
@@ -21,12 +26,15 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	withJWT := ev1.Group("")
 	withJWT.Use(middleware.JWTWithConfig(cl.JWTMiddleware))
+	withJWT.Use(middleware.CORSWithConfig(configCors))
 	withJWT.POST("users", cl.UserController.CreateUser)
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
 	withJWT.POST("courses", cl.CourseController.CreateCourse)
-
 	withJWT.GET("courses/:courseid", cl.CourseController.GetOneCourse)
 	withJWT.GET("courses", cl.CourseController.GetAllCourses)
+
+	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
+
 }
