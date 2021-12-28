@@ -70,3 +70,11 @@ func (c Courses) ToDomain() *courses.Domain {
 		UpdatedAt:   c.UpdatedAt,
 	}
 }
+
+func ToListDomain(listCourses []Courses) *[]courses.Domain {
+	var listCourseDomain []courses.Domain
+	for _, course := range listCourses {
+		listCourseDomain = append(listCourseDomain, *course.ToDomain())
+	}
+	return &listCourseDomain
+}

@@ -8,6 +8,8 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/courses/requests"
 	"profcourse/controllers/courses/responses/createCourse"
+	"profcourse/controllers/courses/responses/getAllCourses"
+	"strconv"
 )
 
 type CourseController struct {
@@ -40,4 +42,25 @@ func (cc CourseController) CreateCourse(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusCreated, createCourse.FromDomain(clean))
+}
+
+func (cc CourseController) GetAllCourses(c echo.Context) error {
+	ctx := c.Request().Context()
+	var domain courses.Domain
+	var err error
+
+	domain.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
+	domain.Offset, _ = strconv.Atoi(c.QueryParam("offset"))
+	domain.Sort = c.QueryParam("sort")
+	domain.SortBy = c.QueryParam("sortby")
+	domain.KeywordSearch = c.QueryParam("s")
+
+	// Usecase
+	clean, err := cc.CourseUsecase.GetAllCourses(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllCourses.FromListDomain(clean))
 }

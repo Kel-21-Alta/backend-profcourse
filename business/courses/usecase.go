@@ -4,6 +4,7 @@ import (
 	"context"
 	"profcourse/business/locals"
 	controller "profcourse/controllers"
+	"profcourse/helpers"
 	"time"
 )
 
@@ -11,6 +12,40 @@ type coursesUsecase struct {
 	CourseMysqlRepository Repository
 	ContextTimeOut        time.Duration
 	LocalRepository       locals.Repository
+}
+
+func (c coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error) {
+
+	if domain.SortBy == "" {
+		domain.SortBy = "asc"
+	}
+
+	if domain.SortBy == "dsc" {
+		domain.SortBy = "desc"
+	}
+
+	if domain.Sort == "" {
+		domain.Sort = "created_at"
+	}
+
+	// menvalidasi sort by yang diizinkan
+	sortByAllow := []string{"asc", "desc"}
+	if !helpers.CheckItemInSlice(sortByAllow, domain.SortBy) {
+		return &[]Domain{}, controller.INVALID_PARAMS
+	}
+
+	// Menvalidasi sort yang diizinkan
+	sortAllow := []string{"created_at", "title"} // TODO: disini kurang sort review dan sort popular
+	if !helpers.CheckItemInSlice(sortAllow, domain.Sort) {
+		return &[]Domain{}, controller.INVALID_PARAMS
+	}
+
+	listCourseDomain, err := c.CourseMysqlRepository.GetAllCourses(ctx, domain)
+	if err != nil {
+		return &[]Domain{}, err
+	}
+
+	return listCourseDomain, nil
 }
 
 func (c coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Domain, error) {

@@ -19,14 +19,23 @@ type Domain struct {
 
 	CertificateId string
 
+	// Params
+	Limit         int
+	SortBy        string
+	Sort          string
+	KeywordSearch string
+	Offset        int
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 type Usecase interface {
 	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
+	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
 }
 
 type Repository interface {
 	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
+	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
 }
