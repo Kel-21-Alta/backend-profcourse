@@ -5,12 +5,14 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"profcourse/controllers/courses"
 	"profcourse/controllers/users"
+	"profcourse/controllers/users_courses"
 )
 
 type ControllerList struct {
 	JWTMiddleware    middleware.JWTConfig
 	UserController   users.UserController
 	CourseController courses.CourseController
+	UserCourseController users_courses.UsersCoursesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -30,7 +32,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
 	withJWT.POST("courses", cl.CourseController.CreateCourse)
-
 	withJWT.GET("courses/:courseid", cl.CourseController.GetOneCourse)
 	withJWT.GET("courses", cl.CourseController.GetAllCourses)
+
+	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
+
 }
