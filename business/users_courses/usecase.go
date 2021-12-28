@@ -10,6 +10,7 @@ type UsersCoursesUsecase struct {
 }
 
 func (u UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Domain) (*Domain, error) {
+	// Validasi request empty
 	if domain.UserId == "" {
 		return &Domain{}, controller.EMPTY_USER
 	}
@@ -20,12 +21,12 @@ func (u UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Dom
 	// Untuk melakukan cek apakah user udah mendaftar apa belum
 	existedUserCourse, err := u.UsersCoursesRepository.GetEndRollCourseUserById(ctx, domain)
 
-	if existedUserCourse != (&Domain{}) {
-		return &Domain{}, controller.ALREADY_REGISTERED_COURSE
-	}
-
 	if err != nil {
 		return &Domain{}, err
+	}
+
+	if *existedUserCourse != (Domain{}) {
+		return &Domain{}, controller.ALREADY_REGISTERED_COURSE
 	}
 
 	userCourseDomain, err := u.UsersCoursesRepository.UserRegisterCourse(ctx, domain)
