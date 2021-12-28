@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+type InfoCurrentUser struct {
+	CurrentUser string
+	IsRegister  bool
+	Progress    int
+}
+
 type Domain struct {
 	ID          string
 	Title       string
@@ -18,6 +24,9 @@ type Domain struct {
 	FileImage   *multipart.FileHeader
 
 	CertificateId string
+
+	// Info User yang saat ini login
+	InfoUser InfoCurrentUser
 
 	// Params
 	Limit         int
@@ -34,7 +43,6 @@ type Usecase interface {
 	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
-
 }
 
 type Repository interface {

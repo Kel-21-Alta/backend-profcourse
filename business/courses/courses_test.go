@@ -143,8 +143,8 @@ func TestCoursesUsecase_GetAllCourses(t *testing.T) {
 		setupGetAllCourses()
 		courseMysqlRepository.On("GetAllCourses", mock.Anything, mock.Anything).Return(&listCourse, nil).Once()
 		coursesList, err := courseService.GetAllCourses(context.Background(), &courses.Domain{
-			Limit: 2,
-			SortBy:  "dsc",
+			Limit:  2,
+			SortBy: "dsc",
 		})
 		assert.Nil(t, err)
 		assert.Len(t, *coursesList, 2)
@@ -159,4 +159,40 @@ func TestCoursesUsecase_GetAllCourses(t *testing.T) {
 		assert.NotNil(t, err)
 	})
 
+}
+
+func setupGetOneCourses() {
+	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1, &localyRepository)
+	courseDomain = courses.Domain{
+		ID:            uuid.NewV4().String(),
+		Title:         "Docker Pemula",
+		Description:   "Docker untuk pemula",
+		ImgUrl:        "./public/img/courses/iahguid.png",
+		TeacherId:     uuid.NewV4().String(),
+		TeacherName:   "",
+		Status:        2,
+		StatusText:    "",
+		FileImage:     nil,
+		CertificateId: "",
+		CreatedAt:     time.Time{},
+		UpdatedAt:     time.Time{},
+	}
+	listCourse = []courses.Domain{
+		courseDomain, courseDomain,
+	}
+}
+
+func TestCoursesUsecase_GetOneCourse(t *testing.T) {
+	t.Run("Test 1 | Success get one course", func(t *testing.T) {
+		setupGetOneCourses()
+		courseMysqlRepository.On("GetOneCourse", mock.Anything, mock.Anything).Return(&courseDomain, nil).Once()
+		_, err := courseService.GetOneCourse(context.Background(), &courses.Domain{ID: "ece59f46-71df-42d2-8885-619061e2def8"})
+		assert.Nil(t, err)
+	})
+	t.Run("Test 2 | Handle Error db get one course", func(t *testing.T) {
+		setupGetOneCourses()
+		courseMysqlRepository.On("GetOneCourse", mock.Anything, mock.Anything).Return(&courses.Domain{}, errors.New("Error db")).Once()
+		_, err := courseService.GetOneCourse(context.Background(), &courses.Domain{ID: "ece59f46-71df-42d2-8885-619061e2def8"})
+		assert.NotNil(t, err)
+	})
 }
