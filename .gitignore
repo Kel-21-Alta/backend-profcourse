@@ -2,4 +2,4 @@
 .env
 ex.config.json
 .idea
-config.json
+./config.json
