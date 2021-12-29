@@ -19,6 +19,9 @@ func (m modulUsecase) CreateModul(ctx context.Context, domain *Domain) (*Domain,
 	if domain.CourseId == "" {
 		return &Domain{}, controller.EMPTY_COURSE
 	}
+
+	// TODO: cek apakah user adalah si pembuat course
+
 	modul, err := m.ModulRepository.CreateModul(ctx, domain)
 
 	if err != nil {
@@ -28,6 +31,6 @@ func (m modulUsecase) CreateModul(ctx context.Context, domain *Domain) (*Domain,
 	return modul, nil
 }
 
-func NewModulRepository(repository Repository) Usecase {
+func NewModulUsecase(repository Repository) Usecase {
 	return &modulUsecase{ModulRepository: repository}
 }
