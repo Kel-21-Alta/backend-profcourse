@@ -40,5 +40,5 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
 
-	withJWT.POST("/modul", cl.ModulController.CreateModul)
+	withJWT.POST("modul", cl.ModulController.CreateModul)
 }
