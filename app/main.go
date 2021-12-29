@@ -9,13 +9,16 @@ import (
 	"profcourse/app/middlewares"
 	"profcourse/app/routes"
 	_coursesUsecase "profcourse/business/courses"
+	_modulsUsecase "profcourse/business/moduls"
 	_userUsecase "profcourse/business/users"
 	_usersCourseUsercase "profcourse/business/users_courses"
 	"profcourse/controllers/courses"
+	_modulController "profcourse/controllers/moduls"
 	_userController "profcourse/controllers/users"
 	_usersCourseController "profcourse/controllers/users_courses"
 	_driversFectory "profcourse/drivers"
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
+	_modulsMysqlRepo "profcourse/drivers/databases/moduls"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_usersCourseMysqlRepo "profcourse/drivers/databases/users_courses"
 	_dbDriver "profcourse/drivers/mysql"
@@ -36,7 +39,12 @@ func init() {
 
 func DbMigration(db *gorm.DB) {
 	var err error
-	err = db.AutoMigrate(&_userMysqlRepo.User{}, &_coursesMysqlRepo.Courses{}, &_usersCourseMysqlRepo.UsersCourses{})
+	err = db.AutoMigrate(
+		&_userMysqlRepo.User{},
+		&_coursesMysqlRepo.Courses{},
+		&_usersCourseMysqlRepo.UsersCourses{},
+		&_modulsMysqlRepo.Moduls{})
+
 	if err != nil {
 		panic(err)
 	} else {
@@ -76,6 +84,10 @@ func main() {
 	smtpRepository := _driversFectory.NewSmtpRepository(congfigSmtp)
 	localRepository := _driversFectory.NewLocalRepository()
 
+	mysqlModulRepository := _driversFectory.NewMysqlModulRepository(conn)
+	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository)
+	modulCtrl := _modulController.NewModulsController(modulUsecase)
+
 	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
 	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository, configJwt)
 	userCtrl := _userController.NewUserController(userUsecase)
@@ -93,6 +105,7 @@ func main() {
 		CourseController:     *couserCtrl,
 		JWTMiddleware:        configJwt.Init(),
 		UserCourseController: *userCourseController,
+		ModulController:      *modulCtrl,
 	}
 
 	routesInit.RouteRegister(e)

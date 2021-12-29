@@ -4,15 +4,17 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"profcourse/controllers/courses"
+	"profcourse/controllers/moduls"
 	"profcourse/controllers/users"
 	"profcourse/controllers/users_courses"
 )
 
 type ControllerList struct {
-	JWTMiddleware    middleware.JWTConfig
-	UserController   users.UserController
-	CourseController courses.CourseController
+	JWTMiddleware        middleware.JWTConfig
+	UserController       users.UserController
+	CourseController     courses.CourseController
 	UserCourseController users_courses.UsersCoursesController
+	ModulController      moduls.ModulController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -21,6 +23,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	}
 
 	ev1 := e.Group("api/v1/")
+	ev1.Use(middleware.CORSWithConfig(configCors))
 	ev1.POST("login", cl.UserController.Login)
 	ev1.PUT("forget-password", cl.UserController.ForgetPassword)
 
@@ -37,4 +40,5 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
 
+	withJWT.POST("modul", cl.ModulController.CreateModul)
 }

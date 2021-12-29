@@ -1,4 +1,14 @@
 mode: set
+profcourse/business/moduls/usecase.go:12.89,13.24 1 0
+profcourse/business/moduls/usecase.go:16.2,16.23 1 0
+profcourse/business/moduls/usecase.go:19.2,19.27 1 0
+profcourse/business/moduls/usecase.go:25.2,27.16 2 0
+profcourse/business/moduls/usecase.go:31.2,31.19 1 0
+profcourse/business/moduls/usecase.go:13.24,15.3 1 0
+profcourse/business/moduls/usecase.go:16.23,18.3 1 0
+profcourse/business/moduls/usecase.go:19.27,21.3 1 0
+profcourse/business/moduls/usecase.go:27.16,29.3 1 0
+profcourse/business/moduls/usecase.go:34.53,36.2 1 0
 profcourse/business/courses/usecase.go:17.92,20.16 2 1
 profcourse/business/courses/usecase.go:23.2,24.20 2 1
 profcourse/business/courses/usecase.go:20.16,22.3 1 1
