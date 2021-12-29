@@ -23,6 +23,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	}
 
 	ev1 := e.Group("api/v1/")
+	ev1.Use(middleware.CORSWithConfig(configCors))
 	ev1.POST("login", cl.UserController.Login)
 	ev1.PUT("forget-password", cl.UserController.ForgetPassword)
 
