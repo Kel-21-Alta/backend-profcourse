@@ -19,7 +19,7 @@ type ControllerList struct {
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	configCors := middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
+		AllowOrigins: []string{"http://localhost:3000"},
 	}
 
 	ev1 := e.Group("api/v1/")
