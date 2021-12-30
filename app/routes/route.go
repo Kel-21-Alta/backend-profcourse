@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"net/http"
 	"profcourse/controllers/courses"
 	"profcourse/controllers/moduls"
 	"profcourse/controllers/users"
@@ -19,7 +20,8 @@ type ControllerList struct {
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	configCors := middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 	}
 
 	ev1 := e.Group("api/v1/")

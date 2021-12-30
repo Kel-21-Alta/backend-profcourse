@@ -3,3 +3,5 @@
 ex.config.json
 .idea
 config.json
+config-prod.json
+./cli/
