@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"log"
@@ -78,6 +79,7 @@ func main() {
 	DbMigration(conn)
 
 	e := echo.New()
+	e.Use(middleware.CORS())
 
 	timeout := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
