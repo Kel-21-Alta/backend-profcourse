@@ -40,6 +40,7 @@ func (u userUsecase) LoginAdmin(ctx context.Context, domain Domain) (Domain, err
 		return Domain{}, controller.WRONG_EMAIL
 	}
 
+	// cek apakah user yang login adalah admin
 	if existedUser.Role != 1 {
 		return Domain{}, controller.FORBIDDIN_USER
 	}

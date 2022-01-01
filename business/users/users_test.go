@@ -21,6 +21,7 @@ var configJwt middlewares.ConfigJwt
 
 var userService users.Usecase
 var userDomain users.Domain
+var adminDomain users.Domain
 
 func setUpCreateUser() {
 	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
@@ -177,6 +178,112 @@ func TestUserUsecase_Login(t *testing.T) {
 		})
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.WRONG_EMAIL, err)
+	})
+}
+
+func setUpAdminLogin() {
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	adminDomain = users.Domain{
+		ID:           uuid.NewV4().String(),
+		Name:         "test",
+		Email:        "test1@gmail.com",
+		Password:     "kQPPSkyR",
+		HashPassword: "$2a$04$nHHmj1KfuzixIZ8nf9PFH.szVVWeCDsBG6bYYqbMGKhdAzGwzh35K",
+		NoHp:         "01293143",
+		Birth:        time.Now(),
+		BirthPlace:   "Medan",
+		Bio:          "agheuirhe",
+		ImgProfile:   "fasdfihruie",
+		Role:         1,
+		CreatedAt:    time.Time{},
+		UpdatedAt:    time.Time{},
+	}
+	userDomain = users.Domain{
+		ID:           uuid.NewV4().String(),
+		Name:         "test",
+		Email:        "test1@gmail.com",
+		Password:     "kQPPSkyR",
+		HashPassword: "$2a$04$nHHmj1KfuzixIZ8nf9PFH.szVVWeCDsBG6bYYqbMGKhdAzGwzh35K",
+		NoHp:         "01293143",
+		Birth:        time.Now(),
+		BirthPlace:   "Medan",
+		Bio:          "agheuirhe",
+		ImgProfile:   "fasdfihruie",
+		Role:         2,
+		CreatedAt:    time.Time{},
+		UpdatedAt:    time.Time{},
+	}
+}
+func TestUserUsecase_LoginAdmin(t *testing.T) {
+	t.Run("Test Case 1 | cek email empty", func(t *testing.T) {
+		setUpAdminLogin()
+
+		_, err := userService.LoginAdmin(context.Background(), users.Domain{Email: "", Password: ""})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_EMAIL, err)
+	})
+	t.Run("Test Case 2 | cek password empty", func(t *testing.T) {
+		setUpAdminLogin()
+		_, err := userService.LoginAdmin(context.Background(), users.Domain{
+			Email:    "test1@gmail.com",
+			Password: "",
+		})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.PASSWORD_EMPTY, err)
+	})
+	t.Run("Test Case 3 | Cek Email Invalid", func(t *testing.T) {
+		setUpAdminLogin()
+		_, err := userService.LoginAdmin(context.Background(), users.Domain{
+			Email:    "ahfkdhfjdkf",
+			Password: "dsaddasd",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.INVALID_EMAIL, err)
+	})
+	t.Run("Test Case 4 | Cek Password Salah", func(t *testing.T) {
+		setUpAdminLogin()
+		userMysqlRepository.On("GetUserByEmail", mock.Anything, mock.Anything).Return(adminDomain, nil).Once()
+
+		_, err := userService.LoginAdmin(context.Background(), users.Domain{
+			Email:    "test1@gmail.com",
+			Password: "dafsdfiejq",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.WRONG_PASSWORD, err)
+	})
+	t.Run("Test Case 5 | Cek Success Login", func(t *testing.T) {
+		setUpAdminLogin()
+		userMysqlRepository.On("GetUserByEmail", mock.Anything, mock.Anything).Return(adminDomain, nil).Once()
+
+		user, err := userService.LoginAdmin(context.Background(), users.Domain{
+			Email:    "test1@gmail.com",
+			Password: "kQPPSkyR",
+		})
+		assert.Nil(t, err)
+		assert.Equal(t, "test1@gmail.com", user.Email)
+	})
+	t.Run("Test Case 5 | Cek Email Salah", func(t *testing.T) {
+		setUpAdminLogin()
+		userMysqlRepository.On("GetUserByEmail", mock.Anything, mock.AnythingOfType("string")).Return(users.Domain{}, errors.New("bla bla")).Once()
+		_, err := userService.LoginAdmin(context.Background(), users.Domain{
+			Email:    "dsadas@gmail.com",
+			Password: "kQPPSkyR",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.WRONG_EMAIL, err)
+	})
+	t.Run("Test case 6 | handle error role no admin", func(t *testing.T) {
+		setUpAdminLogin()
+		userMysqlRepository.On("GetUserByEmail", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
+
+		_, err := userService.LoginAdmin(context.Background(), users.Domain{
+			Email:    "test1@gmail.com",
+			Password: "kQPPSkyR",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.FORBIDDIN_USER, err)
 	})
 }
 
