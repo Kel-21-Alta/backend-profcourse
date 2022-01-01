@@ -3,7 +3,7 @@ package users
 import (
 	"context"
 	"profcourse/app/middlewares"
-	"profcourse/business/smtp_email"
+	"profcourse/business/send_email"
 	controller "profcourse/controllers"
 	"profcourse/helpers/encrypt"
 	"profcourse/helpers/randomString"
@@ -14,8 +14,52 @@ import (
 type userUsecase struct {
 	ContextTimeout time.Duration
 	UserRepository Repository
-	SmtpRepository smtp_email.Repository
+	SmtpRepository send_email.Repository
 	JWTConfig      middlewares.ConfigJwt
+}
+
+func (u userUsecase) LoginAdmin(ctx context.Context, domain Domain) (Domain, error) {
+	var err error
+	var existedUser Domain
+
+	if domain.Email == "" {
+		return Domain{}, controller.EMPTY_EMAIL
+	}
+	if domain.Password == "" {
+		return Domain{}, controller.PASSWORD_EMPTY
+	}
+
+	if !validators.CheckEmail(domain.Email) {
+		return Domain{}, controller.INVALID_EMAIL
+	}
+
+	existedUser, err = u.UserRepository.GetUserByEmail(ctx, domain.Email)
+
+	// Mengecek email apakah benar ada usernya
+	if existedUser == (Domain{}) {
+		return Domain{}, controller.WRONG_EMAIL
+	}
+
+	if existedUser.Role != 1 {
+		return Domain{}, controller.FORBIDDIN_USER
+	}
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	// Mengecek apakan passwordnya benar
+	if !encrypt.ValidateHash(domain.Password, existedUser.HashPassword) {
+		return Domain{}, controller.WRONG_PASSWORD
+	}
+
+	existedUser.Token, err = u.JWTConfig.GenrateTokenJWT(existedUser.ID, existedUser.Role, existedUser.RoleText)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return existedUser, nil
 }
 
 func (u userUsecase) ChangePassword(ctx context.Context, domain Domain) (Domain, error) {
@@ -204,7 +248,7 @@ func (u userUsecase) CreateUser(ctx context.Context, domain Domain) (Domain, err
 	return resultDomain, nil
 }
 
-func NewUserUsecase(r Repository, timeout time.Duration, smtpRepo smtp_email.Repository, configJwt middlewares.ConfigJwt) Usecase {
+func NewUserUsecase(r Repository, timeout time.Duration, smtpRepo send_email.Repository, configJwt middlewares.ConfigJwt) Usecase {
 	return &userUsecase{
 		ContextTimeout: timeout,
 		UserRepository: r,

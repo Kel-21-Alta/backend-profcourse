@@ -2,7 +2,7 @@ package courses
 
 import (
 	"context"
-	"profcourse/business/locals"
+	"profcourse/business/uploads"
 	controller "profcourse/controllers"
 	"profcourse/helpers"
 	"time"
@@ -11,7 +11,7 @@ import (
 type coursesUsecase struct {
 	CourseMysqlRepository Repository
 	ContextTimeOut        time.Duration
-	LocalRepository       locals.Repository
+	LocalRepository       uploads.Repository
 }
 
 func (c coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error) {
@@ -86,7 +86,7 @@ func (c coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Doma
 	return course, nil
 }
 
-func NewCourseUseCase(r Repository, timeout time.Duration, local locals.Repository) Usecase {
+func NewCourseUseCase(r Repository, timeout time.Duration, local uploads.Repository) Usecase {
 	return &coursesUsecase{
 		CourseMysqlRepository: r,
 		ContextTimeOut:        timeout,

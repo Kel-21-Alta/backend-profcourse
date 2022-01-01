@@ -9,8 +9,8 @@ import (
 	"mime/multipart"
 	"profcourse/business/courses"
 	_mocksCourseRepository "profcourse/business/courses/mocks"
-	"profcourse/business/locals"
-	_mocksLocalRepository "profcourse/business/locals/mocks"
+	"profcourse/business/uploads"
+	_mocksLocalRepository "profcourse/business/uploads/mocks"
 	controller "profcourse/controllers"
 	"testing"
 	"time"
@@ -21,7 +21,7 @@ var localyRepository _mocksLocalRepository.Repository
 
 var courseService courses.Usecase
 var courseDomain courses.Domain
-var localDomain locals.Domain
+var localDomain uploads.Domain
 var listCourse []courses.Domain
 
 func setupCreateCouse() {
@@ -40,7 +40,7 @@ func setupCreateCouse() {
 		CreatedAt:     time.Time{},
 		UpdatedAt:     time.Time{},
 	}
-	localDomain = locals.Domain{
+	localDomain = uploads.Domain{
 		File:        &multipart.FileHeader{},
 		Destination: "/img/courses",
 		ResultUrl:   "./public/img/courses/adfjakg.jpg",
@@ -84,7 +84,7 @@ func TestCoursesUsecase_CreateCourse(t *testing.T) {
 
 	t.Run("Test case 4 | handle Error Local Upload", func(t *testing.T) {
 		setupCreateCouse()
-		localyRepository.On("UploadImage", mock.Anything, mock.Anything, mock.AnythingOfType("string")).Return(locals.Domain{}, errors.New("Local error")).Once()
+		localyRepository.On("UploadImage", mock.Anything, mock.Anything, mock.AnythingOfType("string")).Return(uploads.Domain{}, errors.New("Local error")).Once()
 		_, err := courseService.CreateCourse(context.Background(), &courses.Domain{Title: "Docker Pemula",
 			Description: "Docker untuk pemula", TeacherId: uuid.NewV4().String(), FileImage: &multipart.FileHeader{}})
 		assert.NotNil(t, err)

@@ -1,4 +1,4 @@
-package locals
+package uploads
 
 import (
 	"context"

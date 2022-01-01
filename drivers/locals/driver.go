@@ -5,7 +5,7 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
-	"profcourse/business/locals"
+	"profcourse/business/uploads"
 	controller "profcourse/controllers"
 	"profcourse/helpers"
 	"profcourse/helpers/randomString"
@@ -15,14 +15,14 @@ import (
 type Locals struct {
 }
 
-func (l Locals) UploadImage(ctx context.Context, header *multipart.FileHeader, destination string) (locals.Domain, error) {
-	domain := locals.Domain{}
+func (l Locals) UploadImage(ctx context.Context, header *multipart.FileHeader, destination string) (uploads.Domain, error) {
+	domain := uploads.Domain{}
 	domain.File = header
 
 	src, err := domain.File.Open()
 
 	if err != nil {
-		return locals.Domain{}, err
+		return uploads.Domain{}, err
 	}
 	defer src.Close()
 
@@ -33,18 +33,18 @@ func (l Locals) UploadImage(ctx context.Context, header *multipart.FileHeader, d
 	extention := splitFileName[len(splitFileName)-1]
 	validExtensionImage := []string{"jpg", "jpeg", "png"}
 	if !helpers.CheckItemInSlice(validExtensionImage, extention) {
-		return locals.Domain{}, controller.INVALID_FILE
+		return uploads.Domain{}, controller.INVALID_FILE
 	}
 	newFileName := randomString.RandomString(10) + "." + extention
 
 	dstFile, err := os.Create("./public" + destination + domain.Destination + newFileName)
 	if err != nil {
-		return locals.Domain{}, err
+		return uploads.Domain{}, err
 	}
 	defer dstFile.Close()
 
 	if _, err := io.Copy(dstFile, src); err != nil {
-		return locals.Domain{}, err
+		return uploads.Domain{}, err
 	}
 
 	domain.ResultUrl = dstFile.Name()
@@ -53,6 +53,6 @@ func (l Locals) UploadImage(ctx context.Context, header *multipart.FileHeader, d
 	return domain, nil
 }
 
-func NewLocalRepository() locals.Repository {
+func NewLocalRepository() uploads.Repository {
 	return &Locals{}
 }

@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	locals "profcourse/business/locals"
+	locals "profcourse/business/uploads"
 
 	mock "github.com/stretchr/testify/mock"
 
