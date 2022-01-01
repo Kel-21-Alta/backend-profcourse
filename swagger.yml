@@ -68,8 +68,8 @@ paths:
     post:
       tags:
         - Auth - User
-      summary: Login user
-      operationId: loginUser
+      summary: Login admin
+      operationId: loginAdmin
       requestBody:
         content:
           application/json:
