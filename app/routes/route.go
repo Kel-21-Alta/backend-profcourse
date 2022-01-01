@@ -21,6 +21,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	ev1 := e.Group("api/v1/")
 	ev1.POST("login", cl.UserController.Login)
+	ev1.POST("admin/login", cl.UserController.LoginAdmin)
 	ev1.PUT("forget-password", cl.UserController.ForgetPassword)
 
 	withJWT := ev1.Group("")

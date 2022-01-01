@@ -3,9 +3,9 @@ package drivers
 import (
 	"gorm.io/gorm"
 	_coursesUsecase "profcourse/business/courses"
-	_localsRepository "profcourse/business/locals"
 	_modulsUsecase "profcourse/business/moduls"
-	"profcourse/business/smtp_email"
+	"profcourse/business/send_email"
+	_localsRepository "profcourse/business/uploads"
 	_userUsecase "profcourse/business/users"
 	_usersCoursesUsecase "profcourse/business/users_courses"
 	"profcourse/drivers/databases/courses"
@@ -20,7 +20,7 @@ func NewMysqlUserRepository(conn *gorm.DB) _userUsecase.Repository {
 	return users.NewMysqlRepository(conn)
 }
 
-func NewSmtpRepository(config smtp.SmtpEmail) smtp_email.Repository {
+func NewSmtpRepository(config smtp.SmtpEmail) send_email.Repository {
 	return smtp.NewSmtpEmail(config)
 }
 

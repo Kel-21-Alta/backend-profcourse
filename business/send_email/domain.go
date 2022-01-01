@@ -1,4 +1,4 @@
-package smtp_email
+package send_email
 
 import (
 	"context"

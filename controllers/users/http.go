@@ -61,6 +61,21 @@ func (ctrl *UserController) Login(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusOK, login.FromDomain(clean))
 }
 
+func (ctrl *UserController) LoginAdmin(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := requests.LoginRequest{}
+
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	clean, err := ctrl.userUsecase.LoginAdmin(ctx, *req.ToDomain())
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, login.FromDomain(clean))
+}
+
 func (ctrl *UserController) ForgetPassword(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := requests.ForgetPasswordRequest{}
