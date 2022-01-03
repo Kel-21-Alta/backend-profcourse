@@ -23,7 +23,7 @@ import (
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_usersCourseMysqlRepo "profcourse/drivers/databases/users_courses"
 	_dbDriver "profcourse/drivers/mysql"
-	"profcourse/drivers/thirdparties/smtp"
+	"profcourse/drivers/thirdparties/mail"
 	"time"
 )
 
@@ -62,12 +62,12 @@ func main() {
 		DB_Database: viper.GetString("database.name"),
 	}
 
-	congfigSmtp := smtp.SmtpEmail{
-		ConfigSmtpHost:     viper.GetString("smtp.host"),
-		ConfigSmtpPort:     viper.GetInt("smtp.port"),
-		ConfigSenderName:   viper.GetString("smtp.name"),
-		ConfigAuthEmail:    viper.GetString("smtp.email"),
-		ConfigAuthPassword: viper.GetString("smtp.password"),
+	congfigSmtp := mail.Email{
+		Host:       viper.GetString("smtp.host"),
+		Port:       viper.GetInt("smtp.port"),
+		SenderName: viper.GetString("smtp.name"),
+		AuthEmail:  viper.GetString("smtp.email"),
+		Password:   viper.GetString("smtp.password"),
 	}
 
 	configJwt := middlewares.ConfigJwt{
