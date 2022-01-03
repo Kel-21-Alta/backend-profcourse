@@ -144,7 +144,14 @@ func (u userUsecase) ForgetPassword(ctx context.Context, domain Domain) (Domain,
 	// Mengirim password dengan email
 	to := resultUser.Email
 	subject := "Lupa Password Akun Profcouse"
-	message := "<p>Dear " + resultUser.Name + "</p><br><p>Password anda telah kami reset ulang dan password anda sekarang adalah :" + domain.Password + " "
+	message := "" +
+		"<img src=\"https://firebasestorage.googleapis.com/v0/b/crudfirebase-91413.appspot.com/o/logo.png?alt=media&token=4fa0b90f-6b13-41f3-96a3-53e277ff4d5c\" alt=\"Logo Prof Course\" width=\"75\">" +
+		"<p>Dear " + resultUser.Name + "</p><br><p>Password anda telah kami reset ulang dan password anda sekarang adalah : " + domain.Password + " "+"" +
+		"<p>Anda harus menjaga informasi anda</p>" +
+		"<br>" +
+		"<p>Terima kasin</p>" +
+		"<br>" +
+		"Prof Course"
 
 	err = u.SmtpRepository.SendEmail(ctx, to, subject, message)
 	if err != nil {
