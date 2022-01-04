@@ -2,7 +2,6 @@ package courses
 
 import (
 	"context"
-	"mime/multipart"
 	"time"
 )
 
@@ -21,7 +20,6 @@ type Domain struct {
 	TeacherName string
 	Status      int8
 	StatusText  string
-	FileImage   *multipart.FileHeader
 
 	CertificateId string
 

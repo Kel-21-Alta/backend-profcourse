@@ -6,26 +6,21 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"mime/multipart"
 	"profcourse/business/courses"
 	_mocksCourseRepository "profcourse/business/courses/mocks"
-	"profcourse/business/uploads"
-	_mocksLocalRepository "profcourse/business/uploads/mocks"
 	controller "profcourse/controllers"
 	"testing"
 	"time"
 )
 
 var courseMysqlRepository _mocksCourseRepository.Repository
-var localyRepository _mocksLocalRepository.Repository
 
 var courseService courses.Usecase
 var courseDomain courses.Domain
-var localDomain uploads.Domain
 var listCourse []courses.Domain
 
 func setupCreateCouse() {
-	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1, &localyRepository)
+	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1)
 	courseDomain = courses.Domain{
 		ID:            uuid.NewV4().String(),
 		Title:         "Docker Pemula",
@@ -35,16 +30,9 @@ func setupCreateCouse() {
 		TeacherName:   "",
 		Status:        2,
 		StatusText:    "",
-		FileImage:     nil,
 		CertificateId: "",
 		CreatedAt:     time.Time{},
 		UpdatedAt:     time.Time{},
-	}
-	localDomain = uploads.Domain{
-		File:        &multipart.FileHeader{},
-		Destination: "/img/courses",
-		ResultUrl:   "./public/img/courses/adfjakg.jpg",
-		FileName:    "adfjakg.jpg",
 	}
 }
 
@@ -74,35 +62,27 @@ func TestCoursesUsecase_CreateCourse(t *testing.T) {
 
 	t.Run("Test case 3 | Success", func(t *testing.T) {
 		setupCreateCouse()
-		localyRepository.On("UploadImage", mock.Anything, mock.Anything, mock.AnythingOfType("string")).Return(localDomain, nil).Once()
+
 		courseMysqlRepository.On("CreateCourse", mock.Anything, mock.Anything).Return(&courseDomain, nil).Once()
 		course, err := courseService.CreateCourse(context.Background(), &courses.Domain{Title: "Docker Pemula",
-			Description: "Docker untuk pemula", TeacherId: uuid.NewV4().String(), FileImage: &multipart.FileHeader{}})
+			Description: "Docker untuk pemula", TeacherId: uuid.NewV4().String(), ImgUrl: "dafdsfj"})
 		assert.Nil(t, err)
 		assert.Equal(t, courseDomain.Title, course.Title)
 	})
 
-	t.Run("Test case 4 | handle Error Local Upload", func(t *testing.T) {
-		setupCreateCouse()
-		localyRepository.On("UploadImage", mock.Anything, mock.Anything, mock.AnythingOfType("string")).Return(uploads.Domain{}, errors.New("Local error")).Once()
-		_, err := courseService.CreateCourse(context.Background(), &courses.Domain{Title: "Docker Pemula",
-			Description: "Docker untuk pemula", TeacherId: uuid.NewV4().String(), FileImage: &multipart.FileHeader{}})
-		assert.NotNil(t, err)
-	})
-
 	t.Run("Test case 5 | Handle Error DB", func(t *testing.T) {
 		setupCreateCouse()
-		localyRepository.On("UploadImage", mock.Anything, mock.Anything, mock.AnythingOfType("string")).Return(localDomain, nil).Once()
+
 		courseMysqlRepository.On("CreateCourse", mock.Anything, mock.Anything).Return(&courses.Domain{}, errors.New("Error DB")).Once()
 		_, err := courseService.CreateCourse(context.Background(), &courses.Domain{Title: "Docker Pemula",
-			Description: "Docker untuk pemula", TeacherId: uuid.NewV4().String(), FileImage: &multipart.FileHeader{}})
+			Description: "Docker untuk pemula", TeacherId: uuid.NewV4().String(), ImgUrl: "dasfsdfg"})
 		assert.NotNil(t, err)
 	})
 
 }
 
 func setupGetAllCourses() {
-	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1, &localyRepository)
+	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1)
 	courseDomain = courses.Domain{
 		ID:            uuid.NewV4().String(),
 		Title:         "Docker Pemula",
@@ -112,7 +92,6 @@ func setupGetAllCourses() {
 		TeacherName:   "",
 		Status:        2,
 		StatusText:    "",
-		FileImage:     nil,
 		CertificateId: "",
 		CreatedAt:     time.Time{},
 		UpdatedAt:     time.Time{},
@@ -162,7 +141,7 @@ func TestCoursesUsecase_GetAllCourses(t *testing.T) {
 }
 
 func setupGetOneCourses() {
-	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1, &localyRepository)
+	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1)
 	courseDomain = courses.Domain{
 		ID:            uuid.NewV4().String(),
 		Title:         "Docker Pemula",
@@ -172,7 +151,6 @@ func setupGetOneCourses() {
 		TeacherName:   "",
 		Status:        2,
 		StatusText:    "",
-		FileImage:     nil,
 		CertificateId: "",
 		CreatedAt:     time.Time{},
 		UpdatedAt:     time.Time{},
