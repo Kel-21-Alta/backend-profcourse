@@ -9,7 +9,7 @@ type modulUsecase struct {
 	ModulRepository Repository
 }
 
-func (m modulUsecase) CreateModul(ctx context.Context, domain *Domain) (*Domain, error) {
+func (m *modulUsecase) CreateModul(ctx context.Context, domain *Domain) (*Domain, error) {
 	if domain.Title == "" {
 		return &Domain{}, controller.TITLE_EMPTY
 	}

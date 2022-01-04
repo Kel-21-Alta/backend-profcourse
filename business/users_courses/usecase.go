@@ -9,7 +9,7 @@ type UsersCoursesUsecase struct {
 	UsersCoursesRepository Repository
 }
 
-func (u UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Domain) (*Domain, error) {
+func (u *UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Domain) (*Domain, error) {
 	// Validasi request empty
 	if domain.UserId == "" {
 		return &Domain{}, controller.EMPTY_USER

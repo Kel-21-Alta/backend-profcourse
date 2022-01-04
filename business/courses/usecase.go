@@ -14,7 +14,7 @@ type coursesUsecase struct {
 	LocalRepository       uploads.Repository
 }
 
-func (c coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error) {
+func (c *coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error) {
 
 	course, err := c.CourseMysqlRepository.GetOneCourse(ctx, domain)
 	if err != nil {
@@ -24,7 +24,7 @@ func (c coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Doma
 	return course, nil
 }
 
-func (c coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error) {
+func (c *coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error) {
 
 	if domain.SortBy == "" {
 		domain.SortBy = "asc"
@@ -58,7 +58,7 @@ func (c coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]D
 	return listCourseDomain, nil
 }
 
-func (c coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Domain, error) {
+func (c *coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Domain, error) {
 	// Validasi
 	if domain.Title == "" {
 		return &Domain{}, controller.TITLE_EMPTY
