@@ -493,3 +493,44 @@ func TestUserUsecase_ChangePassword(t *testing.T) {
 		assert.Equal(t, userDomain.Email, user.Email)
 	})
 }
+
+func setUpDelete() {
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userDomain = users.Domain{
+		ID:           "756f702e-69ae-45e2-8ab2-870c11f7ba51",
+		Name:         "test",
+		Email:        "test1@gmail.com",
+		Password:     "kQPPSkyR",
+		HashPassword: "$2a$04$nHHmj1KfuzixIZ8nf9PFH.szVVWeCDsBG6bYYqbMGKhdAzGwzh35K",
+		PasswordNew:  "test1",
+		Message:      "User dengan id: 68d3127a-9db2-4798-bffa-0a047f25c355 telah dihapus",
+	}
+}
+
+func TestUserUsecase_DeleteUser(t *testing.T) {
+	t.Run("Test case 1 | yang mengirim request adalah bukan admin", func(t *testing.T) {
+		setUpDelete()
+		_, err := userService.DeleteUser(context.Background(), users.Domain{IdUser: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Role: 2})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.FORBIDDIN_USER, err)
+	})
+	t.Run("Test case 2 | success delete", func(t *testing.T) {
+		setUpDelete()
+		userMysqlRepository.On("DeleteUser", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
+		user, err := userService.DeleteUser(context.Background(), users.Domain{IdUser: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Role: 1})
+		assert.Nil(t, err)
+		assert.Equal(t, userDomain.Message, user.Message)
+	})
+	t.Run("Test case 3 | Handle error user id kosong", func(t *testing.T) {
+		setUpDelete()
+		_, err := userService.DeleteUser(context.Background(), users.Domain{IdUser: "", Role: 1})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+	t.Run("Test case 4 | Handle error from db", func(t *testing.T) {
+		setUpDelete()
+		userMysqlRepository.On("DeleteUser", mock.Anything, mock.Anything).Return(users.Domain{}, errors.New("Error DB")).Once()
+		_, err := userService.DeleteUser(context.Background(), users.Domain{IdUser: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Role: 1})
+		assert.NotNil(t, err)
+	})
+}
