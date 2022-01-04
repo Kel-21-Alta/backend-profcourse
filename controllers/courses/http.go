@@ -48,7 +48,6 @@ func (cc CourseController) CreateCourse(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 
-	req.FileImage, err = c.FormFile("file_image")
 	req.UserId = token.Userid
 	if err != nil {
 		return controller.NewResponseError(c, err)

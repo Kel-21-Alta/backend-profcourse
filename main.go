@@ -85,7 +85,6 @@ func main() {
 	timeout := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	smtpRepository := _driversFectory.NewSmtpRepository(congfigSmtp)
-	localRepository := _driversFectory.NewLocalRepository()
 
 	mysqlModulRepository := _driversFectory.NewMysqlModulRepository(conn)
 	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository)
@@ -96,7 +95,7 @@ func main() {
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	mysqlCourseRepository := _driversFectory.NewMysqlCourseRepository(conn)
-	courseUsecase := _coursesUsecase.NewCourseUseCase(mysqlCourseRepository, timeout, localRepository)
+	courseUsecase := _coursesUsecase.NewCourseUseCase(mysqlCourseRepository, timeout)
 	couserCtrl := courses.NewCourseController(courseUsecase)
 
 	mysqlUserCourseRepository := _driversFectory.NewMysqlUserCourseRepository(conn)
