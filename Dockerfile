@@ -16,6 +16,10 @@ WORKDIR /root/
 COPY --from=builder /app/config.json .
 COPY --from=builder /app/main .
 
+RUN mkdir -p public/img/courses
+
+COPY --from=builder /app/public/img/courses public/img/courses
+
 EXPOSE 9090
 
 CMD ["./main"]
