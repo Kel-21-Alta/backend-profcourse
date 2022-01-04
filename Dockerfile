@@ -16,8 +16,6 @@ WORKDIR /root/
 COPY --from=builder /app/config.json .
 COPY --from=builder /app/main .
 
-RUN mkdir -p public/img/courses
-
 
 EXPOSE 9090
 
