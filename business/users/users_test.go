@@ -21,7 +21,33 @@ var configJwt middlewares.ConfigJwt
 
 var userService users.Usecase
 var userDomain users.Domain
+var userSummary users.Summary
 var adminDomain users.Domain
+
+func setUpGetCountUser() {
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userSummary = users.Summary{CountUser: 9}
+}
+
+func TestUserUsecase_GetCountUser(t *testing.T) {
+	t.Run("Test case 1 | success ", func(t *testing.T) {
+		setUpGetCountUser()
+
+		userMysqlRepository.On("GetCountUser", mock.Anything).Return(&userSummary, nil).Once()
+		summary, err := userService.GetCountUser(context.Background())
+
+		assert.Nil(t, err)
+		assert.Equal(t, 9, summary.CountUser)
+	})
+	t.Run("test case 2 | handle err db", func(t *testing.T) {
+		setUpGetCountUser()
+
+		userMysqlRepository.On("GetCountUser", mock.Anything).Return(&users.Summary{}, errors.New("haha")).Once()
+		_, err := userService.GetCountUser(context.Background())
+
+		assert.NotNil(t, err)
+	})
+}
 
 func setUpCreateUser() {
 	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)

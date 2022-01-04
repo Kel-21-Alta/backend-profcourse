@@ -12,6 +12,14 @@ type coursesUsecase struct {
 	ContextTimeOut        time.Duration
 }
 
+func (c *coursesUsecase) GetCountCourse(ctx context.Context) (*Summary, error) {
+	domain, err := c.CourseMysqlRepository.GetCountCourse(ctx)
+	if err != nil {
+		return &Summary{}, err
+	}
+	return domain, nil
+}
+
 func (c *coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error) {
 
 	course, err := c.CourseMysqlRepository.GetOneCourse(ctx, domain)

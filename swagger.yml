@@ -342,7 +342,7 @@ paths:
           required: true
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               required:
@@ -355,7 +355,6 @@ paths:
                   type: string
                 file_image: 
                   type: string
-                  format: binary
       responses:
         '204':
           description: berhasil melakukan perubahan
@@ -564,7 +563,7 @@ paths:
         - bearerAuth: []
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               required:
@@ -578,7 +577,6 @@ paths:
                   type: string
                 file_image: 
                   type: string
-                  format: binary
       responses:
         '201':
           description: berhasil menambah kursus baru
@@ -685,13 +683,12 @@ paths:
         - bearerAuth: []
       requestBody:
         content: 
-          multipart-form/data:
+          application/json:
             schema: 
               type: object
               properties:
                 file_image:
                   type: string
-                  format: binary
                 title: 
                   type: string
                 description: 
@@ -758,13 +755,12 @@ paths:
             format: uuid
       requestBody:
         content: 
-          multipart-form/data:
+          application/json:
             schema: 
               type: object
               properties:
                 file_image:
                   type: string
-                  format: binary
                 title: 
                   type: string
                 description: 
@@ -1021,7 +1017,7 @@ paths:
         - bearerAuth: []
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               $ref: "#/components/schemas/OneUser"
       responses:
@@ -1422,7 +1418,7 @@ paths:
         - bearerAuth: []
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               required: 
@@ -1442,7 +1438,6 @@ paths:
                   type: string
                 file_materi:
                   type: string
-                  format: binary
                 order: 
                   type: number
                   example: 1
@@ -1547,7 +1542,7 @@ paths:
             format: uuid
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               required: 
@@ -1566,7 +1561,6 @@ paths:
                   type: string
                 file_materi:
                   type: string
-                  format: binary
                 order: 
                   type: number
                   example: 1
@@ -2547,7 +2541,6 @@ components:
       properties:
         profile:
           type: string
-          format: binary
         name: 
           type: string
         noHp:

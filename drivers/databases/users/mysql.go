@@ -10,6 +10,15 @@ type mysqlUserRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlUserRepository) GetCountUser(ctx context.Context) (*users.Summary, error) {
+	var result int
+	err := m.Conn.Raw("SELECT COUNT(*) as result FROM users").Scan(&result).Error
+	if err != nil {
+		return &users.Summary{}, nil
+	}
+	return &users.Summary{CountUser: result}, nil
+}
+
 func (m mysqlUserRepository) DeleteUser(ctx context.Context, domain users.Domain) (users.Domain, error) {
 	rec := User{}
 	result := m.Conn.Where("id = ?", domain.IdUser).Delete(&rec)

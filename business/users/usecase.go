@@ -18,6 +18,14 @@ type userUsecase struct {
 	JWTConfig      middlewares.ConfigJwt
 }
 
+func (u *userUsecase) GetCountUser(ctx context.Context) (*Summary, error) {
+	summary, err := u.UserRepository.GetCountUser(ctx)
+	if err != nil {
+		return &Summary{}, err
+	}
+	return summary, nil
+}
+
 func (u *userUsecase) DeleteUser(ctx context.Context, domain Domain) (Domain, error) {
 	// Cek apakah yang mengirimkan request adalah admin
 	if domain.Role != 1 {
