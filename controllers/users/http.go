@@ -9,6 +9,7 @@ import (
 	"profcourse/controllers/users/requests"
 	"profcourse/controllers/users/reseponses/changePassword"
 	"profcourse/controllers/users/reseponses/currentUser"
+	"profcourse/controllers/users/reseponses/deleteUser"
 	"profcourse/controllers/users/reseponses/forgetPassword"
 	"profcourse/controllers/users/reseponses/login"
 	"profcourse/controllers/users/reseponses/userCreated"
@@ -20,6 +21,26 @@ type UserController struct {
 
 func NewUserController(uc users.Usecase) *UserController {
 	return &UserController{userUsecase: uc}
+}
+
+func (ctrl UserController) DeleteUser(c echo.Context) error {
+	token, err := middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain := users.Domain{
+		ID:     token.Userid,
+		Role:   token.Role,
+		IdUser: c.Param("userid"),
+	}
+
+	ctx := c.Request().Context()
+	user, err := ctrl.userUsecase.DeleteUser(ctx, domain)
+	if err != nil {
+		return err
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, deleteUser.FromDomain(user))
 }
 
 func (ctrl *UserController) CreateUser(c echo.Context) error {

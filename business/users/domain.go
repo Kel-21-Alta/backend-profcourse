@@ -13,15 +13,21 @@ type Domain struct {
 	HashPassword string
 	NoHp         string
 	Birth        time.Time
-	BirthPlace   string
-	Bio          string
-	ImgProfile   string
-	Role         int8 // 1 for admin, 2 for user
-	RoleText     string
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	Token        string
-	PasswordNew  string
+
+	BirthPlace string
+	Bio        string
+	ImgProfile string
+
+	Role     int8 // 1 for admin, 2 for user
+	RoleText string
+
+	IdUser  string
+	Message string
+
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Token       string
+	PasswordNew string
 }
 type Usecase interface {
 	CreateUser(ctx context.Context, domain Domain) (Domain, error)
@@ -30,6 +36,7 @@ type Usecase interface {
 	ForgetPassword(ctx context.Context, domain Domain) (Domain, error)
 	GetCurrentUser(ctx context.Context, domain Domain) (Domain, error)
 	ChangePassword(ctx context.Context, domain Domain) (Domain, error)
+	DeleteUser(ctx context.Context, domain Domain) (Domain, error)
 }
 
 type Repository interface {
@@ -37,4 +44,5 @@ type Repository interface {
 	GetUserByEmail(ctx context.Context, email string) (Domain, error)
 	UpdatePassword(ctx context.Context, domain Domain, hash string) (Domain, error)
 	GetUserById(ctx context.Context, id string) (Domain, error)
+	DeleteUser(ctx context.Context, domain Domain) (Domain, error)
 }

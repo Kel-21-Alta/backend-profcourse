@@ -10,6 +10,16 @@ type mysqlUserRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlUserRepository) DeleteUser(ctx context.Context, domain users.Domain) (users.Domain, error) {
+	rec := User{}
+	result := m.Conn.Where("id = ?", domain.IdUser).Delete(&rec)
+	if result.Error != nil {
+		return users.Domain{}, result.Error
+	}
+	domain.Message = "User dengan id: " + domain.IdUser + " telah dihapus"
+	return domain, nil
+}
+
 func (m mysqlUserRepository) GetUserById(ctx context.Context, id string) (users.Domain, error) {
 	rec := User{}
 	err := m.Conn.First(&rec, "id = ?", id).Error

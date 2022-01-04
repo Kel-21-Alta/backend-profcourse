@@ -2272,6 +2272,11 @@ paths:
                     example: 204
                   message:
                     type: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
         '400': 
           $ref: '#/components/responses/InvalidRequest'
         '500':

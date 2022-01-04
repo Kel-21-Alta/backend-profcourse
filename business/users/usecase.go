@@ -18,6 +18,25 @@ type userUsecase struct {
 	JWTConfig      middlewares.ConfigJwt
 }
 
+func (u userUsecase) DeleteUser(ctx context.Context, domain Domain) (Domain, error) {
+	// Cek apakah yang mengirimkan request adalah admin
+	if domain.Role != 1 {
+		return Domain{}, controller.FORBIDDIN_USER
+	}
+	// Cek apakah admin mengirim user id yang akan dihapus
+	if domain.IdUser == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+
+	result, err := u.UserRepository.DeleteUser(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (u userUsecase) LoginAdmin(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain

@@ -27,6 +27,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT := ev1.Group("")
 	withJWT.Use(middleware.JWTWithConfig(cl.JWTMiddleware))
 	withJWT.POST("users", cl.UserController.CreateUser)
+	withJWT.DELETE("users/:userid", cl.UserController.DeleteUser)
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
