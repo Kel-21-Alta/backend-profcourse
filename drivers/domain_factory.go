@@ -12,8 +12,8 @@ import (
 	"profcourse/drivers/databases/moduls"
 	"profcourse/drivers/databases/users"
 	"profcourse/drivers/databases/users_courses"
-	"profcourse/drivers/locals"
 	"profcourse/drivers/thirdparties/mail"
+	"profcourse/drivers/uploadLocals"
 )
 
 func NewMysqlUserRepository(conn *gorm.DB) _userUsecase.Repository {
@@ -25,7 +25,7 @@ func NewSmtpRepository(config mail.Email) send_email.Repository {
 }
 
 func NewLocalRepository() _localsRepository.Repository {
-	return locals.NewLocalRepository()
+	return uploadLocals.NewLocalRepository()
 }
 
 func NewMysqlCourseRepository(conn *gorm.DB) _coursesUsecase.Repository {

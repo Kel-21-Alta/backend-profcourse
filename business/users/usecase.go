@@ -18,7 +18,7 @@ type userUsecase struct {
 	JWTConfig      middlewares.ConfigJwt
 }
 
-func (u userUsecase) DeleteUser(ctx context.Context, domain Domain) (Domain, error) {
+func (u *userUsecase) DeleteUser(ctx context.Context, domain Domain) (Domain, error) {
 	// Cek apakah yang mengirimkan request adalah admin
 	if domain.Role != 1 {
 		return Domain{}, controller.FORBIDDIN_USER
@@ -37,7 +37,7 @@ func (u userUsecase) DeleteUser(ctx context.Context, domain Domain) (Domain, err
 	return result, nil
 }
 
-func (u userUsecase) LoginAdmin(ctx context.Context, domain Domain) (Domain, error) {
+func (u *userUsecase) LoginAdmin(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain
 
@@ -82,7 +82,7 @@ func (u userUsecase) LoginAdmin(ctx context.Context, domain Domain) (Domain, err
 	return existedUser, nil
 }
 
-func (u userUsecase) ChangePassword(ctx context.Context, domain Domain) (Domain, error) {
+func (u *userUsecase) ChangePassword(ctx context.Context, domain Domain) (Domain, error) {
 	if domain.ID == "" {
 		return Domain{}, controller.ID_EMPTY
 	}
@@ -114,7 +114,7 @@ func (u userUsecase) ChangePassword(ctx context.Context, domain Domain) (Domain,
 	return user, nil
 }
 
-func (u userUsecase) GetCurrentUser(ctx context.Context, domain Domain) (Domain, error) {
+func (u *userUsecase) GetCurrentUser(ctx context.Context, domain Domain) (Domain, error) {
 	if domain.ID == "" {
 		return Domain{}, controller.ID_EMPTY
 	}
@@ -125,7 +125,7 @@ func (u userUsecase) GetCurrentUser(ctx context.Context, domain Domain) (Domain,
 	return user, nil
 }
 
-func (u userUsecase) ForgetPassword(ctx context.Context, domain Domain) (Domain, error) {
+func (u *userUsecase) ForgetPassword(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain
 	if domain.Email == "" {
@@ -180,7 +180,7 @@ func (u userUsecase) ForgetPassword(ctx context.Context, domain Domain) (Domain,
 	return resultUser, nil
 }
 
-func (u userUsecase) Login(ctx context.Context, domain Domain) (Domain, error) {
+func (u *userUsecase) Login(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain
 
@@ -220,7 +220,7 @@ func (u userUsecase) Login(ctx context.Context, domain Domain) (Domain, error) {
 	return existedUser, nil
 }
 
-func (u userUsecase) CreateUser(ctx context.Context, domain Domain) (Domain, error) {
+func (u *userUsecase) CreateUser(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain
 

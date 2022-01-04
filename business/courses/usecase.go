@@ -2,7 +2,6 @@ package courses
 
 import (
 	"context"
-	"profcourse/business/uploads"
 	controller "profcourse/controllers"
 	"profcourse/helpers"
 	"time"
@@ -11,10 +10,9 @@ import (
 type coursesUsecase struct {
 	CourseMysqlRepository Repository
 	ContextTimeOut        time.Duration
-	LocalRepository       uploads.Repository
 }
 
-func (c coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error) {
+func (c *coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error) {
 
 	course, err := c.CourseMysqlRepository.GetOneCourse(ctx, domain)
 	if err != nil {
@@ -24,7 +22,7 @@ func (c coursesUsecase) GetOneCourse(ctx context.Context, domain *Domain) (*Doma
 	return course, nil
 }
 
-func (c coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error) {
+func (c *coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error) {
 
 	if domain.SortBy == "" {
 		domain.SortBy = "asc"
@@ -58,7 +56,7 @@ func (c coursesUsecase) GetAllCourses(ctx context.Context, domain *Domain) (*[]D
 	return listCourseDomain, nil
 }
 
-func (c coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Domain, error) {
+func (c *coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Domain, error) {
 	// Validasi
 	if domain.Title == "" {
 		return &Domain{}, controller.TITLE_EMPTY
@@ -68,16 +66,10 @@ func (c coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Doma
 		return &Domain{}, controller.DESC_EMPTY
 	}
 
-	if domain.FileImage == nil {
+	if domain.ImgUrl == "" {
 		return &Domain{}, controller.FILE_IMAGE_EMPTY
 	}
 
-	localRepoDomain, err := c.LocalRepository.UploadImage(ctx, domain.FileImage, "/img/courses/")
-	if err != nil {
-		return &Domain{}, err
-	}
-
-	domain.ImgUrl = localRepoDomain.ResultUrl
 	course, err := c.CourseMysqlRepository.CreateCourse(ctx, domain)
 
 	if err != nil {
@@ -86,10 +78,9 @@ func (c coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Doma
 	return course, nil
 }
 
-func NewCourseUseCase(r Repository, timeout time.Duration, local uploads.Repository) Usecase {
+func NewCourseUseCase(r Repository, timeout time.Duration) Usecase {
 	return &coursesUsecase{
 		CourseMysqlRepository: r,
 		ContextTimeOut:        timeout,
-		LocalRepository:       local,
 	}
 }
