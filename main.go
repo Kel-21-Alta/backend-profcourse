@@ -80,6 +80,7 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.CORS())
+	e.Static("/public", "public")
 
 	timeout := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
