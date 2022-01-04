@@ -17,7 +17,31 @@ var courseMysqlRepository _mocksCourseRepository.Repository
 
 var courseService courses.Usecase
 var courseDomain courses.Domain
+var courseSummary courses.Summary
 var listCourse []courses.Domain
+
+func setGetCountCourse() {
+	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1)
+	courseSummary = courses.Summary{
+		CountCourse: 9,
+	}
+}
+
+func TestCoursesUsecase_GetCountCourse(t *testing.T) {
+	t.Run("Test case 1 | Success get count course", func(t *testing.T) {
+		setGetCountCourse()
+		courseMysqlRepository.On("GetCountCourse", mock.Anything).Return(&courseSummary, nil).Once()
+		summary, err := courseService.GetCountCourse(context.Background())
+		assert.Nil(t, err)
+		assert.Equal(t, 9, summary.CountCourse)
+	})
+	t.Run("Test case 2 | handle err db", func(t *testing.T) {
+		setGetCountCourse()
+		courseMysqlRepository.On("GetCountCourse", mock.Anything).Return(&courses.Summary{}, errors.New("hahaha")).Once()
+		_, err := courseService.GetCountCourse(context.Background())
+		assert.NotNil(t, err)
+	})
+}
 
 func setupCreateCouse() {
 	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1)

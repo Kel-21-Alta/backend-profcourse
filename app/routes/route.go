@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"profcourse/controllers/courses"
 	"profcourse/controllers/moduls"
+	"profcourse/controllers/summary"
 	"profcourse/controllers/users"
 	"profcourse/controllers/users_courses"
 )
@@ -15,6 +16,7 @@ type ControllerList struct {
 	CourseController     courses.CourseController
 	UserCourseController users_courses.UsersCoursesController
 	ModulController      moduls.ModulController
+	SummaryController summary.SummaryController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -38,4 +40,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
 
 	withJWT.POST("modul", cl.ModulController.CreateModul)
+
+	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 }

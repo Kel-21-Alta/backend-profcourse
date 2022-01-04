@@ -11,10 +11,12 @@ import (
 	"profcourse/app/routes"
 	_coursesUsecase "profcourse/business/courses"
 	_modulsUsecase "profcourse/business/moduls"
+	_summaryUsecase "profcourse/business/summary"
 	_userUsecase "profcourse/business/users"
 	_usersCourseUsercase "profcourse/business/users_courses"
 	"profcourse/controllers/courses"
 	_modulController "profcourse/controllers/moduls"
+	_summaryController "profcourse/controllers/summary"
 	_userController "profcourse/controllers/users"
 	_usersCourseController "profcourse/controllers/users_courses"
 	_driversFectory "profcourse/drivers"
@@ -102,12 +104,16 @@ func main() {
 	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository)
 	userCourseController := _usersCourseController.NewUsesrCoursesController(userCourseUsecase)
 
+	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout,courseUsecase, userUsecase)
+	summaryController := _summaryController.NewSummaryController(summaryUsecase)
+
 	routesInit := routes.ControllerList{
 		UserController:       *userCtrl,
 		CourseController:     *couserCtrl,
 		JWTMiddleware:        configJwt.Init(),
 		UserCourseController: *userCourseController,
 		ModulController:      *modulCtrl,
+		SummaryController: *summaryController,
 	}
 
 	routesInit.RouteRegister(e)

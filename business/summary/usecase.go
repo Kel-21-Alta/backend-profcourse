@@ -2,25 +2,37 @@ package summary
 
 import (
 	"golang.org/x/net/context"
+	"profcourse/business/courses"
+	"profcourse/business/users"
 	"time"
 )
 
 type summaryUsecase struct {
 	ContextTimeOut time.Duration
-	SummaryRepository Repository
+	CourseUsecase  courses.Usecase
+	UserUsecase    users.Usecase
 }
 
-func (s summaryUsecase) GetSummary(ctx context.Context, domain *Domain) (*Domain, error) {
-	summary, err := s.SummaryRepository.GetSummary(ctx, domain)
+func (s *summaryUsecase) GetAllSummary(ctx context.Context) (*Domain, error) {
+
+	courseDomain, err := s.CourseUsecase.GetCountCourse(ctx)
 	if err != nil {
 		return &Domain{}, err
 	}
-	return  summary, nil
+
+	userDomain, err := s.UserUsecase.GetCountUser(ctx)
+
+	if err != nil {
+		return &Domain{}, err
+	}
+
+	return &Domain{CountCourse: courseDomain.CountCourse, CountUser: userDomain.CountUser}, nil
 }
 
-func NewSummaryUsecase(r Repository, timeout time.Duration) Usecase {
+func NewSummaryUsecase(timeout time.Duration, course courses.Usecase, user users.Usecase) Usecase {
 	return &summaryUsecase{
-		ContextTimeOut:    timeout,
-		SummaryRepository: r,
+		CourseUsecase:  course,
+		ContextTimeOut: timeout,
+		UserUsecase:    user,
 	}
 }

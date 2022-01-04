@@ -29,6 +29,11 @@ type Domain struct {
 	Token       string
 	PasswordNew string
 }
+
+type Summary struct {
+	CountUser int
+}
+
 type Usecase interface {
 	CreateUser(ctx context.Context, domain Domain) (Domain, error)
 	Login(ctx context.Context, domain Domain) (Domain, error)
@@ -37,6 +42,7 @@ type Usecase interface {
 	GetCurrentUser(ctx context.Context, domain Domain) (Domain, error)
 	ChangePassword(ctx context.Context, domain Domain) (Domain, error)
 	DeleteUser(ctx context.Context, domain Domain) (Domain, error)
+	GetCountUser(ctx context.Context) (*Summary, error)
 }
 
 type Repository interface {
@@ -45,4 +51,5 @@ type Repository interface {
 	UpdatePassword(ctx context.Context, domain Domain, hash string) (Domain, error)
 	GetUserById(ctx context.Context, id string) (Domain, error)
 	DeleteUser(ctx context.Context, domain Domain) (Domain, error)
+	GetCountUser(ctx context.Context) (*Summary, error)
 }

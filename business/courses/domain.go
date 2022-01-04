@@ -21,6 +21,8 @@ type Domain struct {
 	Status      int8
 	StatusText  string
 
+	CountCourse int
+
 	CertificateId string
 
 	// Info User yang saat ini login
@@ -37,14 +39,20 @@ type Domain struct {
 	UpdatedAt time.Time
 }
 
+type Summary struct {
+	CountCourse int
+}
+
 type Usecase interface {
 	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
+	GetCountCourse(ctx context.Context) (*Summary, error)
 }
 
 type Repository interface {
 	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
+	GetCountCourse(ctx context.Context) (*Summary, error)
 }
