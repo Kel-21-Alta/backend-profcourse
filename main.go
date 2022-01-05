@@ -11,17 +11,20 @@ import (
 	"profcourse/app/routes"
 	_coursesUsecase "profcourse/business/courses"
 	_modulsUsecase "profcourse/business/moduls"
+	_spesializationUsecase "profcourse/business/spesializations"
 	_summaryUsecase "profcourse/business/summary"
 	_userUsecase "profcourse/business/users"
 	_usersCourseUsercase "profcourse/business/users_courses"
 	"profcourse/controllers/courses"
 	_modulController "profcourse/controllers/moduls"
+	_spesializationsController "profcourse/controllers/spesializations"
 	_summaryController "profcourse/controllers/summary"
 	_userController "profcourse/controllers/users"
 	_usersCourseController "profcourse/controllers/users_courses"
 	_driversFectory "profcourse/drivers"
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
 	_modulsMysqlRepo "profcourse/drivers/databases/moduls"
+	_spesializationMysqlRepo "profcourse/drivers/databases/spesialization"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_usersCourseMysqlRepo "profcourse/drivers/databases/users_courses"
 	_dbDriver "profcourse/drivers/mysql"
@@ -46,7 +49,9 @@ func DbMigration(db *gorm.DB) {
 		&_userMysqlRepo.User{},
 		&_coursesMysqlRepo.Courses{},
 		&_usersCourseMysqlRepo.UsersCourses{},
-		&_modulsMysqlRepo.Moduls{})
+		&_modulsMysqlRepo.Moduls{},
+		&_spesializationMysqlRepo.Spesialization{},
+	)
 
 	if err != nil {
 		panic(err)
@@ -104,16 +109,21 @@ func main() {
 	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository)
 	userCourseController := _usersCourseController.NewUsesrCoursesController(userCourseUsecase)
 
-	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout,courseUsecase, userUsecase)
+	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout, courseUsecase, userUsecase)
 	summaryController := _summaryController.NewSummaryController(summaryUsecase)
 
+	mysqlSpesializationRepository := _driversFectory.NewMysqlSpesializationRepository(conn)
+	spesializationUsecae := _spesializationUsecase.NewSpesializationUsecase(mysqlSpesializationRepository, timeout)
+	spesializationController := _spesializationsController.NewSpesializationController(spesializationUsecae)
+
 	routesInit := routes.ControllerList{
-		UserController:       *userCtrl,
-		CourseController:     *couserCtrl,
-		JWTMiddleware:        configJwt.Init(),
-		UserCourseController: *userCourseController,
-		ModulController:      *modulCtrl,
-		SummaryController: *summaryController,
+		UserController:           *userCtrl,
+		CourseController:         *couserCtrl,
+		JWTMiddleware:            configJwt.Init(),
+		UserCourseController:     *userCourseController,
+		ModulController:          *modulCtrl,
+		SummaryController:        *summaryController,
+		SpesializationController: *spesializationController,
 	}
 
 	routesInit.RouteRegister(e)

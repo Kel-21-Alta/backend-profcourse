@@ -75,7 +75,7 @@ func (c *coursesUsecase) CreateCourse(ctx context.Context, domain *Domain) (*Dom
 	}
 
 	if domain.ImgUrl == "" {
-		return &Domain{}, controller.FILE_IMAGE_EMPTY
+		return &Domain{}, controller.IMAGE_EMPTY
 	}
 
 	course, err := c.CourseMysqlRepository.CreateCourse(ctx, domain)
