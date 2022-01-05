@@ -5,18 +5,20 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"profcourse/controllers/courses"
 	"profcourse/controllers/moduls"
+	"profcourse/controllers/spesializations"
 	"profcourse/controllers/summary"
 	"profcourse/controllers/users"
 	"profcourse/controllers/users_courses"
 )
 
 type ControllerList struct {
-	JWTMiddleware        middleware.JWTConfig
-	UserController       users.UserController
-	CourseController     courses.CourseController
-	UserCourseController users_courses.UsersCoursesController
-	ModulController      moduls.ModulController
-	SummaryController summary.SummaryController
+	JWTMiddleware            middleware.JWTConfig
+	UserController           users.UserController
+	CourseController         courses.CourseController
+	UserCourseController     users_courses.UsersCoursesController
+	ModulController          moduls.ModulController
+	SummaryController        summary.SummaryController
+	SpesializationController spesializations.SpesializationController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -42,4 +44,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.POST("modul", cl.ModulController.CreateModul)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
+
+	withJWT.POST("spesializations", cl.SpesializationController.CreateSpesialization)
 }

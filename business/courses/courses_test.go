@@ -81,7 +81,7 @@ func TestCoursesUsecase_CreateCourse(t *testing.T) {
 		setupCreateCouse()
 		_, err := courseService.CreateCourse(context.Background(), &courses.Domain{Title: "Docker Pemula", Description: "Docker untuk pemula", TeacherId: uuid.NewV4().String()})
 		assert.NotNil(t, err)
-		assert.Equal(t, controller.FILE_IMAGE_EMPTY, err)
+		assert.Equal(t, controller.IMAGE_EMPTY, err)
 	})
 
 	t.Run("Test case 3 | Success", func(t *testing.T) {
