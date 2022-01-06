@@ -20,7 +20,7 @@ func FromDomain(domain *spesializations.Domain) CreateSpesializationResponse {
 		UrlImage:    domain.ImageUrl,
 		Title:       domain.Title,
 		Description: domain.Description,
-		Courses:     domain.Courses,
+		Courses:     domain.CourseIds,
 		CreatedAt:   domain.CreatedAt,
 	}
 }

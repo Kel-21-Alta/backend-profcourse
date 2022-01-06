@@ -12,6 +12,20 @@ type spesializationUsecase struct {
 	ContextTimeOut           time.Duration
 }
 
+func (s spesializationUsecase) GetOneSpesialization(ctx context.Context, domain *Domain) (Domain, error) {
+
+	if domain.ID == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+
+	result, err := s.SpesializationRepository.GetOneSpesialization(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+	return result, nil
+}
+
 func (s spesializationUsecase) GetAllSpesializations(ctx context.Context, domain *Domain) ([]Domain, error) {
 	if domain.SortBy == "" {
 		domain.SortBy = "asc"
@@ -58,7 +72,7 @@ func (s spesializationUsecase) CreateSpasialization(ctx context.Context, domain 
 	if domain.ImageUrl == "" {
 		return Domain{}, controller.IMAGE_EMPTY
 	}
-	if domain.Courses == nil || len(domain.Courses) < 1 {
+	if domain.CourseIds == nil || len(domain.CourseIds) < 1 {
 		return Domain{}, controller.COURSES_SPESIALIZATION_EMPTY
 	}
 	result, err := s.SpesializationRepository.CreateSpasialization(ctx, domain)

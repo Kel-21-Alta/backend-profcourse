@@ -13,9 +13,9 @@ type CreateSpesilizationRequest struct {
 
 func (receiver CreateSpesilizationRequest) ToDomain() *spesializations.Domain {
 	return &spesializations.Domain{
-		Title:        receiver.Title,
+		Title:       receiver.Title,
 		ImageUrl:    receiver.FileImage,
 		Description: receiver.Description,
-		Courses:     receiver.Courses,
+		CourseIds:   receiver.Courses,
 	}
 }

@@ -10,6 +10,10 @@ type spesializationRepository struct {
 	Conn *gorm.DB
 }
 
+func (r spesializationRepository) GetOneSpesialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
+
+}
+
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
 func Paginate(domain spesializations.Domain) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
@@ -39,7 +43,7 @@ func (s spesializationRepository) CreateSpasialization(ctx context.Context, doma
 
 	req := FromDomain(domain)
 
-	err := s.Conn.Omit("Courses.*").Create(&req).Error
+	err := s.Conn.Omit("CourseIds.*").Create(&req).Error
 
 	if err != nil {
 		return spesializations.Domain{}, err

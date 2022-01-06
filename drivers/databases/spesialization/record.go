@@ -37,7 +37,7 @@ func FromDomain(domain *spesializations.Domain) *Spesialization {
 
 	var listCourses []*courses.Courses
 
-	for _, course := range domain.Courses {
+	for _, course := range domain.CourseIds {
 		listCourses = append(listCourses, &courses.Courses{ID: course})
 	}
 

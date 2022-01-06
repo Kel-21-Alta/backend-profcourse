@@ -28,7 +28,7 @@ func setUpCreateSpesialization() {
 		CreatedAt:     time.Time{},
 		UpdatedAt:     time.Time{},
 		CertificateId: "",
-		Courses:       []string{"234", "235"},
+		CourseIds:     []string{"234", "235"},
 	}
 }
 
@@ -59,7 +59,7 @@ func TestSpesializationUsecase_CreateSpasialization(t *testing.T) {
 	})
 	t.Run("Test 4 | hendle courses empty", func(t *testing.T) {
 		setUpCreateSpesialization()
-		_, err := spesializationService.CreateSpasialization(context.Background(), &spesializations.Domain{MakerRole: 1, Title: "Beck end", Description: "bla bla", ImageUrl: "http://kakdfgk.com", Courses: nil})
+		_, err := spesializationService.CreateSpasialization(context.Background(), &spesializations.Domain{MakerRole: 1, Title: "Beck end", Description: "bla bla", ImageUrl: "http://kakdfgk.com", CourseIds: nil})
 		assert.NotNil(t, err)
 		assert.Error(t, controller.COURSES_SPESIALIZATION_EMPTY, err)
 	})
@@ -71,7 +71,7 @@ func TestSpesializationUsecase_CreateSpasialization(t *testing.T) {
 			Title:       "Mastering Back End",
 			ImageUrl:    "https://placeimg.com/640/480/any",
 			Description: "Manya isinya",
-			Courses:     []string{"ijadfjkg"},
+			CourseIds:   []string{"ijadfjkg"},
 			MakerRole:   1,
 		})
 		assert.Nil(t, err)
@@ -86,7 +86,7 @@ func TestSpesializationUsecase_CreateSpasialization(t *testing.T) {
 			Title:       "Mastering Back End",
 			ImageUrl:    "https://placeimg.com/640/480/any",
 			Description: "Manya isinya",
-			Courses:     []string{"ijadfjkg"},
+			CourseIds:   []string{"ijadfjkg"},
 			MakerRole:   1,
 		})
 		assert.NotNil(t, err)
@@ -103,7 +103,7 @@ func setUpGetAllSpesialization() {
 		CreatedAt:     time.Time{},
 		UpdatedAt:     time.Time{},
 		CertificateId: "",
-		Courses:       []string{"234", "235"},
+		CourseIds:     []string{"234", "235"},
 	}
 	listSpesializationDomain = []spesializations.Domain{spesializationDomain, spesializationDomain}
 }
@@ -111,7 +111,7 @@ func setUpGetAllSpesialization() {
 func TestSpesializationUsecase_GetAllSpesializations(t *testing.T) {
 	t.Run("Test case 1 | Success mendapatkan data", func(t *testing.T) {
 		setUpGetAllSpesialization()
-		mysqlSpesializationRepository.On("GetAllSpesializations", mock.Anything,mock.Anything).Return(listSpesializationDomain, nil).Once()
+		mysqlSpesializationRepository.On("GetAllSpesializations", mock.Anything, mock.Anything).Return(listSpesializationDomain, nil).Once()
 		result, err := spesializationService.GetAllSpesializations(context.Background(), &spesializations.Domain{})
 		assert.Nil(t, err)
 		assert.Equal(t, 2, len(result))
