@@ -72,7 +72,7 @@ func (c Courses) ToDomain() *courses.Domain {
 	}
 }
 
-func ToListDomain(listCourses []Courses) *[]courses.Domain {
+func ToListDomain(listCourses []*Courses) *[]courses.Domain {
 	var listCourseDomain []courses.Domain
 	for _, course := range listCourses {
 		listCourseDomain = append(listCourseDomain, *course.ToDomain())

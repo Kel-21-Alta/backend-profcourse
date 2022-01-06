@@ -13,7 +13,7 @@ type CreateSpesilizationRequest struct {
 
 func (receiver CreateSpesilizationRequest) ToDomain() *spesializations.Domain {
 	return &spesializations.Domain{
-		Name:        receiver.Title,
+		Title:        receiver.Title,
 		ImageUrl:    receiver.FileImage,
 		Description: receiver.Description,
 		Courses:     receiver.Courses,
