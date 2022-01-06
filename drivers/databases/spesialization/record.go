@@ -54,10 +54,12 @@ func FromDomain(domain *spesializations.Domain) *Spesialization {
 }
 
 func (s *Spesialization) ToDomain() spesializations.Domain {
+	var listCourseId []string
 	return spesializations.Domain{
 		ID:            s.ID,
 		Title:         s.Title,
 		ImageUrl:      s.ImageUrl,
+		CourseIds:     listCourseId,
 		Description:   s.Description,
 		CreatedAt:     s.CreatedAt,
 		UpdatedAt:     s.UpdatedAt,
@@ -82,7 +84,7 @@ func (s *Spesialization) ToDomainWithCourses() spesializations.Domain {
 		CreatedAt:     s.CreatedAt,
 		UpdatedAt:     s.UpdatedAt,
 		CertificateId: s.CertificateId,
-		Courses: list,
+		Courses:       list,
 	}
 }
 

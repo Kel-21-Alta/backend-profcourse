@@ -18,6 +18,20 @@ var spesializationService spesializations.Usecase
 var spesializationDomain spesializations.Domain
 var listSpesializationDomain []spesializations.Domain
 
+func setUpGetOneSpesialization() {
+	spesializationService = spesializations.NewSpesializationUsecase(&mysqlSpesializationRepository, time.Hour*1)
+	spesializationDomain = spesializations.Domain{
+		ID:            "123",
+		Title:         "Mastering Back End",
+		ImageUrl:      "https://placeimg.com/640/480/any",
+		Description:   "Manya isinya",
+		CreatedAt:     time.Time{},
+		UpdatedAt:     time.Time{},
+		CertificateId: "",
+		CourseIds:     []string{"234", "235"},
+	}
+}
+
 func setUpCreateSpesialization() {
 	spesializationService = spesializations.NewSpesializationUsecase(&mysqlSpesializationRepository, time.Hour*1)
 	spesializationDomain = spesializations.Domain{

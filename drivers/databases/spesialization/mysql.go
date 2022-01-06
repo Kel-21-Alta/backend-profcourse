@@ -55,7 +55,7 @@ func (s *spesializationRepository) CreateSpasialization(ctx context.Context, dom
 		return spesializations.Domain{}, err
 	}
 
-	return req.ToDomain(), nil
+	return req.ToDomainWithCourses(), nil
 }
 
 func NewMysqlRepository(conn *gorm.DB) spesializations.Repository {
