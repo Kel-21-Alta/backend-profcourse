@@ -17,9 +17,16 @@ var mysqlSpesializationRepository _mockSpesialization.Repository
 var spesializationService spesializations.Usecase
 var spesializationDomain spesializations.Domain
 var listSpesializationDomain []spesializations.Domain
+var spesializationCourse spesializations.Course
 
 func setUpGetOneSpesialization() {
 	spesializationService = spesializations.NewSpesializationUsecase(&mysqlSpesializationRepository, time.Hour*1)
+	spesializationCourse = spesializations.Course{
+		ID:          "dasdas",
+		Title:       "dasdas",
+		Rating:      0,
+		Description: "dasdasdas",
+	}
 	spesializationDomain = spesializations.Domain{
 		ID:            "123",
 		Title:         "Mastering Back End",
@@ -28,8 +35,24 @@ func setUpGetOneSpesialization() {
 		CreatedAt:     time.Time{},
 		UpdatedAt:     time.Time{},
 		CertificateId: "",
-		CourseIds:     []string{"234", "235"},
+		Courses:       []spesializations.Course{spesializationCourse, spesializationCourse},
 	}
+}
+
+func TestSpesializationUsecase_GetOneSpesialization(t *testing.T) {
+	t.Run("Test case 1 | Success get one spesailization", func(t *testing.T) {
+		setUpGetOneSpesialization()
+		mysqlSpesializationRepository.On("GetOneSpesialization", mock.Anything, mock.Anything).Return(spesializationDomain, nil).Once()
+		result, err := spesializationService.GetOneSpesialization(context.Background(), &spesializations.Domain{ID: "123"})
+		assert.Nil(t, err)
+		assert.Equal(t, spesializationDomain.Title, result.Title)
+	})
+	t.Run("Test case 1 | Success get one spesailization", func(t *testing.T) {
+		setUpGetOneSpesialization()
+		_, err := spesializationService.GetOneSpesialization(context.Background(), &spesializations.Domain{ID: ""})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
 }
 
 func setUpCreateSpesialization() {
