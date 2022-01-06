@@ -1,0 +1,30 @@
+{
+  "debug": true,
+  "email": {
+    "regex": "mailinator.com -> EMAIL_COMPANY"
+  },
+  "smtp": {
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "name": "Prof Couse support@profcouse.com",
+    "email": "YOUR EMAIL",
+    "password":"PASSWORD"
+  },
+  "server": {
+    "address": ":9090"
+  },
+  "context": {
+    "timeout": 2
+  },
+  "database": {
+    "host": "localhost",
+    "port": "MYSQL_POST",
+    "user": "MYSQL_USER",
+    "pass": "MYSQL_PASSWORD",
+    "name": "MYSQL_NAME_DATABASE"
+  },
+  "jwt": {
+    "secret": "JWT_SECRET",
+    "expired": 1
+  }
+}
