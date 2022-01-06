@@ -13,7 +13,8 @@ type Domain struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	CertificateId string
-	Courses       []string
+	CourseIds     []string
+	Courses       []Course
 	MakerRole     int
 
 	//Params
@@ -24,12 +25,21 @@ type Domain struct {
 	Offset        int
 }
 
+type Course struct {
+	ID          string
+	Title       string
+	Rating      float32
+	Description string
+}
+
 type Repository interface {
 	CreateSpasialization(ctx context.Context, domain *Domain) (Domain, error)
+	GetOneSpesialization(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllSpesializations(ctx context.Context, domain *Domain) ([]Domain, error)
 }
 
 type Usecase interface {
+	GetOneSpesialization(ctx context.Context, domain *Domain) (Domain, error)
 	CreateSpasialization(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllSpesializations(ctx context.Context, domain *Domain) ([]Domain, error)
 }

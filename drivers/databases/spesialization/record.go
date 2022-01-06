@@ -37,7 +37,7 @@ func FromDomain(domain *spesializations.Domain) *Spesialization {
 
 	var listCourses []*courses.Courses
 
-	for _, course := range domain.Courses {
+	for _, course := range domain.CourseIds {
 		listCourses = append(listCourses, &courses.Courses{ID: course})
 	}
 
@@ -54,6 +54,28 @@ func FromDomain(domain *spesializations.Domain) *Spesialization {
 }
 
 func (s *Spesialization) ToDomain() spesializations.Domain {
+	var listCourseId []string
+	return spesializations.Domain{
+		ID:            s.ID,
+		Title:         s.Title,
+		ImageUrl:      s.ImageUrl,
+		CourseIds:     listCourseId,
+		Description:   s.Description,
+		CreatedAt:     s.CreatedAt,
+		UpdatedAt:     s.UpdatedAt,
+		CertificateId: s.CertificateId,
+	}
+}
+func (s *Spesialization) ToDomainWithCourses() spesializations.Domain {
+	var list []spesializations.Course
+	for _, courseRec := range s.Courses {
+		list = append(list, spesializations.Course{
+			ID:          courseRec.ID,
+			Title:       courseRec.Title,
+			Rating:      0,
+			Description: courseRec.Description,
+		})
+	}
 	return spesializations.Domain{
 		ID:            s.ID,
 		Title:         s.Title,
@@ -62,6 +84,7 @@ func (s *Spesialization) ToDomain() spesializations.Domain {
 		CreatedAt:     s.CreatedAt,
 		UpdatedAt:     s.UpdatedAt,
 		CertificateId: s.CertificateId,
+		Courses:       list,
 	}
 }
 

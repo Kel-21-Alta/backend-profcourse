@@ -10,6 +10,16 @@ type spesializationRepository struct {
 	Conn *gorm.DB
 }
 
+func (r *spesializationRepository) GetOneSpesialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
+	var rec Spesialization
+	rec.ID = domain.ID
+	err := r.Conn.Preload("Courses").Find(&rec, "id = ?", domain.ID).Error
+	if err != nil {
+		return spesializations.Domain{}, err
+	}
+	return rec.ToDomainWithCourses(), nil
+}
+
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
 func Paginate(domain spesializations.Domain) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
@@ -23,7 +33,7 @@ func Paginate(domain spesializations.Domain) func(db *gorm.DB) *gorm.DB {
 }
 
 // GetAllSpesializations Untuk mendapatkan banyak spesialization
-func (r spesializationRepository) GetAllSpesializations(ctx context.Context, domain *spesializations.Domain) ([]spesializations.Domain, error) {
+func (r *spesializationRepository) GetAllSpesializations(ctx context.Context, domain *spesializations.Domain) ([]spesializations.Domain, error) {
 	var spesializationResult []*Spesialization
 	var err error
 	err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&spesializationResult).Error
@@ -35,17 +45,17 @@ func (r spesializationRepository) GetAllSpesializations(ctx context.Context, dom
 	return ToListDomain(spesializationResult), nil
 }
 
-func (s spesializationRepository) CreateSpasialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
+func (s *spesializationRepository) CreateSpasialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
 
 	req := FromDomain(domain)
 
-	err := s.Conn.Omit("Courses.*").Create(&req).Error
+	err := s.Conn.Omit("CourseIds.*").Create(&req).Error
 
 	if err != nil {
 		return spesializations.Domain{}, err
 	}
 
-	return req.ToDomain(), nil
+	return req.ToDomainWithCourses(), nil
 }
 
 func NewMysqlRepository(conn *gorm.DB) spesializations.Repository {

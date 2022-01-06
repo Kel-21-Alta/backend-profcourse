@@ -9,6 +9,7 @@ import (
 	_requestCreateSpesialization "profcourse/controllers/spesializations/requests/createSpesialization"
 	_responseCreateSpesialization "profcourse/controllers/spesializations/resenponses/createSpesialization"
 	"profcourse/controllers/spesializations/resenponses/getAllSpesialization"
+	"profcourse/controllers/spesializations/resenponses/getOneSpesialization"
 	"strconv"
 )
 
@@ -66,4 +67,18 @@ func (sp *SpesializationController) CreateSpesialization(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 	return controller.NewResponseSuccess(c, http.StatusCreated, _responseCreateSpesialization.FromDomain(&clean))
+}
+
+func (sp *SpesializationController) GetOneSpesialization(c echo.Context) error {
+	ctx := c.Request().Context()
+	var domain spesializations.Domain
+
+	domain.ID = c.Param("spesializationid")
+	clean, err := sp.SpesializationUsecase.GetOneSpesialization(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getOneSpesialization.FromDomain(clean))
 }
