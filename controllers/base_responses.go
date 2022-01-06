@@ -11,6 +11,10 @@ type BaseResponse struct {
 	Data    interface{} `json:"data"`
 }
 
+type DataError struct {
+	Message string `json:"message"`
+}
+
 func NewResponseSuccess(c echo.Context, status int, params interface{}) error {
 	response := BaseResponse{}
 	response.Data = params
@@ -24,7 +28,7 @@ func NewResponseError(c echo.Context, err error) error {
 	response := BaseResponse{
 		Code:    status,
 		Message: err.Error(),
-		Data:    nil,
+		Data:   DataError{Message: err.Error()} ,
 	}
 	return c.JSON(status, response)
 }

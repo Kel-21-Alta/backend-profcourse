@@ -13,7 +13,7 @@ type spesializationRepository struct {
 func (r *spesializationRepository) GetOneSpesialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
 	var rec Spesialization
 	rec.ID = domain.ID
-	err := r.Conn.Preload("Courses").Find(&rec).Error
+	err := r.Conn.Preload("Courses").Find(&rec, "id = ?", domain.ID).Error
 	if err != nil {
 		return spesializations.Domain{}, err
 	}

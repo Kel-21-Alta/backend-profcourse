@@ -23,6 +23,9 @@ func (s spesializationUsecase) GetOneSpesialization(ctx context.Context, domain 
 	if err != nil {
 		return Domain{}, err
 	}
+	if result.Title == "" {
+		return Domain{}, controller.SPESIALIZATION_NOT_FOUND
+	}
 	return result, nil
 }
 
