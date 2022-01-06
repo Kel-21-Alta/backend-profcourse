@@ -71,10 +71,10 @@ func (sp *SpesializationController) CreateSpesialization(c echo.Context) error {
 
 func (sp *SpesializationController) GetOneSpesialization(c echo.Context) error {
 	ctx := c.Request().Context()
-	var domain *spesializations.Domain
+	var domain spesializations.Domain
 
 	domain.ID = c.Param("spesializationid")
-	clean, err := sp.SpesializationUsecase.GetOneSpesialization(ctx, domain)
+	clean, err := sp.SpesializationUsecase.GetOneSpesialization(ctx, &domain)
 
 	if err != nil {
 		return controller.NewResponseError(c, err)

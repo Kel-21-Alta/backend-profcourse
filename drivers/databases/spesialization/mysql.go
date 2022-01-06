@@ -10,8 +10,14 @@ type spesializationRepository struct {
 	Conn *gorm.DB
 }
 
-func (r spesializationRepository) GetOneSpesialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
-
+func (r *spesializationRepository) GetOneSpesialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
+	var rec Spesialization
+	rec.ID = domain.ID
+	err := r.Conn.Preload("Courses").Find(&rec).Error
+	if err != nil {
+		return spesializations.Domain{}, err
+	}
+	return rec.ToDomainWithCourses(), nil
 }
 
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
@@ -27,7 +33,7 @@ func Paginate(domain spesializations.Domain) func(db *gorm.DB) *gorm.DB {
 }
 
 // GetAllSpesializations Untuk mendapatkan banyak spesialization
-func (r spesializationRepository) GetAllSpesializations(ctx context.Context, domain *spesializations.Domain) ([]spesializations.Domain, error) {
+func (r *spesializationRepository) GetAllSpesializations(ctx context.Context, domain *spesializations.Domain) ([]spesializations.Domain, error) {
 	var spesializationResult []*Spesialization
 	var err error
 	err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&spesializationResult).Error
@@ -39,7 +45,7 @@ func (r spesializationRepository) GetAllSpesializations(ctx context.Context, dom
 	return ToListDomain(spesializationResult), nil
 }
 
-func (s spesializationRepository) CreateSpasialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
+func (s *spesializationRepository) CreateSpasialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
 
 	req := FromDomain(domain)
 

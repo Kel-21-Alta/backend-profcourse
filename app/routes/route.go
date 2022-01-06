@@ -46,5 +46,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 
 	withJWT.POST("spesializations", cl.SpesializationController.CreateSpesialization)
+	withJWT.GET("spesializations/:spesializationid", cl.SpesializationController.GetOneSpesialization)
 	withJWT.GET("spesializations", cl.SpesializationController.GetAllSpesialization)
+
 }

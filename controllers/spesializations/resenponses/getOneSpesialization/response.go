@@ -16,7 +16,7 @@ type Response struct {
 	Courses     []Course `json:"courses"`
 }
 
-func FromDomain(domain spesializations.Domain) *Response {
+func FromDomain(domain spesializations.Domain) Response {
 	var listCourse []Course
 	for _, course := range domain.Courses {
 		listCourse = append(listCourse, Course{
@@ -26,7 +26,7 @@ func FromDomain(domain spesializations.Domain) *Response {
 		})
 	}
 
-	return &Response{
+	return Response{
 		ID:          domain.ID,
 		Title:       domain.Title,
 		Description: domain.Description,

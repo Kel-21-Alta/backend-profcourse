@@ -64,6 +64,27 @@ func (s *Spesialization) ToDomain() spesializations.Domain {
 		CertificateId: s.CertificateId,
 	}
 }
+func (s *Spesialization) ToDomainWithCourses() spesializations.Domain {
+	var list []spesializations.Course
+	for _, courseRec := range s.Courses {
+		list = append(list, spesializations.Course{
+			ID:          courseRec.ID,
+			Title:       courseRec.Title,
+			Rating:      0,
+			Description: courseRec.Description,
+		})
+	}
+	return spesializations.Domain{
+		ID:            s.ID,
+		Title:         s.Title,
+		ImageUrl:      s.ImageUrl,
+		Description:   s.Description,
+		CreatedAt:     s.CreatedAt,
+		UpdatedAt:     s.UpdatedAt,
+		CertificateId: s.CertificateId,
+		Courses: list,
+	}
+}
 
 func ToListDomain(s []*Spesialization) []spesializations.Domain {
 	var list []spesializations.Domain

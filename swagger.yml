@@ -691,7 +691,7 @@ paths:
                           type: string
                         url_image:
                           type: string
-                        course_id:
+                        id:
                           type: string
                           format: uuid
         '401':
