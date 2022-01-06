@@ -79,7 +79,7 @@ func TestUserUsecase_CreateUser(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.EMPTY_EMAIL, err)
 	})
-	t.Run("Test Case 2 | Name Empty", func(t *testing.T) {
+	t.Run("Test Case 2 | Title Empty", func(t *testing.T) {
 		setUpCreateUser()
 
 		_, err := userService.CreateUser(context.Background(), users.Domain{

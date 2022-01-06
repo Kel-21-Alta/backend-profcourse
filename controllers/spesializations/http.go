@@ -8,6 +8,8 @@ import (
 	controller "profcourse/controllers"
 	_requestCreateSpesialization "profcourse/controllers/spesializations/requests/createSpesialization"
 	_responseCreateSpesialization "profcourse/controllers/spesializations/resenponses/createSpesialization"
+	"profcourse/controllers/spesializations/resenponses/getAllSpesialization"
+	"strconv"
 )
 
 type SpesializationController struct {
@@ -16,6 +18,31 @@ type SpesializationController struct {
 
 func NewSpesializationController(usecase spesializations.Usecase) *SpesializationController {
 	return &SpesializationController{SpesializationUsecase: usecase}
+}
+
+func (sp *SpesializationController) GetAllSpesialization(c echo.Context) error {
+	ctx := c.Request().Context()
+	var domain spesializations.Domain
+	var err error
+
+	domain.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
+	domain.Offset, _ = strconv.Atoi(c.QueryParam("offset"))
+	domain.Sort = c.QueryParam("sort")
+	domain.SortBy = c.QueryParam("sortby")
+	domain.KeywordSearch = c.QueryParam("s")
+
+	// Usecase
+	clean, err := sp.SpesializationUsecase.GetAllSpesializations(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	if len(clean) <= 0 {
+		return controller.NewResponseSuccess(c, http.StatusOK, getAllSpesialization.ResponseMessage{Message: "Data Tidak ada"})
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllSpesialization.FromListDomain(clean))
 }
 
 func (sp *SpesializationController) CreateSpesialization(c echo.Context) error {
@@ -38,5 +65,5 @@ func (sp *SpesializationController) CreateSpesialization(c echo.Context) error {
 	if err != nil {
 		return controller.NewResponseError(c, err)
 	}
-	return controller.NewResponseSuccess(c, http.StatusCreated, _responseCreateSpesialization.FromDomain(clean))
+	return controller.NewResponseSuccess(c, http.StatusCreated, _responseCreateSpesialization.FromDomain(&clean))
 }

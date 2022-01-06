@@ -10,7 +10,7 @@ import (
 
 type Spesialization struct {
 	ID            string `gorm:"primaryKey;unique"`
-	Name          string `gorm:"not null;"`
+	Title         string `gorm:"not null;"`
 	Description   string `gorm:"not null"`
 	ImageUrl      string `gorm:"not null"`
 	CertificateId string
@@ -43,7 +43,7 @@ func FromDomain(domain *spesializations.Domain) *Spesialization {
 
 	return &Spesialization{
 		ID:            domain.ID,
-		Name:          domain.Name,
+		Title:         domain.Title,
 		Description:   domain.Description,
 		ImageUrl:      domain.ImageUrl,
 		CertificateId: domain.CertificateId,
@@ -53,14 +53,23 @@ func FromDomain(domain *spesializations.Domain) *Spesialization {
 	}
 }
 
-func (s Spesialization) ToDomain() *spesializations.Domain {
-	return &spesializations.Domain{
+func (s *Spesialization) ToDomain() spesializations.Domain {
+	return spesializations.Domain{
 		ID:            s.ID,
-		Name:          s.Name,
+		Title:         s.Title,
 		ImageUrl:      s.ImageUrl,
 		Description:   s.Description,
 		CreatedAt:     s.CreatedAt,
 		UpdatedAt:     s.UpdatedAt,
 		CertificateId: s.CertificateId,
 	}
+}
+
+func ToListDomain(s []*Spesialization) []spesializations.Domain {
+	var list []spesializations.Domain
+
+	for _, spesialization := range s {
+		list = append(list, spesialization.ToDomain())
+	}
+	return list
 }

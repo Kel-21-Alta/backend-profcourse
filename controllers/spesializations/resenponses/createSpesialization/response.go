@@ -14,11 +14,11 @@ type CreateSpesializationResponse struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
-func FromDomain(domain *spesializations.Domain) *CreateSpesializationResponse {
-	return &CreateSpesializationResponse{
+func FromDomain(domain *spesializations.Domain) CreateSpesializationResponse {
+	return CreateSpesializationResponse{
 		ID:          domain.ID,
 		UrlImage:    domain.ImageUrl,
-		Title:       domain.Name,
+		Title:       domain.Title,
 		Description: domain.Description,
 		Courses:     domain.Courses,
 		CreatedAt:   domain.CreatedAt,

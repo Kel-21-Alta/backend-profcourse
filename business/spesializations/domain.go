@@ -7,7 +7,7 @@ import (
 
 type Domain struct {
 	ID            string
-	Name          string
+	Title         string
 	ImageUrl      string
 	Description   string
 	CreatedAt     time.Time
@@ -15,12 +15,21 @@ type Domain struct {
 	CertificateId string
 	Courses       []string
 	MakerRole     int
+
+	//Params
+	Limit         int
+	SortBy        string
+	Sort          string
+	KeywordSearch string
+	Offset        int
 }
 
 type Repository interface {
-	CreateSpasialization(ctx context.Context, domain *Domain) (*Domain, error)
+	CreateSpasialization(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllSpesializations(ctx context.Context, domain *Domain) ([]Domain, error)
 }
 
 type Usecase interface {
-	CreateSpasialization(ctx context.Context, domain *Domain) (*Domain, error)
+	CreateSpasialization(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllSpesializations(ctx context.Context, domain *Domain) ([]Domain, error)
 }
