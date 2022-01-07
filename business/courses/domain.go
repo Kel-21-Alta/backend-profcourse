@@ -45,6 +45,8 @@ type Domain struct {
 	//Rangking/leaderboard
 	Rangking []Rangking
 
+	UserTakenCourse int
+
 	// Params
 	Limit         int
 	SortBy        string

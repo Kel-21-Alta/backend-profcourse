@@ -4,8 +4,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"profcourse/business/users_courses"
-	"profcourse/drivers/databases/courses"
-	"profcourse/drivers/databases/users"
 	"time"
 )
 
@@ -16,9 +14,10 @@ type UsersCourses struct {
 	Progress    int
 	LastVideoId string `gorm:"size:191"`
 	LastModulId string `gorm:"size:191"`
+	Skor        int    `gorm:"default:0"`
 
-	User   users.User      `gorm:"foreignKey:UserId;references:ID"`
-	Course courses.Courses `gorm:"foreignKey:CourseId;references:ID"`
+	//User   users.User      `gorm:"foreignKey:UserId;references:ID"`
+	//Course courses.Courses `gorm:"foreignKey:CourseId;references:ID"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

@@ -22,13 +22,28 @@ func (r *mysqlCourseRepository) GetCountCourse(ctx context.Context) (*courses.Su
 
 func (r *mysqlCourseRepository) GetOneCourse(ctx context.Context, domain *courses.Domain) (*courses.Domain, error) {
 	rec := Courses{}
+	count := 0
 
 	err := r.Conn.Preload(clause.Associations).First(&rec, " id = ?", domain.ID).Error
 	if err != nil {
 		return &courses.Domain{}, err
 	}
 
-	return rec.ToDomain(), err
+	resultDomain := rec.ToDomain()
+	var RegisteredUsers []RegisteredUser
+
+	// Mendapatkan jumlah user yang mengambil course
+	r.Conn.Table("courses").Select("COUNT(users_courses.id) as count").Joins("INNER JOIN users_courses ON users_courses.course_id = courses.id").Where("courses.id = ?", resultDomain.ID).Scan(&count)
+
+	resultDomain.UserTakenCourse = count
+
+	// Mendapatkan list user yang mengambil course untuk rangking
+	r.Conn.Table("courses").Select(" users_courses.user_id  as user_id, users.name as name_user, users_courses.skor as skor, users_courses.progress as progress").Joins("INNER JOIN users_courses ON users_courses.course_id = courses.id").Joins("INNER JOIN users ON users_courses.user_id = users.id").Where("courses.id = ?", resultDomain.ID).Order("users_courses.skor desc").Limit(10).Scan(&RegisteredUsers)
+
+	resultDomain.InfoUser = domain.InfoUser
+
+	result := FromRegiteredUserToDomain(resultDomain, RegisteredUsers)
+	return result, err
 }
 
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
