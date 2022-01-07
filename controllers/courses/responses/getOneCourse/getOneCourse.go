@@ -16,7 +16,7 @@ type Modul struct {
 type Ranking struct {
 	UserID   string `json:"user_id"`
 	NameUser string `json:"name_user"`
-	Skor     string `json:"skor"`
+	Skor     int    `json:"skor"`
 }
 
 type GetOneCourseResponses struct {
@@ -28,7 +28,7 @@ type GetOneCourseResponses struct {
 	Teacher         string          `json:"teacher"`
 	Moduls          []Modul         `json:"moduls"`
 	UserTakenCourse int             `json:"user_taken_course"`
-	Rangking        []Ranking `json:"rangking"`
+	Rangking        []Ranking       `json:"rangking"`
 }
 
 func FromDomain(domain *courses.Domain) *GetOneCourseResponses {
@@ -39,6 +39,16 @@ func FromDomain(domain *courses.Domain) *GetOneCourseResponses {
 		listModuls = append(listModuls, Modul{
 			NameModul: modul.NameModul,
 			ModulID:   modul.ModulID,
+		})
+	}
+
+	var listRangking []Ranking
+
+	for _, rangking := range domain.Rangking {
+		listRangking = append(listRangking, Ranking{
+			UserID:   rangking.UserId,
+			NameUser: rangking.NameUser,
+			Skor:     0,
 		})
 	}
 
@@ -53,6 +63,8 @@ func FromDomain(domain *courses.Domain) *GetOneCourseResponses {
 			IsRegister:  domain.InfoUser.IsRegister,
 			Progress:    domain.InfoUser.Progress,
 		},
-		Moduls: listModuls,
+		Moduls:          listModuls,
+		UserTakenCourse: domain.UserTakenCourse,
+		Rangking:        listRangking,
 	}
 }
