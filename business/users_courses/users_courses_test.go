@@ -49,18 +49,6 @@ func TestUsersCoursesUsecase_UserRegisterCourse(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.EMPTY_COURSE, err)
 	})
-	t.Run("Test Case 3 | Handle error db Get Endroll course User By id", func(t *testing.T) {
-		setupUserRegisterCourse()
-
-		usersCoursesRepository.On("GetEndRollCourseUserById", mock.Anything, mock.Anything).Return(&users_courses.Domain{}, errors.New("Error DB")).Once()
-
-		_, err := usersCoursesService.UserRegisterCourse(context.Background(), &users_courses.Domain{UserId: uuid.NewV4().String(), CourseId: uuid.NewV4().String()})
-
-		assert.NotNil(t, err)
-		assert.NotEqual(t, controller.EMPTY_COURSE, err)
-		assert.NotEqual(t, controller.EMPTY_USER, err)
-		assert.Equal(t, errors.New("Error DB"), err)
-	})
 	t.Run("Test Case 4 | Handle error user sudah mendaftar kursus", func(t *testing.T) {
 		setupUserRegisterCourse()
 

@@ -19,11 +19,7 @@ func (u *UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Do
 	}
 
 	// Untuk melakukan cek apakah user udah mendaftar apa belum
-	existedUserCourse, err := u.UsersCoursesRepository.GetEndRollCourseUserById(ctx, domain)
-
-	if err != nil {
-		return &Domain{}, err
-	}
+	existedUserCourse, _ := u.UsersCoursesRepository.GetEndRollCourseUserById(ctx, domain)
 
 	if *existedUserCourse != (Domain{}) {
 		return &Domain{}, controller.ALREADY_REGISTERED_COURSE
