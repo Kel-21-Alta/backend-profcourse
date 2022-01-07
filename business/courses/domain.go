@@ -11,6 +11,17 @@ type InfoCurrentUser struct {
 	Progress    int
 }
 
+type Modul struct {
+	NameModul string
+	ModulID   string
+}
+
+type Rangking struct {
+	UserId   string
+	NameUser string
+	Skor     int
+}
+
 type Domain struct {
 	ID          string
 	Title       string
@@ -27,6 +38,12 @@ type Domain struct {
 
 	// Info User yang saat ini login
 	InfoUser InfoCurrentUser
+
+	//Modul
+	Moduls []Modul
+
+	//Rangking/leaderboard
+	Rangking []Rangking
 
 	// Params
 	Limit         int
