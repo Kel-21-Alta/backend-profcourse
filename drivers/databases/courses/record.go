@@ -4,6 +4,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"profcourse/business/courses"
+	"profcourse/drivers/databases/moduls"
 	"profcourse/drivers/databases/users"
 	"time"
 )
@@ -26,6 +27,8 @@ type Courses struct {
 	StatusText  string
 
 	Teacher users.User `gorm:"foreignKey:TeacherId;references:ID"`
+
+	Moduls []moduls.Moduls `gorm:"foreignKey:CourseId;references:ID"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -58,6 +61,15 @@ func FromDomain(domain courses.Domain) *Courses {
 }
 
 func (c Courses) ToDomain() *courses.Domain {
+
+	var listModuls []courses.Modul
+	for _, modul := range c.Moduls {
+		listModuls = append(listModuls, courses.Modul{
+			NameModul: modul.Title,
+			ModulID:   modul.ID,
+		})
+	}
+
 	return &courses.Domain{
 		ID:          c.ID,
 		Title:       c.Title,
@@ -69,6 +81,7 @@ func (c Courses) ToDomain() *courses.Domain {
 		CreatedAt:   c.CreatedAt,
 		UpdatedAt:   c.UpdatedAt,
 		TeacherName: c.Teacher.Name,
+		Moduls:      listModuls,
 	}
 }
 
