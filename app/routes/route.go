@@ -39,12 +39,14 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.GET("courses/:courseid", cl.CourseController.GetOneCourse)
 	withJWT.GET("courses", cl.CourseController.GetAllCourses)
 
+	// untuk melakukan register course user
 	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
 
 	withJWT.POST("modul", cl.ModulController.CreateModul)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 
+	// spesailization
 	withJWT.POST("spesializations", cl.SpesializationController.CreateSpesialization)
 	withJWT.GET("spesializations/:spesializationid", cl.SpesializationController.GetOneSpesialization)
 	withJWT.GET("spesializations", cl.SpesializationController.GetAllSpesialization)

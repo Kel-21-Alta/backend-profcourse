@@ -21,9 +21,11 @@ func NewUsesrCoursesController(ucc users_courses.Usecase) *UsersCoursesControlle
 func (uc UsersCoursesController) UserRegisterCourse(c echo.Context) error {
 	var err error
 	var token *middlewares.JwtCustomClaims
+
 	ctx := c.Request().Context()
 	req := request.RegisterCourseRequest{}
 	token, err = middlewares.ExtractClaims(c)
+
 	if err != nil {
 		return controller.NewResponseError(c, err)
 	}
@@ -32,6 +34,7 @@ func (uc UsersCoursesController) UserRegisterCourse(c echo.Context) error {
 	}
 
 	domain := req.ToDomain()
+
 	domain.UserId = token.Userid
 	_, err = uc.UsersCoursesUsecase.UserRegisterCourse(ctx, domain)
 	if err != nil {
