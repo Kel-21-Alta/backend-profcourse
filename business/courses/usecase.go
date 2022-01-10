@@ -33,6 +33,9 @@ func (c *coursesUsecase) DeleteCourse(ctx context.Context, id string, token Toke
 }
 
 func (c *coursesUsecase) UpdateCourse(ctx context.Context, domain *Domain, token *Token) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
 	if domain.Title == "" {
 		return Domain{}, controller.TITLE_EMPTY
 	}

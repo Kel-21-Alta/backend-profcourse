@@ -37,6 +37,27 @@ func (_m *Usecase) CreateCourse(ctx context.Context, domain *courses.Domain) (*c
 	return r0, r1
 }
 
+// DeleteCourse provides a mock function with given fields: ctx, id, token
+func (_m *Usecase) DeleteCourse(ctx context.Context, id string, token courses.Token) (courses.Domain, error) {
+	ret := _m.Called(ctx, id, token)
+
+	var r0 courses.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, string, courses.Token) courses.Domain); ok {
+		r0 = rf(ctx, id, token)
+	} else {
+		r0 = ret.Get(0).(courses.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, courses.Token) error); ok {
+		r1 = rf(ctx, id, token)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetAllCourses provides a mock function with given fields: ctx, domain
 func (_m *Usecase) GetAllCourses(ctx context.Context, domain *courses.Domain) (*[]courses.Domain, error) {
 	ret := _m.Called(ctx, domain)
@@ -106,20 +127,20 @@ func (_m *Usecase) GetOneCourse(ctx context.Context, domain *courses.Domain) (*c
 	return r0, r1
 }
 
-// UpdateCourse provides a mock function with given fields: ctx, domain
-func (_m *Usecase) UpdateCourse(ctx context.Context, domain *courses.Domain) (courses.Domain, error) {
-	ret := _m.Called(ctx, domain)
+// UpdateCourse provides a mock function with given fields: ctx, domain, token
+func (_m *Usecase) UpdateCourse(ctx context.Context, domain *courses.Domain, token *courses.Token) (courses.Domain, error) {
+	ret := _m.Called(ctx, domain, token)
 
 	var r0 courses.Domain
-	if rf, ok := ret.Get(0).(func(context.Context, *courses.Domain) courses.Domain); ok {
-		r0 = rf(ctx, domain)
+	if rf, ok := ret.Get(0).(func(context.Context, *courses.Domain, *courses.Token) courses.Domain); ok {
+		r0 = rf(ctx, domain, token)
 	} else {
 		r0 = ret.Get(0).(courses.Domain)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *courses.Domain) error); ok {
-		r1 = rf(ctx, domain)
+	if rf, ok := ret.Get(1).(func(context.Context, *courses.Domain, *courses.Token) error); ok {
+		r1 = rf(ctx, domain, token)
 	} else {
 		r1 = ret.Error(1)
 	}
