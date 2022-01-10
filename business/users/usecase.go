@@ -54,7 +54,8 @@ func (u *userUsecase) UpdateUser(ctx context.Context, domain Domain) (Domain, er
 	if domain.IdUser == "" {
 		return Domain{}, controller.ID_EMPTY
 	}
-
+	domain.ID = domain.IdUser
+	domain.Role = 2
 	result, err := u.UserRepository.UpdateUser(ctx, domain)
 
 	if err != nil {

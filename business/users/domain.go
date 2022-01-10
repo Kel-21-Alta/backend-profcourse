@@ -43,6 +43,7 @@ type Usecase interface {
 	ChangePassword(ctx context.Context, domain Domain) (Domain, error)
 	DeleteUser(ctx context.Context, domain Domain) (Domain, error)
 	GetCountUser(ctx context.Context) (*Summary, error)
+	UpdateUser(ctx context.Context, domain Domain) (Domain, error)
 }
 
 type Repository interface {
@@ -51,5 +52,6 @@ type Repository interface {
 	UpdatePassword(ctx context.Context, domain Domain, hash string) (Domain, error)
 	GetUserById(ctx context.Context, id string) (Domain, error)
 	DeleteUser(ctx context.Context, domain Domain) (Domain, error)
+	UpdateUser(ctx context.Context, domain Domain) (Domain, error)
 	GetCountUser(ctx context.Context) (*Summary, error)
 }

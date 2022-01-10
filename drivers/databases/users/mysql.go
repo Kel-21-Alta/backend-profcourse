@@ -36,8 +36,7 @@ func (m mysqlUserRepository) UpdateUser(ctx context.Context, domain users.Domain
 	if result.Error != nil {
 		return users.Domain{}, result.Error
 	}
-	domain.Message = "Data user dengan id: " + domain.IdUser + " telah diubah"
-	return domain, nil
+	return rec.ToDomain(), nil
 }
 
 func (m mysqlUserRepository) GetUserById(ctx context.Context, id string) (users.Domain, error) {
