@@ -31,12 +31,22 @@ func (m mysqlUserRepository) DeleteUser(ctx context.Context, domain users.Domain
 }
 
 func (m mysqlUserRepository) UpdateUser(ctx context.Context, domain users.Domain) (users.Domain, error) {
-	rec := FromDomain(domain)
-	result := m.Conn.Where("id = ?", domain.IdUser).Updates(&rec)
+	first := User{}
+	err := m.Conn.First(&first, "id = ?", domain.ID).Error
+	first.Name = domain.Name
+	first.Email = domain.Email
+	first.NoHp = domain.NoHp
+	first.Bio = domain.Bio
+	first.Birth = domain.Birth
+	first.BirthPlace = domain.BirthPlace
+	result := m.Conn.Save(&first)
+	if err != nil {
+		return users.Domain{}, err
+	}
 	if result.Error != nil {
 		return users.Domain{}, result.Error
 	}
-	return rec.ToDomain(), nil
+	return first.ToDomain(), nil
 }
 
 func (m mysqlUserRepository) GetUserById(ctx context.Context, id string) (users.Domain, error) {

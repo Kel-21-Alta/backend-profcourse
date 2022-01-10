@@ -1,14 +1,15 @@
 package routes
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"profcourse/controllers/courses"
 	"profcourse/controllers/moduls"
 	"profcourse/controllers/spesializations"
 	"profcourse/controllers/summary"
 	"profcourse/controllers/users"
 	"profcourse/controllers/users_courses"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type ControllerList struct {
@@ -32,6 +33,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.Use(middleware.JWTWithConfig(cl.JWTMiddleware))
 	withJWT.POST("users", cl.UserController.CreateUser)
 	withJWT.DELETE("users/:userid", cl.UserController.DeleteUser)
+	withJWT.PUT("users/:userid", cl.UserController.UpdateUser)
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 

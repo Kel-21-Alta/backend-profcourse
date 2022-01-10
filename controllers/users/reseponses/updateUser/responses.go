@@ -25,6 +25,7 @@ func FromDomain(domain users.Domain) UserUpdated {
 		Name:       domain.Name,
 		Email:      domain.Email,
 		CreatedAt:  domain.CreatedAt,
+		UpdatedAt:  domain.UpdatedAt,
 		Role:       domain.Role,
 		RoleText:   domain.RoleText,
 		NoHp:       domain.NoHp,
