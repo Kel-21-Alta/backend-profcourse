@@ -5,13 +5,62 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"profcourse/business/courses"
+	controller "profcourse/controllers"
 )
 
 type mysqlCourseRepository struct {
 	Conn *gorm.DB
 }
 
-func (r *mysqlCourseRepository) UpdateCourse(ctx context.Context, domain *courses.Domain) (courses.Domain, error) {
+func (r *mysqlCourseRepository) DeleteCourseForUser(ctx context.Context, id string, token courses.Token) (courses.Domain, error) {
+	var rec Courses
+	var err error
+	err = r.Conn.First(&rec, "id = ?", id).Error
+	if rec.TeacherId != token.UserId {
+		return courses.Domain{}, controller.FORBIDDIN_USER
+	}
+	err = r.Conn.Delete(&rec).Error
+	if err != nil {
+		return courses.Domain{}, err
+	}
+	return courses.Domain{}, nil
+}
+
+func (r *mysqlCourseRepository) DeleteCourseForAdmin(ctx context.Context, id string) (courses.Domain, error) {
+	var rec Courses
+	err := r.Conn.Delete(&rec, "id = ?", id).Error
+	if err != nil {
+		return courses.Domain{}, err
+	}
+	return courses.Domain{}, nil
+}
+
+func (r *mysqlCourseRepository) UpdateCourseForUser(ctx context.Context, domain *courses.Domain, token *courses.Token) (courses.Domain, error) {
+	var rec Courses
+	var err error
+	err = r.Conn.First(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return courses.Domain{}, err
+	}
+
+	if rec.TeacherId != token.UserId {
+		return courses.Domain{}, controller.FORBIDDIN_USER
+	}
+
+	rec.Title = domain.Title
+	rec.Description = domain.Description
+	rec.ImgUrl = domain.ImgUrl
+
+	err = r.Conn.Save(&rec).Error
+	if err != nil {
+		return courses.Domain{}, err
+	}
+
+	return *rec.ToDomain(), err
+}
+
+func (r *mysqlCourseRepository) UpdateCourseForAdmin(ctx context.Context, domain *courses.Domain) (courses.Domain, error) {
 	var rec Courses
 	var err error
 	err = r.Conn.First(&rec, "id = ?", domain.ID).Error
@@ -22,7 +71,7 @@ func (r *mysqlCourseRepository) UpdateCourse(ctx context.Context, domain *course
 
 	rec.Title = domain.Title
 	rec.Description = domain.Description
-	rec.ImgUrl = domain.Description
+	rec.ImgUrl = domain.ImgUrl
 
 	err = r.Conn.Save(&rec).Error
 	if err != nil {
@@ -83,7 +132,11 @@ func Paginate(domain courses.Domain) func(db *gorm.DB) *gorm.DB {
 func (r *mysqlCourseRepository) GetAllCourses(ctx context.Context, domain *courses.Domain) (*[]courses.Domain, error) {
 	var coursesResult []*Courses
 	var err error
-	err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&coursesResult).Error
+	if domain.ParamStatus != 0 {
+		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Where("status = ?", domain.ParamStatus).Find(&coursesResult).Error
+	} else {
+		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&coursesResult).Error
+	}
 
 	if err != nil {
 		return &[]courses.Domain{}, err
