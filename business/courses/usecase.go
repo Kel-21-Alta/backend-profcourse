@@ -14,16 +14,16 @@ type coursesUsecase struct {
 
 func (c *coursesUsecase) UpdateCourse(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.Title == "" {
-		return Domain{}, nil
+		return Domain{}, controller.TITLE_EMPTY
 	}
 	if domain.Description == "" {
-		return Domain{}, nil
+		return Domain{}, controller.DESC_EMPTY
 	}
 	if domain.ImgUrl == "" {
-		return Domain{}, nil
+		return Domain{}, controller.IMAGE_EMPTY
 	}
 
-	result, err := c.UpdateCourse(ctx, domain)
+	result, err := c.CourseMysqlRepository.UpdateCourse(ctx, domain)
 
 	if err != nil {
 		return Domain{}, err
