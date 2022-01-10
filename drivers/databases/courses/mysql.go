@@ -16,7 +16,7 @@ func (r *mysqlCourseRepository) DeleteCourseForUser(ctx context.Context, id stri
 	var rec Courses
 	var err error
 	err = r.Conn.First(&rec, "id = ?", id).Error
-	if rec.ID != token.UserId {
+	if rec.TeacherId != token.UserId {
 		return courses.Domain{}, controller.FORBIDDIN_USER
 	}
 	err = r.Conn.Delete(&rec).Error
