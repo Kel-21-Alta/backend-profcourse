@@ -132,7 +132,11 @@ func Paginate(domain courses.Domain) func(db *gorm.DB) *gorm.DB {
 func (r *mysqlCourseRepository) GetAllCourses(ctx context.Context, domain *courses.Domain) (*[]courses.Domain, error) {
 	var coursesResult []*Courses
 	var err error
-	err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&coursesResult).Error
+	if domain.ParamStatus != 0 {
+		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Where("status = ?", domain.ParamStatus).Find(&coursesResult).Error
+	} else {
+		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.Sort+" "+domain.SortBy).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&coursesResult).Error
+	}
 
 	if err != nil {
 		return &[]courses.Domain{}, err

@@ -73,6 +73,7 @@ func (cc CourseController) GetAllCourses(c echo.Context) error {
 	domain.Sort = c.QueryParam("sort")
 	domain.SortBy = c.QueryParam("sortby")
 	domain.KeywordSearch = c.QueryParam("s")
+	domain.ParamStatus, _ = strconv.Atoi(c.QueryParam("status"))
 
 	// Usecase
 	clean, err := cc.CourseUsecase.GetAllCourses(ctx, &domain)

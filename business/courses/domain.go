@@ -53,6 +53,7 @@ type Domain struct {
 	Sort          string
 	KeywordSearch string
 	Offset        int
+	ParamStatus   int
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
