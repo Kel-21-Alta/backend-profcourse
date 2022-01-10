@@ -219,8 +219,8 @@ func setUpUpdateCourse() {
 func TestCoursesUsecase_UpdateCourse(t *testing.T) {
 	t.Run("Test case 1 | seuccess update course", func(t *testing.T) {
 		setUpUpdateCourse()
-		courseMysqlRepository.On("UpdateCourse", mock.Anything, mock.Anything).Return(courseDomain, nil).Once()
-		result, err := courseService.UpdateCourse(context.Background(), &courses.Domain{ID: "asdas",Title: "Docker Pemula", Description: "Docker untuk pemula", ImgUrl: "http://sdasd.com"})
+		courseMysqlRepository.On("UpdateCourseForAdmin", mock.Anything, mock.Anything).Return(courseDomain, nil).Once()
+		result, err := courseService.UpdateCourse(context.Background(), &courses.Domain{ID: "asdas", Title: "Docker Pemula", Description: "Docker untuk pemula", ImgUrl: "http://sdasd.com"})
 		assert.Nil(t, err)
 		assert.Equal(t, courseDomain.Title, result.Title)
 	})

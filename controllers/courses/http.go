@@ -85,6 +85,12 @@ func (cc CourseController) GetAllCourses(c echo.Context) error {
 }
 
 func (cc CourseController) UpdateCourse(c echo.Context) error {
+
+	token, err := middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
 	req := requests.UpdateCourse{}
 	if err := c.Bind(&req); err != nil {
 		return controller.NewResponseError(c, err)
@@ -92,7 +98,7 @@ func (cc CourseController) UpdateCourse(c echo.Context) error {
 	ctx := c.Request().Context()
 	domain := req.ToDomain()
 	domain.ID = c.Param("courseid")
-	clean, err := cc.CourseUsecase.UpdateCourse(ctx, domain)
+	clean, err := cc.CourseUsecase.UpdateCourse(ctx, domain, &courses.Token{UserId: token.Userid, Role: token.Role})
 
 	if err != nil {
 		return controller.NewResponseError(c, err)
@@ -102,10 +108,18 @@ func (cc CourseController) UpdateCourse(c echo.Context) error {
 
 func (cc CourseController) DeleteCourse(c echo.Context) error {
 	var id string
-
+	var err error
+	var token *middlewares.JwtCustomClaims
+	token, err = middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
 	id = c.Param("courseid")
 	ctx := c.Request().Context()
-	_, err := cc.CourseUsecase.DeleteCourse(ctx, id)
+	_, err = cc.CourseUsecase.DeleteCourse(ctx, id, courses.Token{
+		UserId: token.Userid,
+		Role:   token.Role,
+	})
 
 	if err != nil {
 		return controller.NewResponseError(c, err)

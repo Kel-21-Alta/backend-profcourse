@@ -5,13 +5,28 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"profcourse/business/courses"
+	controller "profcourse/controllers"
 )
 
 type mysqlCourseRepository struct {
 	Conn *gorm.DB
 }
 
-func (r *mysqlCourseRepository) DeleteCourse(ctx context.Context, id string) (courses.Domain, error) {
+func (r *mysqlCourseRepository) DeleteCourseForUser(ctx context.Context, id string, token courses.Token) (courses.Domain, error) {
+	var rec Courses
+	var err error
+	err = r.Conn.First(&rec, "id = ?", id).Error
+	if rec.ID != token.UserId {
+		return courses.Domain{}, controller.FORBIDDIN_USER
+	}
+	err = r.Conn.Delete(&rec).Error
+	if err != nil {
+		return courses.Domain{}, err
+	}
+	return courses.Domain{}, nil
+}
+
+func (r *mysqlCourseRepository) DeleteCourseForAdmin(ctx context.Context, id string) (courses.Domain, error) {
 	var rec Courses
 	err := r.Conn.Delete(&rec, "id = ?", id).Error
 	if err != nil {
@@ -20,7 +35,32 @@ func (r *mysqlCourseRepository) DeleteCourse(ctx context.Context, id string) (co
 	return courses.Domain{}, nil
 }
 
-func (r *mysqlCourseRepository) UpdateCourse(ctx context.Context, domain *courses.Domain) (courses.Domain, error) {
+func (r *mysqlCourseRepository) UpdateCourseForUser(ctx context.Context, domain *courses.Domain, token *courses.Token) (courses.Domain, error) {
+	var rec Courses
+	var err error
+	err = r.Conn.First(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return courses.Domain{}, err
+	}
+
+	if rec.TeacherId != token.UserId {
+		return courses.Domain{}, controller.FORBIDDIN_USER
+	}
+
+	rec.Title = domain.Title
+	rec.Description = domain.Description
+	rec.ImgUrl = domain.Description
+
+	err = r.Conn.Save(&rec).Error
+	if err != nil {
+		return courses.Domain{}, err
+	}
+
+	return *rec.ToDomain(), err
+}
+
+func (r *mysqlCourseRepository) UpdateCourseForAdmin(ctx context.Context, domain *courses.Domain) (courses.Domain, error) {
 	var rec Courses
 	var err error
 	err = r.Conn.First(&rec, "id = ?", domain.ID).Error

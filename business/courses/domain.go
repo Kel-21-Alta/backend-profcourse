@@ -62,13 +62,18 @@ type Summary struct {
 	CountCourse int
 }
 
+type Token struct {
+	UserId string
+	Role   int8
+}
+
 type Usecase interface {
 	CreateCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
 	GetCountCourse(ctx context.Context) (*Summary, error)
-	UpdateCourse(ctx context.Context, domain *Domain) (Domain, error)
-	DeleteCourse(ctx context.Context, id string) (Domain, error)
+	UpdateCourse(ctx context.Context, domain *Domain, token *Token) (Domain, error)
+	DeleteCourse(ctx context.Context, id string, token Token) (Domain, error)
 }
 
 type Repository interface {
@@ -76,6 +81,8 @@ type Repository interface {
 	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
 	GetCountCourse(ctx context.Context) (*Summary, error)
-	UpdateCourse(ctx context.Context, domain *Domain) (Domain, error)
-	DeleteCourse(ctx context.Context, id string) (Domain, error)
+	UpdateCourseForAdmin(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateCourseForUser(ctx context.Context, domain *Domain, token *Token) (Domain, error)
+	DeleteCourseForAdmin(ctx context.Context, id string) (Domain, error)
+	DeleteCourseForUser(ctx context.Context, id string, token Token) (Domain, error)
 }

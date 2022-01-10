@@ -12,11 +12,18 @@ type coursesUsecase struct {
 	ContextTimeOut        time.Duration
 }
 
-func (c *coursesUsecase) DeleteCourse(ctx context.Context, id string) (Domain, error) {
+func (c *coursesUsecase) DeleteCourse(ctx context.Context, id string, token Token) (Domain, error) {
+	var err error
+	var result Domain
 	if id == "" {
 		return Domain{}, controller.ID_EMPTY
 	}
-	result, err := c.CourseMysqlRepository.DeleteCourse(ctx, id)
+
+	if token.Role == 1 {
+		result, err = c.CourseMysqlRepository.DeleteCourseForAdmin(ctx, id)
+	} else {
+		result, err = c.CourseMysqlRepository.DeleteCourseForUser(ctx, id, token)
+	}
 
 	if err != nil {
 		return Domain{}, err
@@ -25,7 +32,7 @@ func (c *coursesUsecase) DeleteCourse(ctx context.Context, id string) (Domain, e
 	return result, nil
 }
 
-func (c *coursesUsecase) UpdateCourse(ctx context.Context, domain *Domain) (Domain, error) {
+func (c *coursesUsecase) UpdateCourse(ctx context.Context, domain *Domain, token *Token) (Domain, error) {
 	if domain.Title == "" {
 		return Domain{}, controller.TITLE_EMPTY
 	}
@@ -36,7 +43,14 @@ func (c *coursesUsecase) UpdateCourse(ctx context.Context, domain *Domain) (Doma
 		return Domain{}, controller.IMAGE_EMPTY
 	}
 
-	result, err := c.CourseMysqlRepository.UpdateCourse(ctx, domain)
+	var err error
+	var result Domain
+
+	if token.Role == 1 {
+		result, err = c.CourseMysqlRepository.UpdateCourseForAdmin(ctx, domain)
+	} else {
+		result, err = c.CourseMysqlRepository.UpdateCourseForUser(ctx, domain, token)
+	}
 
 	if err != nil {
 		return Domain{}, err

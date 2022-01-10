@@ -37,6 +37,27 @@ func (_m *Repository) CreateCourse(ctx context.Context, domain *courses.Domain) 
 	return r0, r1
 }
 
+// DeleteCourse provides a mock function with given fields: ctx, id
+func (_m *Repository) DeleteCourse(ctx context.Context, id string) (courses.Domain, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 courses.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, string) courses.Domain); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(courses.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetAllCourses provides a mock function with given fields: ctx, domain
 func (_m *Repository) GetAllCourses(ctx context.Context, domain *courses.Domain) (*[]courses.Domain, error) {
 	ret := _m.Called(ctx, domain)
