@@ -39,6 +39,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.POST("courses", cl.CourseController.CreateCourse)
 	withJWT.GET("courses/:courseid", cl.CourseController.GetOneCourse)
 	withJWT.PUT("courses/:courseid", cl.CourseController.UpdateCourse)
+	withJWT.DELETE("courses/:courseid", cl.CourseController.DeleteCourse)
 	withJWT.GET("courses", cl.CourseController.GetAllCourses)
 
 	// untuk melakukan register course user

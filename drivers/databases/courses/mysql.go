@@ -11,6 +11,15 @@ type mysqlCourseRepository struct {
 	Conn *gorm.DB
 }
 
+func (r *mysqlCourseRepository) DeleteCourse(ctx context.Context, id string) (courses.Domain, error) {
+	var rec Courses
+	err := r.Conn.Delete(&rec, "id = ?", id).Error
+	if err != nil {
+		return courses.Domain{}, err
+	}
+	return courses.Domain{}, nil
+}
+
 func (r *mysqlCourseRepository) UpdateCourse(ctx context.Context, domain *courses.Domain) (courses.Domain, error) {
 	var rec Courses
 	var err error

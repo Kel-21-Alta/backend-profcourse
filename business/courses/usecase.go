@@ -12,6 +12,19 @@ type coursesUsecase struct {
 	ContextTimeOut        time.Duration
 }
 
+func (c *coursesUsecase) DeleteCourse(ctx context.Context, id string) (Domain, error) {
+	if id == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	result, err := c.CourseMysqlRepository.DeleteCourse(ctx, id)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (c *coursesUsecase) UpdateCourse(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.Title == "" {
 		return Domain{}, controller.TITLE_EMPTY

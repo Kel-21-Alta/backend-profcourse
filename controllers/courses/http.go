@@ -8,6 +8,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/courses/requests"
 	"profcourse/controllers/courses/responses/createCourse"
+	"profcourse/controllers/courses/responses/deletecourse"
 	"profcourse/controllers/courses/responses/getAllCourses"
 	"profcourse/controllers/courses/responses/getOneCourse"
 	"profcourse/controllers/courses/responses/updateCourse"
@@ -97,4 +98,18 @@ func (cc CourseController) UpdateCourse(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 	return controller.NewResponseSuccess(c, http.StatusOK, updateCourse.FromDomain(clean))
+}
+
+func (cc CourseController) DeleteCourse(c echo.Context) error {
+	var id string
+
+	id = c.Param("courseid")
+	ctx := c.Request().Context()
+	_, err := cc.CourseUsecase.DeleteCourse(ctx, id)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, deletecourse.DeleteCourseResponse{Message: "Kursus berhasil dihapus"})
 }
