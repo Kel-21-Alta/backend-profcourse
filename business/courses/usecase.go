@@ -29,6 +29,13 @@ func (c *coursesUsecase) UpdateCourse(ctx context.Context, domain *Domain) (Doma
 		return Domain{}, err
 	}
 
+	if int8(result.Status) == 1 {
+		result.StatusText = "Publish"
+	} else if int8(result.Status) == 3 {
+		result.StatusText = "Pending"
+	} else if int8(result.Status) == 2 {
+		result.StatusText = "Draft"
+	}
 	return result, nil
 }
 

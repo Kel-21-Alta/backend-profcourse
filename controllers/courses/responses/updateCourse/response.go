@@ -16,15 +16,6 @@ type UpdateCourseResponse struct {
 }
 
 func FromDomain(domain courses.Domain) *UpdateCourseResponse {
-	var statusText string
-
-	if int8(domain.Status) == 1 {
-		statusText = "Publish"
-	} else if int8(domain.Status) == 3 {
-		statusText = "Pending"
-	} else if int8(domain.Status) == 2 {
-		statusText = "Draft"
-	}
 
 	return &UpdateCourseResponse{
 		ID:          domain.ID,
@@ -33,6 +24,6 @@ func FromDomain(domain courses.Domain) *UpdateCourseResponse {
 		UrlImage:    domain.ImgUrl,
 		CreatedAt:   domain.CreatedAt,
 		UpdatedAt:   domain.UpdatedAt,
-		Status:      statusText,
+		Status:      domain.StatusText,
 	}
 }

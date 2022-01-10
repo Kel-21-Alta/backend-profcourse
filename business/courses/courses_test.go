@@ -198,3 +198,30 @@ func TestCoursesUsecase_GetOneCourse(t *testing.T) {
 		assert.NotNil(t, err)
 	})
 }
+
+func setUpUpdateCourse() {
+	courseService = courses.NewCourseUseCase(&courseMysqlRepository, time.Hour*1)
+	courseDomain = courses.Domain{
+		ID:            uuid.NewV4().String(),
+		Title:         "Docker Pemula",
+		Description:   "Docker untuk pemula",
+		ImgUrl:        "./public/img/courses/iahguid.png",
+		TeacherId:     uuid.NewV4().String(),
+		TeacherName:   "",
+		Status:        2,
+		StatusText:    "",
+		CertificateId: "",
+		CreatedAt:     time.Time{},
+		UpdatedAt:     time.Time{},
+	}
+}
+
+func TestCoursesUsecase_UpdateCourse(t *testing.T) {
+	t.Run("Test case 1 | seuccess update course", func(t *testing.T) {
+		setUpUpdateCourse()
+		courseMysqlRepository.On("UpdateCourse", mock.Anything, mock.Anything).Return(courseDomain, nil).Once()
+		result, err := courseService.UpdateCourse(context.Background(), &courses.Domain{ID: "asdas",Title: "Docker Pemula", Description: "Docker untuk pemula", ImgUrl: "http://sdasd.com"})
+		assert.Nil(t, err)
+		assert.Equal(t, courseDomain.Title, result.Title)
+	})
+}
