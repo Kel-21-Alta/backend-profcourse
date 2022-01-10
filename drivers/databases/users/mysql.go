@@ -2,8 +2,9 @@ package users
 
 import (
 	"context"
-	"gorm.io/gorm"
 	"profcourse/business/users"
+
+	"gorm.io/gorm"
 )
 
 type mysqlUserRepository struct {
@@ -26,6 +27,16 @@ func (m mysqlUserRepository) DeleteUser(ctx context.Context, domain users.Domain
 		return users.Domain{}, result.Error
 	}
 	domain.Message = "User dengan id: " + domain.IdUser + " telah dihapus"
+	return domain, nil
+}
+
+func (m mysqlUserRepository) UpdateUser(ctx context.Context, domain users.Domain) (users.Domain, error) {
+	rec := FromDomain(domain)
+	result := m.Conn.Where("id = ?", domain.IdUser).Updates(&rec)
+	if result.Error != nil {
+		return users.Domain{}, result.Error
+	}
+	domain.Message = "Data user dengan id: " + domain.IdUser + " telah diubah"
 	return domain, nil
 }
 
