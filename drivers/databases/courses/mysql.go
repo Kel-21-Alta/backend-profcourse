@@ -11,6 +11,27 @@ type mysqlCourseRepository struct {
 	Conn *gorm.DB
 }
 
+func (r *mysqlCourseRepository) UpdateCourse(ctx context.Context, domain *courses.Domain) (courses.Domain, error) {
+	var rec Courses
+	var err error
+	err = r.Conn.First(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return courses.Domain{}, err
+	}
+
+	rec.Title = domain.Title
+	rec.Description = domain.Description
+	rec.ImgUrl = domain.Description
+
+	err = r.Conn.Save(&rec).Error
+	if err != nil {
+		return courses.Domain{}, err
+	}
+
+	return *rec.ToDomain(), err
+}
+
 func (r *mysqlCourseRepository) GetCountCourse(ctx context.Context) (*courses.Summary, error) {
 	result := 0
 	err := r.Conn.Raw("SELECT COUNT(*) as result FROM courses").Scan(&result).Error

@@ -105,3 +105,24 @@ func (_m *Usecase) GetOneCourse(ctx context.Context, domain *courses.Domain) (*c
 
 	return r0, r1
 }
+
+// UpdateCourse provides a mock function with given fields: ctx, domain
+func (_m *Usecase) UpdateCourse(ctx context.Context, domain *courses.Domain) (courses.Domain, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 courses.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, *courses.Domain) courses.Domain); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(courses.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *courses.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

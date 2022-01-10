@@ -35,8 +35,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
+	// course
 	withJWT.POST("courses", cl.CourseController.CreateCourse)
 	withJWT.GET("courses/:courseid", cl.CourseController.GetOneCourse)
+	withJWT.PUT("courses/:courseid", cl.CourseController.UpdateCourse)
 	withJWT.GET("courses", cl.CourseController.GetAllCourses)
 
 	// untuk melakukan register course user

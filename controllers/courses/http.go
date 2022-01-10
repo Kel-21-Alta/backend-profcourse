@@ -10,6 +10,7 @@ import (
 	"profcourse/controllers/courses/responses/createCourse"
 	"profcourse/controllers/courses/responses/getAllCourses"
 	"profcourse/controllers/courses/responses/getOneCourse"
+	"profcourse/controllers/courses/responses/updateCourse"
 	"strconv"
 )
 
@@ -80,4 +81,20 @@ func (cc CourseController) GetAllCourses(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getAllCourses.FromListDomain(clean))
+}
+
+func (cc CourseController) UpdateCourse(c echo.Context) error {
+	req := requests.UpdateCourse{}
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	ctx := c.Request().Context()
+	domain := req.ToDomain()
+	domain.ID = c.Param("courseid")
+	clean, err := cc.CourseUsecase.UpdateCourse(ctx, domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, updateCourse.FromDomain(clean))
 }
