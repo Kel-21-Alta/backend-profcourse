@@ -50,7 +50,7 @@ func (r *mysqlCourseRepository) UpdateCourseForUser(ctx context.Context, domain 
 
 	rec.Title = domain.Title
 	rec.Description = domain.Description
-	rec.ImgUrl = domain.Description
+	rec.ImgUrl = domain.ImgUrl
 
 	err = r.Conn.Save(&rec).Error
 	if err != nil {
@@ -71,7 +71,7 @@ func (r *mysqlCourseRepository) UpdateCourseForAdmin(ctx context.Context, domain
 
 	rec.Title = domain.Title
 	rec.Description = domain.Description
-	rec.ImgUrl = domain.Description
+	rec.ImgUrl = domain.ImgUrl
 
 	err = r.Conn.Save(&rec).Error
 	if err != nil {
