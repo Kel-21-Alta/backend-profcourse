@@ -67,6 +67,7 @@ type Usecase interface {
 	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
 	GetCountCourse(ctx context.Context) (*Summary, error)
+	UpdateCourse(ctx context.Context, domain *Domain) (Domain,error)
 }
 
 type Repository interface {
@@ -74,4 +75,5 @@ type Repository interface {
 	GetOneCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetAllCourses(ctx context.Context, domain *Domain) (*[]Domain, error)
 	GetCountCourse(ctx context.Context) (*Summary, error)
+	UpdateCourse(ctx context.Context, domain *Domain) (Domain,error)
 }
