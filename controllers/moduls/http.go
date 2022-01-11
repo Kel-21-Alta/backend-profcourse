@@ -26,11 +26,14 @@ func (ctr ModulController) CreateModul(c echo.Context) error {
 	}
 	// Mendapatkan siapa user yang membuat modul
 	token, err := middlewares.ExtractClaims(c)
+
 	if err != nil {
 		return controller.NewResponseError(c, err)
 	}
+
 	domain := req.ToDomain()
-	domain.UserId = token.Userid
+	domain.UserMakeModul = token.Userid
+	domain.RoleUser = token.Role
 
 	// Usecase
 	ctx := c.Request().Context()
@@ -39,5 +42,5 @@ func (ctr ModulController) CreateModul(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 
-	return controller.NewResponseSuccess(c, http.StatusCreated, createModul.FromDomain(clean))
+	return controller.NewResponseSuccess(c, http.StatusCreated, createModul.FromDomain(&clean))
 }

@@ -19,7 +19,7 @@ var usersCoursesService users_courses.Usecase
 var usersCoursesDomain users_courses.Domain
 
 func setupUserRegisterCourse() {
-	usersCoursesService = users_courses.NewUsersCoursesUsecase(&usersCoursesRepository)
+	usersCoursesService = users_courses.NewUsersCoursesUsecase(&usersCoursesRepository, time.Hour*1)
 	usersCoursesDomain = users_courses.Domain{
 		ID:          uuid.NewV4().String(),
 		UserId:      uuid.NewV4().String(),

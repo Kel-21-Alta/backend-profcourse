@@ -8,15 +8,14 @@ import (
 )
 
 type Moduls struct {
-	ID       string `gorm:"primaryKey;unique"`
-	Title    string `gorm:"not null"`
-	Order    int    `gorm:"not null"`
-	CourseId string `gorm:"not null;size:191"`
+	ID        string `gorm:"primaryKey;unique"`
+	Title     string `gorm:"not null"`
+	Order     int    `gorm:"not null"`
+	CourseId  string `gorm:"not null;size:191"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
 }
-
 
 func (c *Moduls) BeforeCreate(db *gorm.DB) error {
 	c.ID = uuid.NewV4().String()
@@ -29,8 +28,8 @@ func (c *Moduls) BeforeUpdate(db *gorm.DB) error {
 	return nil
 }
 
-func (c Moduls) ToDomain() *moduls.Domain {
-	return &moduls.Domain{
+func (c Moduls) ToDomain() moduls.Domain {
+	return moduls.Domain{
 		ID:        c.ID,
 		Title:     c.Title,
 		Order:     c.Order,
@@ -42,8 +41,8 @@ func (c Moduls) ToDomain() *moduls.Domain {
 
 func FromDomain(domain *moduls.Domain) *Moduls {
 	return &Moduls{
-		Title:     domain.Title,
-		Order:     domain.Order,
-		CourseId:  domain.CourseId,
+		Title:    domain.Title,
+		Order:    domain.Order,
+		CourseId: domain.CourseId,
 	}
 }
