@@ -8,7 +8,6 @@ import (
 type UpdateUserRequest struct {
 	IdUser     string    `json:"user_id"`
 	Name       string    `json:"name"`
-	Email      string    `json:"email"`
 	Role       int8      `json:"role"`
 	NoHp       string    `json:"noHp"`
 	Bio        string    `json:"bio"`
@@ -20,7 +19,6 @@ func (u *UpdateUserRequest) ToDomain() *users.Domain {
 	return &users.Domain{
 		IdUser:     u.IdUser,
 		Role:       u.Role,
-		Email:      u.Email,
 		Name:       u.Name,
 		NoHp:       u.NoHp,
 		Bio:        u.Bio,

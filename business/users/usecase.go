@@ -54,6 +54,13 @@ func (u *userUsecase) UpdateUser(ctx context.Context, domain Domain) (Domain, er
 	if domain.IdUser == "" {
 		return Domain{}, controller.ID_EMPTY
 	}
+	if domain.ID == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	// Cek apakah Nama dikosongkan
+	if domain.Name == "" {
+		return Domain{}, controller.EMPTY_NAME
+	}
 	domain.ID = domain.IdUser
 	domain.Role = 2
 	result, err := u.UserRepository.UpdateUser(ctx, domain)

@@ -34,7 +34,6 @@ func (m mysqlUserRepository) UpdateUser(ctx context.Context, domain users.Domain
 	first := User{}
 	err := m.Conn.First(&first, "id = ?", domain.ID).Error
 	first.Name = domain.Name
-	first.Email = domain.Email
 	first.NoHp = domain.NoHp
 	first.Bio = domain.Bio
 	first.Birth = domain.Birth
