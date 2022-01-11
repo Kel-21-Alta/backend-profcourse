@@ -8,6 +8,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/moduls/request"
 	"profcourse/controllers/moduls/responses/createModul"
+	"profcourse/controllers/moduls/responses/getOneModul"
 )
 
 type ModulController struct {
@@ -26,11 +27,14 @@ func (ctr ModulController) CreateModul(c echo.Context) error {
 	}
 	// Mendapatkan siapa user yang membuat modul
 	token, err := middlewares.ExtractClaims(c)
+
 	if err != nil {
 		return controller.NewResponseError(c, err)
 	}
+
 	domain := req.ToDomain()
-	domain.UserId = token.Userid
+	domain.UserMakeModul = token.Userid
+	domain.RoleUser = token.Role
 
 	// Usecase
 	ctx := c.Request().Context()
@@ -39,5 +43,17 @@ func (ctr ModulController) CreateModul(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 
-	return controller.NewResponseSuccess(c, http.StatusCreated, createModul.FromDomain(clean))
+	return controller.NewResponseSuccess(c, http.StatusCreated, createModul.FromDomain(&clean))
+}
+
+func (ctr ModulController) GetOneModul(c echo.Context) error {
+
+	ctx := c.Request().Context()
+	clean, err := ctr.ModulsUsecase.GetOneModul(ctx, &moduls.Domain{ID: c.Param("modulid")})
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getOneModul.FromDomain(&clean))
 }

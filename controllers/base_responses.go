@@ -28,13 +28,13 @@ func NewResponseError(c echo.Context, err error) error {
 	response := BaseResponse{
 		Code:    status,
 		Message: err.Error(),
-		Data:   DataError{Message: err.Error()} ,
+		Data:    DataError{Message: err.Error()},
 	}
 	return c.JSON(status, response)
 }
 
 func CheckStatus(err error) int {
-	if err == COURSES_SPESIALIZATION_EMPTY || err == BAD_REQUEST || err == EMPTY_COURSE || err == ALREADY_REGISTERED_COURSE || err == ORDER_MODUL_EMPTY || err == INVALID_PARAMS || err == TITLE_EMPTY || err == DESC_EMPTY || err == INVALID_FILE || err == EMPTY_EMAIL || err == EMPTY_NAME || err == INVALID_EMAIL || err == EMAIL_UNIQUE || err == PASSWORD_EMPTY {
+	if err == EMPTY_MODUL_ID || err == COURSES_SPESIALIZATION_EMPTY || err == BAD_REQUEST || err == EMPTY_COURSE || err == ALREADY_REGISTERED_COURSE || err == ORDER_MODUL_EMPTY || err == INVALID_PARAMS || err == TITLE_EMPTY || err == DESC_EMPTY || err == INVALID_FILE || err == EMPTY_EMAIL || err == EMPTY_NAME || err == INVALID_EMAIL || err == EMAIL_UNIQUE || err == PASSWORD_EMPTY {
 		return http.StatusBadRequest
 	}
 	if err == FORBIDDIN_USER || err == WRONG_PASSWORD || err == WRONG_EMAIL {

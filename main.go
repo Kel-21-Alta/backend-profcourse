@@ -23,6 +23,7 @@ import (
 	_usersCourseController "profcourse/controllers/users_courses"
 	_driversFectory "profcourse/drivers"
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
+	_materiesMysqlRepo "profcourse/drivers/databases/materies"
 	_modulsMysqlRepo "profcourse/drivers/databases/moduls"
 	_spesializationMysqlRepo "profcourse/drivers/databases/spesialization"
 	_userMysqlRepo "profcourse/drivers/databases/users"
@@ -51,6 +52,7 @@ func DbMigration(db *gorm.DB) {
 		&_usersCourseMysqlRepo.UsersCourses{},
 		&_modulsMysqlRepo.Moduls{},
 		&_spesializationMysqlRepo.Spesialization{},
+		&_materiesMysqlRepo.Materi{},
 	)
 
 	if err != nil {
@@ -93,10 +95,6 @@ func main() {
 
 	smtpRepository := _driversFectory.NewSmtpRepository(congfigSmtp)
 
-	mysqlModulRepository := _driversFectory.NewMysqlModulRepository(conn)
-	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository)
-	modulCtrl := _modulController.NewModulsController(modulUsecase)
-
 	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
 	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository, configJwt)
 	userCtrl := _userController.NewUserController(userUsecase)
@@ -106,7 +104,7 @@ func main() {
 	couserCtrl := courses.NewCourseController(courseUsecase)
 
 	mysqlUserCourseRepository := _driversFectory.NewMysqlUserCourseRepository(conn)
-	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository)
+	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository, timeout)
 	userCourseController := _usersCourseController.NewUsesrCoursesController(userCourseUsecase)
 
 	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout, courseUsecase, userUsecase)
@@ -115,6 +113,10 @@ func main() {
 	mysqlSpesializationRepository := _driversFectory.NewMysqlSpesializationRepository(conn)
 	spesializationUsecae := _spesializationUsecase.NewSpesializationUsecase(mysqlSpesializationRepository, timeout)
 	spesializationController := _spesializationsController.NewSpesializationController(spesializationUsecae)
+
+	mysqlModulRepository := _driversFectory.NewMysqlModulRepository(conn)
+	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository, courseUsecase, timeout)
+	modulCtrl := _modulController.NewModulsController(modulUsecase)
 
 	routesInit := routes.ControllerList{
 		UserController:           *userCtrl,
