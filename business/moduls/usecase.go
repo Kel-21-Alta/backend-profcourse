@@ -13,6 +13,19 @@ type modulUsecase struct {
 	CourseUsecase   courses.Usecase
 }
 
+func (m *modulUsecase) GetOneModul(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.EMPTY_MODUL_ID
+	}
+
+	result, err := m.ModulRepository.GetOneModul(ctx, domain)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (m *modulUsecase) CreateModul(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.Title == "" {
 		return Domain{}, controller.TITLE_EMPTY

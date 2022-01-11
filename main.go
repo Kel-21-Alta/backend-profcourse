@@ -23,6 +23,7 @@ import (
 	_usersCourseController "profcourse/controllers/users_courses"
 	_driversFectory "profcourse/drivers"
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
+	_materiesMysqlRepo "profcourse/drivers/databases/materies"
 	_modulsMysqlRepo "profcourse/drivers/databases/moduls"
 	_spesializationMysqlRepo "profcourse/drivers/databases/spesialization"
 	_userMysqlRepo "profcourse/drivers/databases/users"
@@ -51,6 +52,7 @@ func DbMigration(db *gorm.DB) {
 		&_usersCourseMysqlRepo.UsersCourses{},
 		&_modulsMysqlRepo.Moduls{},
 		&_spesializationMysqlRepo.Spesialization{},
+		&_materiesMysqlRepo.Materi{},
 	)
 
 	if err != nil {

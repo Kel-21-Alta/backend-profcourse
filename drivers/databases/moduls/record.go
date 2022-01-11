@@ -4,6 +4,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"profcourse/business/moduls"
+	"profcourse/drivers/databases/materies"
 	"time"
 )
 
@@ -15,6 +16,8 @@ type Moduls struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
+
+	Materies []materies.Materi `gorm:"foreignKey:ModulID;references:ID"`
 }
 
 func (c *Moduls) BeforeCreate(db *gorm.DB) error {
@@ -29,13 +32,28 @@ func (c *Moduls) BeforeUpdate(db *gorm.DB) error {
 }
 
 func (c Moduls) ToDomain() moduls.Domain {
+	var listMateri []moduls.Materi
+	var jumlahMateri int
+	for _, materi := range c.Materies {
+		jumlahMateri++
+		listMateri = append(listMateri, moduls.Materi{
+			UrlMateri:   materi.UrlMateri,
+			Type:        string(materi.Type),
+			Title:       materi.Title,
+			Order:       materi.Order,
+			IsComplate:  false,
+			CurrentTime: "",
+		})
+	}
 	return moduls.Domain{
-		ID:        c.ID,
-		Title:     c.Title,
-		Order:     c.Order,
-		CourseId:  c.CourseId,
-		CreatedAt: c.CreatedAt,
-		UpdatedAt: c.UpdatedAt,
+		ID:           c.ID,
+		Title:        c.Title,
+		Order:        c.Order,
+		CourseId:     c.CourseId,
+		CreatedAt:    c.CreatedAt,
+		UpdatedAt:    c.UpdatedAt,
+		JumlahMateri: jumlahMateri,
+		Materi:       listMateri,
 	}
 }
 

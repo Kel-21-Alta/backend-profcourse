@@ -10,6 +10,17 @@ type mysqlModulsRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlModulsRepository) GetOneModul(ctx context.Context, domain *moduls.Domain) (moduls.Domain, error) {
+	var rec Moduls
+	err := m.Conn.Preload("Materies").First(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return moduls.Domain{}, err
+	}
+
+	return rec.ToDomain(), nil
+}
+
 func (m mysqlModulsRepository) CreateModul(ctx context.Context, domain *moduls.Domain) (moduls.Domain, error) {
 	var err error
 	rec := FromDomain(domain)
@@ -22,6 +33,6 @@ func (m mysqlModulsRepository) CreateModul(ctx context.Context, domain *moduls.D
 	return rec.ToDomain(), nil
 }
 
-func NewMysqlRepository(conn *gorm.DB) *mysqlModulsRepository {
-	return &mysqlModulsRepository{Conn: conn}
+func NewMysqlRepository(conn *gorm.DB) moduls.Repository {
+	return mysqlModulsRepository{Conn: conn}
 }
