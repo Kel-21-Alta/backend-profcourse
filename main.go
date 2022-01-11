@@ -95,6 +95,10 @@ func main() {
 
 	smtpRepository := _driversFectory.NewSmtpRepository(congfigSmtp)
 
+	mysqlModulRepository := _driversFectory.NewMysqlModulRepository(conn)
+	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository)
+	modulCtrl := _modulController.NewModulsController(modulUsecase)
+
 	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
 	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository, configJwt)
 	userCtrl := _userController.NewUserController(userUsecase)
@@ -104,7 +108,7 @@ func main() {
 	couserCtrl := courses.NewCourseController(courseUsecase)
 
 	mysqlUserCourseRepository := _driversFectory.NewMysqlUserCourseRepository(conn)
-	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository, timeout)
+	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository)
 	userCourseController := _usersCourseController.NewUsesrCoursesController(userCourseUsecase)
 
 	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout, courseUsecase, userUsecase)
@@ -113,10 +117,6 @@ func main() {
 	mysqlSpesializationRepository := _driversFectory.NewMysqlSpesializationRepository(conn)
 	spesializationUsecae := _spesializationUsecase.NewSpesializationUsecase(mysqlSpesializationRepository, timeout)
 	spesializationController := _spesializationsController.NewSpesializationController(spesializationUsecae)
-
-	mysqlModulRepository := _driversFectory.NewMysqlModulRepository(conn)
-	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository, courseUsecase, timeout)
-	modulCtrl := _modulController.NewModulsController(modulUsecase)
 
 	routesInit := routes.ControllerList{
 		UserController:           *userCtrl,

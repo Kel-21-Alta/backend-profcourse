@@ -3,12 +3,10 @@ package users_courses
 import (
 	"context"
 	controller "profcourse/controllers"
-	"time"
 )
 
 type UsersCoursesUsecase struct {
 	UsersCoursesRepository Repository
-	ContextTime            time.Duration
 }
 
 func (u *UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Domain) (*Domain, error) {
@@ -36,6 +34,6 @@ func (u *UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Do
 	return userCourseDomain, nil
 }
 
-func NewUsersCoursesUsecase(r Repository, timeout time.Duration) Usecase {
-	return &UsersCoursesUsecase{UsersCoursesRepository: r, ContextTime: timeout}
+func NewUsersCoursesUsecase(r Repository) Usecase {
+	return &UsersCoursesUsecase{UsersCoursesRepository: r}
 }

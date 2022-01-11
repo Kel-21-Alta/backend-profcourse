@@ -11,6 +11,7 @@ type Domain struct {
 	Order    int
 	CourseId string
 
+<<<<<<< HEAD
 	Materi       []Materi
 	JumlahMateri int
 
@@ -18,6 +19,12 @@ type Domain struct {
 	RoleUser      int8
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+=======
+	UserId           string
+	UserIdMakeCourse string
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+>>>>>>> parent of f53e0f5... selesai membuat enpoint create modul
 }
 
 type Materi struct {
@@ -30,6 +37,7 @@ type Materi struct {
 }
 
 type Usecase interface {
+<<<<<<< HEAD
 	CreateModul(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneModul(ctx context.Context, domain *Domain) (Domain, error)
 }
@@ -37,4 +45,11 @@ type Usecase interface {
 type Repository interface {
 	CreateModul(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneModul(ctx context.Context, domain *Domain) (Domain, error)
+=======
+	CreateModul(ctx context.Context, domain *Domain) (*Domain, error)
+}
+
+type Repository interface {
+	CreateModul(ctx context.Context, domain *Domain) (*Domain, error)
+>>>>>>> parent of f53e0f5... selesai membuat enpoint create modul
 }

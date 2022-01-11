@@ -16,7 +16,7 @@ type UsersCourses struct {
 	LastModulId string `gorm:"size:191"`
 	Skor        int    `gorm:"default:0"`
 
-	//User   users.User      `gorm:"foreignKey:UserMakeModul;references:ID"`
+	//User   users.User      `gorm:"foreignKey:UserId;references:ID"`
 	//Course courses.Courses `gorm:"foreignKey:CourseId;references:ID"`
 
 	CreatedAt time.Time

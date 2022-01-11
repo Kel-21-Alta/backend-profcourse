@@ -9,16 +9,17 @@ import (
 )
 
 type Moduls struct {
-	ID        string `gorm:"primaryKey;unique"`
-	Title     string `gorm:"not null"`
-	Order     int    `gorm:"not null"`
-	CourseId  string `gorm:"not null;size:191"`
+	ID       string `gorm:"primaryKey;unique"`
+	Title    string `gorm:"not null"`
+	Order    int    `gorm:"not null"`
+	CourseId string `gorm:"not null;size:191"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
 
 	Materies []materies.Materi `gorm:"foreignKey:ModulID;references:ID"`
 }
+
 
 func (c *Moduls) BeforeCreate(db *gorm.DB) error {
 	c.ID = uuid.NewV4().String()
@@ -31,6 +32,7 @@ func (c *Moduls) BeforeUpdate(db *gorm.DB) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func (c Moduls) ToDomain() moduls.Domain {
 	var listMateri []moduls.Materi
 	var jumlahMateri int
@@ -54,13 +56,23 @@ func (c Moduls) ToDomain() moduls.Domain {
 		UpdatedAt:    c.UpdatedAt,
 		JumlahMateri: jumlahMateri,
 		Materi:       listMateri,
+=======
+func (c Moduls) ToDomain() *moduls.Domain {
+	return &moduls.Domain{
+		ID:        c.ID,
+		Title:     c.Title,
+		Order:     c.Order,
+		CourseId:  c.CourseId,
+		CreatedAt: c.CreatedAt,
+		UpdatedAt: c.UpdatedAt,
+>>>>>>> parent of f53e0f5... selesai membuat enpoint create modul
 	}
 }
 
 func FromDomain(domain *moduls.Domain) *Moduls {
 	return &Moduls{
-		Title:    domain.Title,
-		Order:    domain.Order,
-		CourseId: domain.CourseId,
+		Title:     domain.Title,
+		Order:     domain.Order,
+		CourseId:  domain.CourseId,
 	}
 }
