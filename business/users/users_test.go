@@ -3,9 +3,6 @@ package users_test
 import (
 	"context"
 	"errors"
-	uuid "github.com/satori/go.uuid"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"profcourse/app/middlewares"
 	_mockSmtpEmailRepo "profcourse/business/send_email/mocks"
 	"profcourse/business/users"
@@ -13,6 +10,10 @@ import (
 	controller "profcourse/controllers"
 	"testing"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 var userMysqlRepository _mockUserMysqlRepo.Repository
@@ -519,7 +520,116 @@ func TestUserUsecase_ChangePassword(t *testing.T) {
 		assert.Equal(t, userDomain.Email, user.Email)
 	})
 }
+func setUpUpdateUser() {
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userDomain = users.Domain{
+		ID:         uuid.NewV4().String(),
+		Name:       "Adrian",
+		NoHp:       "01293143",
+		Birth:      time.Now(),
+		BirthPlace: "Medan",
+		Bio:        "agheuirhe",
+		Role:       2,
+		RoleText:   "user",
+		CreatedAt:  time.Time{},
+		UpdatedAt:  time.Time{},
+	}
+}
 
+func TestUserUsecase_UpdateUser(t *testing.T) {
+	t.Run("Test Case 1 | Name Empty ", func(t *testing.T) {
+		setUpUpdateUser()
+		userMysqlRepository.On("UpdateUser",
+			mock.Anything,
+			mock.AnythingOfType("string"),
+			mock.AnythingOfType("string"),
+			mock.AnythingOfType("string"),
+		).Return(userDomain, nil).Once()
+		_, err := userService.UpdateUser(context.Background(), users.Domain{
+			ID:     "1",
+			IdUser: "1",
+			Role:   1,
+			Name:   "",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_NAME, err)
+	})
+	t.Run("Test Case 2 | ID Requester Empty ", func(t *testing.T) {
+		setUpUpdateUser()
+		userMysqlRepository.On("UpdateUser",
+			mock.Anything,
+			mock.Anything,
+		).Return(userDomain, nil).Once()
+		_, err := userService.UpdateUser(context.Background(), users.Domain{
+			ID:     "",
+			IdUser: "1",
+			Role:   1,
+			Name:   "Adrian",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+	t.Run("Test Case 3 | ID Requested Empty ", func(t *testing.T) {
+		setUpUpdateUser()
+		userMysqlRepository.On("UpdateUser",
+			mock.Anything,
+			mock.Anything,
+		).Return(userDomain, nil).Once()
+		_, err := userService.UpdateUser(context.Background(), users.Domain{
+			ID:     "1",
+			IdUser: "",
+			Role:   1,
+			Name:   "Adrian",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+	t.Run("Test Case 4 | Not Admin Update other user ", func(t *testing.T) {
+		setUpUpdateUser()
+		userMysqlRepository.On("UpdateUser",
+			mock.Anything,
+			mock.Anything,
+		).Return(userDomain, nil).Once()
+		_, err := userService.UpdateUser(context.Background(), users.Domain{
+			ID:     "1",
+			IdUser: "2",
+			Role:   2,
+			Name:   "Adrian",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.FORBIDDIN_USER, err)
+	})
+	t.Run("Test Case 5 | Not Admin Update Self Success ", func(t *testing.T) {
+		setUpUpdateUser()
+		userMysqlRepository.On("UpdateUser",
+			mock.Anything,
+			mock.Anything,
+		).Return(userDomain, nil).Once()
+		_, err := userService.UpdateUser(context.Background(), users.Domain{
+			ID:     "1",
+			IdUser: "1",
+			Role:   2,
+			Name:   "Adrian",
+		})
+		assert.Nil(t, err)
+		assert.Equal(t, nil, err)
+	})
+	t.Run("Test Case 6 | Admin Update Success", func(t *testing.T) {
+		setUpUpdateUser()
+		userMysqlRepository.On("UpdateUser",
+			mock.Anything,
+			mock.Anything,
+		).Return(userDomain, nil).Once()
+		_, err := userService.UpdateUser(context.Background(), users.Domain{
+			ID:     "2",
+			IdUser: "1",
+			Role:   1,
+			Name:   "Adrian",
+		})
+		assert.Nil(t, err)
+		assert.Equal(t, nil, err)
+	})
+}
 func setUpDelete() {
 	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
 	userDomain = users.Domain{

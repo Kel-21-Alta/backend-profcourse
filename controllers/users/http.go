@@ -1,7 +1,6 @@
 package users
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"profcourse/app/middlewares"
 	"profcourse/business/users"
@@ -12,7 +11,10 @@ import (
 	"profcourse/controllers/users/reseponses/deleteUser"
 	"profcourse/controllers/users/reseponses/forgetPassword"
 	"profcourse/controllers/users/reseponses/login"
+	"profcourse/controllers/users/reseponses/updateUser"
 	"profcourse/controllers/users/reseponses/userCreated"
+
+	"github.com/labstack/echo/v4"
 )
 
 type UserController struct {
@@ -41,6 +43,29 @@ func (ctrl UserController) DeleteUser(c echo.Context) error {
 		return err
 	}
 	return controller.NewResponseSuccess(c, http.StatusOK, deleteUser.FromDomain(user))
+}
+
+func (ctrl UserController) UpdateUser(c echo.Context) error {
+	token, err := middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	ctx := c.Request().Context()
+	req := requests.UpdateUserRequest{}
+
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	domain := req.ToDomain()
+	domain.ID = token.Userid
+	domain.Role = token.Role
+
+	user, err := ctrl.userUsecase.UpdateUser(ctx, *domain)
+	if err != nil {
+		return err
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, updateUser.FromDomain(user))
 }
 
 func (ctrl *UserController) CreateUser(c echo.Context) error {

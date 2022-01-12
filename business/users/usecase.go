@@ -45,6 +45,33 @@ func (u *userUsecase) DeleteUser(ctx context.Context, domain Domain) (Domain, er
 	return result, nil
 }
 
+func (u *userUsecase) UpdateUser(ctx context.Context, domain Domain) (Domain, error) {
+	// Cek apakah yang mengirimkan request adalah admin
+	if (domain.Role != 1) && (domain.IdUser != domain.ID) {
+		return Domain{}, controller.FORBIDDIN_USER
+	}
+	// Cek apakah admin mengirim user id yang akan dihapus
+	if domain.IdUser == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	if domain.ID == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	// Cek apakah Nama dikosongkan
+	if domain.Name == "" {
+		return Domain{}, controller.EMPTY_NAME
+	}
+	domain.ID = domain.IdUser
+	domain.Role = 2
+	result, err := u.UserRepository.UpdateUser(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (u *userUsecase) LoginAdmin(ctx context.Context, domain Domain) (Domain, error) {
 	var err error
 	var existedUser Domain
