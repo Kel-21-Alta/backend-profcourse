@@ -23,7 +23,7 @@ type Domain struct {
 type Materi struct {
 	UrlMateri   string
 	Type        string
-	Title string
+	Title       string
 	Order       int8
 	IsComplate  bool
 	CurrentTime string
@@ -32,9 +32,11 @@ type Materi struct {
 type Usecase interface {
 	CreateModul(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneModul(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateModul(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
 	CreateModul(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneModul(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateModul(ctx context.Context, domain *Domain) (Domain, error)
 }

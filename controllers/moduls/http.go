@@ -9,6 +9,7 @@ import (
 	"profcourse/controllers/moduls/request"
 	"profcourse/controllers/moduls/responses/createModul"
 	"profcourse/controllers/moduls/responses/getOneModul"
+	"profcourse/controllers/moduls/responses/updateModul"
 )
 
 type ModulController struct {
@@ -56,4 +57,31 @@ func (ctr ModulController) GetOneModul(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getOneModul.FromDomain(&clean))
+}
+
+func (ctr ModulController) UpdateModul(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	var req request.UpdateModulRequest
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	token, err := middlewares.ExtractClaims(c)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain := req.ToDomain()
+	domain.ID = c.QueryParam("modulid")
+	domain.UserMakeModul = token.Userid
+	domain.RoleUser = token.Role
+
+	clean, err := ctr.ModulsUsecase.UpdateModul(ctx, domain)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, updateModul.FromDomain(clean))
 }
