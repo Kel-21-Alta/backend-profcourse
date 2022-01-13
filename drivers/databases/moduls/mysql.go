@@ -10,6 +10,17 @@ type mysqlModulsRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlModulsRepository) DeleteModul(ctx context.Context, id string) (moduls.Message, error) {
+	var modul Moduls
+	err := m.Conn.Delete(&modul, "id = ?", id).Error
+
+	if err != nil {
+		return "", err
+	}
+
+	return moduls.Message("Modul dengan id " + id + " telah dihapus"), nil
+}
+
 func (m mysqlModulsRepository) UpdateModul(ctx context.Context, domain *moduls.Domain) (moduls.Domain, error) {
 	var rec Moduls
 	var err error
@@ -39,6 +50,19 @@ func (m mysqlModulsRepository) GetOneModul(ctx context.Context, domain *moduls.D
 	}
 
 	return rec.ToDomain(), nil
+}
+
+func (m mysqlModulsRepository) GetOneModulWithCourse(ctx context.Context, domain *moduls.Domain) (moduls.Domain, error) {
+	type Result struct {
+		TeacherId string
+	}
+	var result Result
+	err := m.Conn.Table("moduls").Select("courses.teacher_id as TeacherId").Joins("inner join courses on moduls.course_id = courses.id").Where("moduls.id = ?", domain.ID).Find(&result).Error
+
+	if err != nil {
+		return moduls.Domain{}, err
+	}
+	return moduls.Domain{UserMakeModul: result.TeacherId}, nil
 }
 
 func (m mysqlModulsRepository) CreateModul(ctx context.Context, domain *moduls.Domain) (moduls.Domain, error) {

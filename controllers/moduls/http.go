@@ -60,6 +60,7 @@ func (ctr ModulController) GetOneModul(c echo.Context) error {
 }
 
 func (ctr ModulController) UpdateModul(c echo.Context) error {
+
 	ctx := c.Request().Context()
 
 	var req request.UpdateModulRequest
@@ -84,4 +85,27 @@ func (ctr ModulController) UpdateModul(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, updateModul.FromDomain(clean))
+}
+
+func (ctr ModulController) DeleteModul(c echo.Context) error {
+	var domain moduls.Domain
+
+	token, err := middlewares.ExtractClaims(c)
+
+	domain.ID = c.Param("modulid")
+	domain.UserMakeModul = token.Userid
+	domain.RoleUser = token.Role
+
+	ctx := c.Request().Context()
+	clean, err := ctr.ModulsUsecase.DeleteModul(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	type Message struct {
+		 Message string `json:"message"`
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: string(clean)})
 }

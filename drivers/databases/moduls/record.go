@@ -16,8 +16,7 @@ type Moduls struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
-
-	Materies []materies.Materi `gorm:"foreignKey:ModulID;references:ID"`
+	Materies  []materies.Materi `gorm:"foreignKey:ModulID;references:ID"`
 }
 
 func (c *Moduls) BeforeCreate(db *gorm.DB) error {
