@@ -47,9 +47,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// untuk melakukan register course user
 	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
 
+	//Modul
 	withJWT.POST("moduls", cl.ModulController.CreateModul)
 	withJWT.GET("moduls/:modulid", cl.ModulController.GetOneModul)
 	withJWT.PUT("moduls/:modulid", cl.ModulController.UpdateModul)
+	withJWT.DELETE("moduls/:modulid", cl.ModulController.DeleteModul)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 

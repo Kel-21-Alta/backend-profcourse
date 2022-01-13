@@ -13,6 +13,30 @@ type modulUsecase struct {
 	CourseUsecase   courses.Usecase
 }
 
+func (m *modulUsecase) DeleteModul(ctx context.Context, domain *Domain) (Message, error) {
+	if domain.ID == "" {
+		return "", controller.ID_EMPTY
+	}
+
+	// Mamastikan bahwa user yang akan mendelete modul adalah pemilik dari course atau admin
+	modul, err := m.ModulRepository.GetOneModulWithCourse(ctx, domain)
+	if err != nil {
+		return "", err
+	}
+
+	if domain.RoleUser != 1 && domain.UserMakeModul != modul.UserMakeModul {
+		return "", controller.FORBIDDIN_USER
+	}
+
+	massage, err := m.ModulRepository.DeleteModul(ctx, domain.ID)
+
+	if err != nil {
+		return "", err
+	}
+
+	return massage, nil
+}
+
 func (m *modulUsecase) UpdateModul(ctx context.Context, domain *Domain) (Domain, error) {
 
 	if domain.Title == "" {

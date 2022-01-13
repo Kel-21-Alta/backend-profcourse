@@ -599,21 +599,6 @@ func TestUserUsecase_UpdateUser(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.FORBIDDIN_USER, err)
 	})
-	t.Run("Test Case 5 | Not Admin Update Self Success ", func(t *testing.T) {
-		setUpUpdateUser()
-		userMysqlRepository.On("UpdateUser",
-			mock.Anything,
-			mock.Anything,
-		).Return(userDomain, nil).Once()
-		_, err := userService.UpdateUser(context.Background(), users.Domain{
-			ID:     "1",
-			IdUser: "1",
-			Role:   2,
-			Name:   "Adrian",
-		})
-		assert.Nil(t, err)
-		assert.Equal(t, nil, err)
-	})
 	t.Run("Test Case 6 | Admin Update Success", func(t *testing.T) {
 		setUpUpdateUser()
 		userMysqlRepository.On("UpdateUser",
