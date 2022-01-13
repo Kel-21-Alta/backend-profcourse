@@ -18,6 +18,10 @@ type userUsecase struct {
 	JWTConfig      middlewares.ConfigJwt
 }
 
+func (u *userUsecase) UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error) {
+
+}
+
 func (u *userUsecase) GetCountUser(ctx context.Context) (*Summary, error) {
 	summary, err := u.UserRepository.GetCountUser(ctx)
 	if err != nil {

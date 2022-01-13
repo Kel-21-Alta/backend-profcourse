@@ -169,3 +169,27 @@ func (ctrl *UserController) ChangePassword(c echo.Context) error {
 
 	return controller.NewResponseSuccess(c, http.StatusOK, changePassword.GenerateMessage())
 }
+
+func (ctrl *UserController) UpdateCurrentUserFromUser(c echo.Context) error {
+	ctx := c.Request().Context()
+	token, err := middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	var req requests.UpdateCurrentUser
+
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	var domain = req.ToDomain()
+	domain.ID = token.Userid
+
+	result, err := ctrl.userUsecase.UpdateDataCurrentUser(ctx, domain)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, updateUser.FromDomain(result))
+}

@@ -44,6 +44,7 @@ type Usecase interface {
 	DeleteUser(ctx context.Context, domain Domain) (Domain, error)
 	GetCountUser(ctx context.Context) (*Summary, error)
 	UpdateUser(ctx context.Context, domain Domain) (Domain, error)
+	UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
@@ -54,4 +55,5 @@ type Repository interface {
 	DeleteUser(ctx context.Context, domain Domain) (Domain, error)
 	UpdateUser(ctx context.Context, domain Domain) (Domain, error)
 	GetCountUser(ctx context.Context) (*Summary, error)
+	UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error)
 }
