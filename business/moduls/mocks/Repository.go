@@ -35,8 +35,50 @@ func (_m *Repository) CreateModul(ctx context.Context, domain *moduls.Domain) (m
 	return r0, r1
 }
 
+// DeleteModul provides a mock function with given fields: ctx, id
+func (_m *Repository) DeleteModul(ctx context.Context, id string) (moduls.Message, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 moduls.Message
+	if rf, ok := ret.Get(0).(func(context.Context, string) moduls.Message); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(moduls.Message)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetOneModul provides a mock function with given fields: ctx, domain
 func (_m *Repository) GetOneModul(ctx context.Context, domain *moduls.Domain) (moduls.Domain, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 moduls.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, *moduls.Domain) moduls.Domain); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(moduls.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *moduls.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetOneModulWithCourse provides a mock function with given fields: ctx, domain
+func (_m *Repository) GetOneModulWithCourse(ctx context.Context, domain *moduls.Domain) (moduls.Domain, error) {
 	ret := _m.Called(ctx, domain)
 
 	var r0 moduls.Domain
