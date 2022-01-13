@@ -13,6 +13,39 @@ type modulUsecase struct {
 	CourseUsecase   courses.Usecase
 }
 
+func (m *modulUsecase) UpdateModul(ctx context.Context, domain *Domain) (Domain, error) {
+
+	if domain.Title == "" {
+		return Domain{}, controller.TITLE_EMPTY
+	}
+
+	if domain.Order == 0 {
+		return Domain{}, controller.ORDER_MODUL_EMPTY
+	}
+
+	if domain.CourseId == "" {
+		return Domain{}, controller.EMPTY_COURSE
+	}
+
+	// cek yang melakukan pengubahan adalah admin atau pemilik dari course
+	course, err := m.CourseUsecase.GetOneCourse(ctx, &courses.Domain{ID: domain.CourseId})
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	if (domain.RoleUser != 1) && (domain.UserMakeModul != course.TeacherId) {
+		return Domain{}, controller.FORBIDDIN_USER
+	}
+
+	modul, err := m.ModulRepository.UpdateModul(ctx, domain)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return modul, nil
+}
+
 func (m *modulUsecase) GetOneModul(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.ID == "" {
 		return Domain{}, controller.EMPTY_MODUL_ID
