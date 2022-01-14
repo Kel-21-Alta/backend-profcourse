@@ -16,6 +16,7 @@ type UserUpdated struct {
 	Bio        string    `json:"bio"`
 	Birth      time.Time `json:"birth"`
 	BirthPlace string    `json:"birthplace"`
+	Profile    string    `json:"profile"`
 }
 
 func FromDomain(domain users.Domain) UserUpdated {
@@ -30,5 +31,6 @@ func FromDomain(domain users.Domain) UserUpdated {
 		Bio:        domain.Bio,
 		Birth:      domain.Birth,
 		BirthPlace: domain.BirthPlace,
+		Profile:    domain.ImgProfile,
 	}
 }
