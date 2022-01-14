@@ -35,6 +35,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.DELETE("users/:userid", cl.UserController.DeleteUser)
 	withJWT.PUT("users/:userid", cl.UserController.UpdateUser)
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
+	withJWT.PUT("currentuser", cl.UserController.UpdateCurrentUserFromUser)
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
 	// course
@@ -47,9 +48,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// untuk melakukan register course user
 	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
 
+	//Modul
 	withJWT.POST("moduls", cl.ModulController.CreateModul)
 	withJWT.GET("moduls/:modulid", cl.ModulController.GetOneModul)
 	withJWT.PUT("moduls/:modulid", cl.ModulController.UpdateModul)
+	withJWT.DELETE("moduls/:modulid", cl.ModulController.DeleteModul)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 

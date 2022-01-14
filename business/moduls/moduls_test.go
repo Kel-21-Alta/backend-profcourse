@@ -203,11 +203,71 @@ func TestModulUsecase_UpdateModul(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.FORBIDDIN_USER, err)
 	})
-	t.Run("Test case 6 | Handle error database modul", func(t *testing.T) {
+	t.Run("Test case 7 | Handle error database modul", func(t *testing.T) {
 		setUpUpdateMateri()
 		courseUsecase.On("GetOneCourse", mock.Anything, mock.Anything).Return(&courseDomain, nil).Once()
 		mysqlModulrepository.On("UpdateModul", mock.Anything, mock.Anything).Return(modulDomain, errors.New("Err db")).Once()
 		_, err := modulServices.UpdateModul(context.Background(), &moduls.Domain{Title: "Pengenalan", Order: 1, CourseId: modulDomain.CourseId, RoleUser: 1, UserMakeModul: "asd"})
 		assert.NotNil(t, err)
+	})
+}
+
+func setUpDeleteModul() {
+	modulServices = moduls.NewModulUsecase(&mysqlModulrepository, &courseUsecase, time.Hour*1)
+	modulDomain = moduls.Domain{UserMakeModul: "9cc1fc86-4c02-4fe2-8c57-93b4c56225ee"}
+}
+
+func TestModulUsecase_DeleteModul(t *testing.T) {
+	t.Run("Test case 1 | berhasil delete modul", func(t *testing.T) {
+		setUpDeleteModul()
+		mysqlModulrepository.On("GetOneModulWithCourse", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		mysqlModulrepository.On(
+			"DeleteModul",
+			mock.Anything,
+			mock.AnythingOfType("string")).Return(moduls.Message("Success"), nil).Once()
+
+		result, err := modulServices.DeleteModul(
+			context.Background(),
+			&moduls.Domain{ID: "4a418b6a-68b8-436e-ad29-12504d63bb2d", UserMakeModul: "9cc1fc86-4c02-4fe2-8c57-93b4c56225ee"})
+
+		assert.Nil(t, err)
+		assert.NotEqual(t, "", result)
+	})
+	t.Run("Test case 2 | admin boleh mendelete modul user", func(t *testing.T) {
+		setUpDeleteModul()
+		mysqlModulrepository.On("GetOneModulWithCourse", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		mysqlModulrepository.On(
+			"DeleteModul",
+			mock.Anything,
+			mock.AnythingOfType("string")).Return(moduls.Message("Success"), nil).Once()
+
+		_, err := modulServices.DeleteModul(
+			context.Background(),
+			&moduls.Domain{ID: "4a418b6a-68b8-436e-ad29-12504d63bb2d", RoleUser: 1, UserMakeModul: "cc1fc86-4c02-4fe2-8c57-93b4c56225ee"})
+
+		assert.Nil(t, err)
+	})
+	t.Run("Test case 3 | user tidak diizinkan mendelete", func(t *testing.T) {
+		setUpDeleteModul()
+		mysqlModulrepository.On("GetOneModulWithCourse", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		mysqlModulrepository.On(
+			"DeleteModul",
+			mock.Anything,
+			mock.AnythingOfType("string")).Return(moduls.Message("Success"), nil).Once()
+
+		_, err := modulServices.DeleteModul(
+			context.Background(),
+			&moduls.Domain{ID: "4a418b6a-68b8-436e-ad29-12504d63bb2d", RoleUser: 2, UserMakeModul: "cc1fc86-4c02-4fe2-8c57-93b4c56225ee"})
+
+		assert.Equal(t, controller.FORBIDDIN_USER, err)
+	})
+	t.Run("Test case 4 | error id modul empty", func(t *testing.T) {
+		setUpDeleteModul()
+
+		_, err := modulServices.DeleteModul(
+			context.Background(),
+			&moduls.Domain{ID: "", RoleUser: 2, UserMakeModul: "9cc1fc86-4c02-4fe2-8c57-93b4c56225ee"})
+
+		assert.Equal(t, controller.ID_EMPTY, err)
 	})
 }

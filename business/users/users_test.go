@@ -599,21 +599,6 @@ func TestUserUsecase_UpdateUser(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.FORBIDDIN_USER, err)
 	})
-	t.Run("Test Case 5 | Not Admin Update Self Success ", func(t *testing.T) {
-		setUpUpdateUser()
-		userMysqlRepository.On("UpdateUser",
-			mock.Anything,
-			mock.Anything,
-		).Return(userDomain, nil).Once()
-		_, err := userService.UpdateUser(context.Background(), users.Domain{
-			ID:     "1",
-			IdUser: "1",
-			Role:   2,
-			Name:   "Adrian",
-		})
-		assert.Nil(t, err)
-		assert.Equal(t, nil, err)
-	})
 	t.Run("Test Case 6 | Admin Update Success", func(t *testing.T) {
 		setUpUpdateUser()
 		userMysqlRepository.On("UpdateUser",
@@ -668,5 +653,40 @@ func TestUserUsecase_DeleteUser(t *testing.T) {
 		userMysqlRepository.On("DeleteUser", mock.Anything, mock.Anything).Return(users.Domain{}, errors.New("Error DB")).Once()
 		_, err := userService.DeleteUser(context.Background(), users.Domain{IdUser: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Role: 1})
 		assert.NotNil(t, err)
+	})
+}
+
+func setUpUpdateCurrentUset() {
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userDomain = users.Domain{
+		ID:           "756f702e-69ae-45e2-8ab2-870c11f7ba51",
+		Name:         "test",
+		Email:        "test1@gmail.com",
+		Password:     "kQPPSkyR",
+		HashPassword: "$2a$04$nHHmj1KfuzixIZ8nf9PFH.szVVWeCDsBG6bYYqbMGKhdAzGwzh35K",
+		PasswordNew:  "test1",
+	}
+}
+
+func TestUserUsecase_UpdateDataCurrentUser(t *testing.T) {
+	t.Run("Test case 1 | user barhasil mengubah data dirinya sendiri", func(t *testing.T) {
+		setUpUpdateCurrentUset()
+		userMysqlRepository.On("UpdateDataCurrentUser", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
+		result, err := userService.UpdateDataCurrentUser(context.Background(), &userDomain)
+
+		assert.Nil(t, err)
+		assert.Equal(t, userDomain.ID, result.ID)
+	})
+	t.Run("Test case 2 | handle error ketika user id tidak ada", func(t *testing.T) {
+		setUpUpdateCurrentUset()
+		_, err := userService.UpdateDataCurrentUser(context.Background(), &users.Domain{ID: ""})
+
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+	t.Run("Test case 3 | handle error ketika name kosong", func(t *testing.T) {
+		setUpUpdateCurrentUset()
+		_, err := userService.UpdateDataCurrentUser(context.Background(), &users.Domain{ID: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Name: ""})
+
+		assert.Equal(t, controller.EMPTY_NAME, err)
 	})
 }

@@ -11,6 +11,29 @@ type mysqlUserRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlUserRepository) UpdateDataCurrentUser(ctx context.Context, domain *users.Domain) (users.Domain, error) {
+	var rec User
+	var err error
+
+	err = m.Conn.First(&rec, "id = ?", domain.ID).Error
+	if err != nil {
+		return users.Domain{}, err
+	}
+
+	rec.ImgProfile = domain.ImgProfile
+	rec.Birth = domain.Birth
+	rec.NoHp = domain.NoHp
+	rec.Name = domain.Name
+	rec.Bio = domain.Bio
+	rec.BirthPlace = domain.BirthPlace
+
+	err = m.Conn.Save(&rec).Error
+	if err != nil {
+		return users.Domain{}, err
+	}
+	return rec.ToDomain(), nil
+}
+
 func (m mysqlUserRepository) GetCountUser(ctx context.Context) (*users.Summary, error) {
 	var result int
 	err := m.Conn.Raw("SELECT COUNT(*) as result FROM users").Scan(&result).Error
@@ -30,6 +53,7 @@ func (m mysqlUserRepository) DeleteUser(ctx context.Context, domain users.Domain
 	return domain, nil
 }
 
+// UpdateUser Update data user dari admin
 func (m mysqlUserRepository) UpdateUser(ctx context.Context, domain users.Domain) (users.Domain, error) {
 	first := User{}
 	err := m.Conn.First(&first, "id = ?", domain.ID).Error
@@ -48,6 +72,7 @@ func (m mysqlUserRepository) UpdateUser(ctx context.Context, domain users.Domain
 	return first.ToDomain(), nil
 }
 
+// GetUserById Untuk mendapatkan data user berdasarkan id
 func (m mysqlUserRepository) GetUserById(ctx context.Context, id string) (users.Domain, error) {
 	rec := User{}
 	err := m.Conn.First(&rec, "id = ?", id).Error
