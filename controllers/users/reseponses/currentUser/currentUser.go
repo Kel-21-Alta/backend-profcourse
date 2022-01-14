@@ -18,6 +18,11 @@ type UserCreated struct {
 }
 
 func FromDomain(domain users.Domain) UserCreated {
+	birth :=  domain.Birth.Format(time.RFC822)
+	if birth == "01 Jan 01 00:00 UTC" {
+		birth = ""
+	}
+
 	return UserCreated{
 		ID:         domain.ID,
 		Name:       domain.Name,
@@ -25,7 +30,7 @@ func FromDomain(domain users.Domain) UserCreated {
 		RoleText:   domain.RoleText,
 		Bio:        domain.Bio,
 		UrlImage:   domain.ImgProfile,
-		Birth:      domain.Birth.Format(time.RFC822),
+		Birth:     birth,
 		NoHp:       domain.NoHp,
 		BirthPlace: domain.BirthPlace,
 	}
