@@ -183,9 +183,9 @@ func (ctrl *UserController) UpdateCurrentUserFromUser(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 
-	var domain = req.ToDomain()
-	domain.ID = token.Userid
+	var domain *users.Domain = req.ToDomain()
 
+	domain.ID = token.Userid
 	result, err := ctrl.userUsecase.UpdateDataCurrentUser(ctx, domain)
 	if err != nil {
 		return controller.NewResponseError(c, err)

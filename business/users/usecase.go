@@ -19,7 +19,21 @@ type userUsecase struct {
 }
 
 func (u *userUsecase) UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
 
+	if domain.Name == "" {
+		return Domain{}, controller.EMPTY_NAME
+	}
+
+	result, err := u.UserRepository.UpdateDataCurrentUser(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
 }
 
 func (u *userUsecase) GetCountUser(ctx context.Context) (*Summary, error) {

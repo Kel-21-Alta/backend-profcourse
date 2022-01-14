@@ -35,6 +35,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.DELETE("users/:userid", cl.UserController.DeleteUser)
 	withJWT.PUT("users/:userid", cl.UserController.UpdateUser)
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
+	withJWT.PUT("currentuser", cl.UserController.UpdateCurrentUserFromUser)
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
 
 	// course
