@@ -49,7 +49,7 @@ func (s *spesializationRepository) CreateSpasialization(ctx context.Context, dom
 
 	req := FromDomain(domain)
 
-	err := s.Conn.Omit("CourseIds.*").Create(&req).Error
+	err := s.Conn.Omit("Courses.*").Create(&req).Error
 
 	if err != nil {
 		return spesializations.Domain{}, err
