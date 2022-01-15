@@ -184,3 +184,43 @@ func TestMateriesUsecase_UpdateMateri(t *testing.T) {
 		assert.NotNil(t, err)
 	})
 }
+
+func setUpGetOneMateri() {
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
+	materiesDomain = materies.Domain{
+		ID:        "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
+		Title:     "Pengenalan Golang",
+		ModulId:   "3023a588-70c9-49d5-8698-c1b37939f3d8",
+		Order:     1,
+		Type:      2,
+		UrlMateri: "https://www.youtube.com/watch?v=nyGu8Xn5b3g&list=PL-CtdCApEFH_t5_dtCQZgWJqWF45WRgZw&index=1",
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+		User: materies.CurrentUser{
+			ID:          "c56780b2-dee3-45c6-9bb0-2496f7a13b94",
+			CurrentTime: "",
+			IsComplate:  false,
+		},
+	}
+}
+
+func TestMateriesUsecase_GetOneMateri(t *testing.T) {
+	t.Run("Testcase 1 | success get one materi", func(t *testing.T) {
+		setUpGetOneMateri()
+		mysqlMateriesRepository.On("GetOnemateri", mock.Anything, mock.Anything).Return(materiesDomain, nil).Once()
+		result, err := materiesService.GetOneMateri(context.Background(), &materiesDomain)
+		assert.Nil(t, err)
+		assert.Equal(t, materiesDomain.ID, result.ID)
+	})
+	t.Run("Testcase 2 | handle id materi empty", func(t *testing.T) {
+		setUpGetOneMateri()
+		_, err := materiesService.GetOneMateri(context.Background(), &materies.Domain{ID: ""})
+		assert.Equal(t, controller.ID_MATERI_EMPTY, err)
+	})
+	t.Run("Testcase 1 | handle err db", func(t *testing.T) {
+		setUpGetOneMateri()
+		mysqlMateriesRepository.On("GetOnemateri", mock.Anything, mock.Anything).Return(materies.Domain{}, errors.New("error db")).Once()
+		_, err := materiesService.GetOneMateri(context.Background(), &materiesDomain)
+		assert.NotNil(t, err)
+	})
+}
