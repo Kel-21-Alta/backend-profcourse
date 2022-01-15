@@ -29,7 +29,8 @@ type Course struct {
 
 type Materi struct {
 	UrlMateri   string
-	Type        string
+	Type        int
+	TypeString  string
 	Title       string
 	Order       int8
 	IsComplate  bool

@@ -34,7 +34,7 @@ func NewResponseError(c echo.Context, err error) error {
 }
 
 func CheckStatus(err error) int {
-	if err == EMPTY_MODUL_ID || err == COURSES_SPESIALIZATION_EMPTY || err == BAD_REQUEST || err == EMPTY_COURSE || err == ALREADY_REGISTERED_COURSE || err == ORDER_MODUL_EMPTY || err == INVALID_PARAMS || err == TITLE_EMPTY || err == DESC_EMPTY || err == INVALID_FILE || err == EMPTY_EMAIL || err == EMPTY_NAME || err == INVALID_EMAIL || err == EMAIL_UNIQUE || err == PASSWORD_EMPTY {
+	if err == TYPE_MATERI_EMPTY || err == ORDER_MATERI_EMPTY || err == EMPTY_FILE_MATERI || err == EMPTY_MODUL_ID || err == COURSES_SPESIALIZATION_EMPTY || err == BAD_REQUEST || err == EMPTY_COURSE || err == ALREADY_REGISTERED_COURSE || err == ORDER_MODUL_EMPTY || err == INVALID_PARAMS || err == TITLE_EMPTY || err == DESC_EMPTY || err == INVALID_FILE || err == EMPTY_EMAIL || err == EMPTY_NAME || err == INVALID_EMAIL || err == EMAIL_UNIQUE || err == PASSWORD_EMPTY {
 		return http.StatusBadRequest
 	}
 	if err == FORBIDDIN_USER || err == WRONG_PASSWORD || err == WRONG_EMAIL {

@@ -18,7 +18,8 @@ type GetOneModulResponse struct {
 
 type Materi struct {
 	UrlMateri   string `json:"url_materi"`
-	Type        string `json:"type"`
+	Type        int `json:"type"`
+	TypeString string `json:"type_string"`
 	Title       string `json:"title"`
 	Order       int8 `json:"order"`
 	IsComplate  bool `json:"is_complate"`
@@ -31,6 +32,7 @@ func FromDomain(domain *moduls.Domain) *GetOneModulResponse {
 		listMateri = append(listMateri, Materi{
 			UrlMateri:   materi.UrlMateri,
 			Type:        materi.Type,
+			TypeString:  materi.TypeString,
 			Title:       materi.Title,
 			Order:       materi.Order,
 			IsComplate:  materi.IsComplate,
