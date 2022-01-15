@@ -7,6 +7,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/materies/requests"
 	"profcourse/controllers/materies/responses/createMateries"
+	"profcourse/controllers/materies/responses/updateMateri"
 )
 
 type MateriesController struct {
@@ -32,6 +33,26 @@ func (ctr MateriesController) CreateMateries(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusCreated, createMateries.FromDomain(clean))
+}
+
+func (ctr MateriesController) UpdateMateri(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	var req requests.UpdateMateriRequest
+
+	req.ID = c.Param("materiid")
+
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	clean, err := ctr.MateriesUsecase.UpdateMateri(ctx, req.ToDomain())
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, updateMateri.FromDomain(clean))
 }
 
 func (ctr MateriesController) DeleteMateries(c echo.Context) error {

@@ -10,6 +10,32 @@ type MateriesRepository struct {
 	Conn *gorm.DB
 }
 
+func (m MateriesRepository) UpdateMateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
+
+	var rec Materi
+	var err error
+
+	err = m.Conn.First(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return materies.Domain{}, err
+	}
+
+	rec.Title = domain.Title
+	rec.UrlMateri = domain.UrlMateri
+	rec.ModulID = domain.ModulId
+	rec.Type = TYPE(domain.Type)
+	rec.Order = int8(domain.Order)
+
+	err = m.Conn.Save(&rec).Error
+
+	if err != nil {
+		return materies.Domain{}, err
+	}
+
+	return rec.ToDomain(), nil
+}
+
 func (m MateriesRepository) DeleteMateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
 	var rec Materi
 	err := m.Conn.Delete(&rec, "id = ?", domain.ID).Error
