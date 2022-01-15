@@ -54,3 +54,22 @@ func (ctr MateriesController) UpdateMateri(c echo.Context) error {
 
 	return controller.NewResponseSuccess(c, http.StatusOK, updateMateri.FromDomain(clean))
 }
+
+func (ctr MateriesController) DeleteMateries(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	var domain materies.Domain
+	domain.ID = c.Param("materiid")
+
+	clean, err := ctr.MateriesUsecase.DeleteMateri(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	type Message struct {
+		Message string
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: "Materi dengan id " + clean.ID + " telah dihapus"})
+}

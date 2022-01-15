@@ -49,5 +49,5 @@ func NewMysqlSpesializationRepository(conn *gorm.DB) _spesializationUsecase.Repo
 }
 
 func NewMysqlMateriesRepository(conn *gorm.DB) _materiesUsecase.Repository {
-	return materies.MateriesRepository{Conn: conn}
+	return materies.NewMysqlRepository(conn)
 }

@@ -58,6 +58,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	//Materi
 	withJWT.POST("materi", cl.MateriesController.CreateMateries)
+	withJWT.DELETE("materi/:materiid", cl.MateriesController.DeleteMateries)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 
