@@ -35,9 +35,16 @@ func (c Moduls) ToDomain() moduls.Domain {
 	var jumlahMateri int
 	for _, materi := range c.Materies {
 		jumlahMateri++
+		var typeStr string
+		if int(materi.Type) == 1 {
+			typeStr = "text"
+		} else {
+			typeStr = "video"
+		}
 		listMateri = append(listMateri, moduls.Materi{
 			UrlMateri:   materi.UrlMateri,
-			Type:        string(materi.Type),
+			Type:        int(materi.Type),
+			TypeString:  typeStr,
 			Title:       materi.Title,
 			Order:       materi.Order,
 			IsComplate:  false,
