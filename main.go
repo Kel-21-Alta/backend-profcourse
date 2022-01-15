@@ -55,6 +55,7 @@ func DbMigration(db *gorm.DB) {
 		&_modulsMysqlRepo.Moduls{},
 		&_spesializationMysqlRepo.Spesialization{},
 		&_materiesMysqlRepo.Materi{},
+		&_materiesMysqlRepo.MateriUserComplate{},
 	)
 
 	if err != nil {
@@ -132,7 +133,7 @@ func main() {
 		ModulController:          *modulCtrl,
 		SummaryController:        *summaryController,
 		SpesializationController: *spesializationController,
-		MateriesController:  *materiesController,
+		MateriesController:       *materiesController,
 	}
 
 	routesInit.RouteRegister(e)
