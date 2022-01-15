@@ -111,3 +111,25 @@ func TestMateriesUsecase_CreateMateri(t *testing.T) {
 		assert.Equal(t, controller.TYPE_MATERI_WRONG, err)
 	})
 }
+
+func setUpDeleteMateri() {
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
+	materiesDomain = materies.Domain{
+		ID: "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
+	}
+}
+
+func TestMateriesUsecase_DeleteMateri(t *testing.T) {
+	t.Run("Test case 1 | success delete materi", func(t *testing.T) {
+		setUpDeleteMateri()
+		mysqlMateriesRepository.On("DeleteMateri", mock.Anything, mock.Anything).Return(materiesDomain, nil).Once()
+		result, err := materiesService.DeleteMateri(context.Background(), &materiesDomain)
+		assert.Nil(t, err)
+		assert.Equal(t, materiesDomain.ID, result.ID)
+	})
+	t.Run("Test case 2 | handle id materi empty", func(t *testing.T) {
+		setUpDeleteMateri()
+		_, err := materiesService.DeleteMateri(context.Background(), &materies.Domain{ID: ""})
+		assert.Equal(t, controller.ID_MATERI_EMPTY, err)
+	})
+}

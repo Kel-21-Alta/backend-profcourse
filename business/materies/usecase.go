@@ -11,6 +11,19 @@ type MateriesUsecase struct {
 	ContextTimeout     time.Duration
 }
 
+func (u MateriesUsecase) DeleteMateri(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.ID_MATERI_EMPTY
+	}
+
+	result, err := u.MateriesRepository.DeleteMateri(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+	return result, nil
+}
+
 func (u MateriesUsecase) CreateMateri(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.ModulId == "" {
 		return Domain{}, controller.EMPTY_MODUL_ID
