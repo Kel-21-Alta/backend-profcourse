@@ -15,6 +15,14 @@ type Domain struct {
 	UrlMateri  string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+
+	User CurrentUser
+}
+
+type CurrentUser struct {
+	ID          string
+	CurrentTime string
+	IsComplate  bool
 }
 
 type Usecase interface {
@@ -22,10 +30,12 @@ type Usecase interface {
 	CreateMateri(ctx context.Context, domain *Domain) (Domain, error)
 	UpdateMateri(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteMateri(ctx context.Context, domain *Domain) (Domain, error)
+	GetOneMateri(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
 	DeleteMateri(ctx context.Context, domain *Domain) (Domain, error)
 	CreateMateri(ctx context.Context, domain *Domain) (Domain, error)
 	UpdateMateri(ctx context.Context, domain *Domain) (Domain, error)
+	GetOnemateri(ctx context.Context, domain *Domain) (Domain, error)
 }

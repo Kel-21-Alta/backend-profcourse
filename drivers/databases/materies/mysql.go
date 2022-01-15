@@ -3,11 +3,36 @@ package materies
 import (
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"profcourse/business/materies"
 )
 
 type MateriesRepository struct {
 	Conn *gorm.DB
+}
+
+func (m MateriesRepository) GetOnemateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
+
+	var rec Materi
+	var err error
+
+	err = m.Conn.Preload(clause.Associations).First(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return materies.Domain{}, err
+	}
+	result := rec.ToDomain()
+	result.User.ID = domain.User.ID
+
+	for _, user := range rec.MateriUserComplate {
+		if user.UserId == domain.User.ID {
+			result.User.IsComplate = user.IsComplate
+			result.User.CurrentTime = user.CurrentTime
+			result.User.ID = user.ID
+		}
+	}
+
+	return result, nil
 }
 
 func (m MateriesRepository) UpdateMateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {

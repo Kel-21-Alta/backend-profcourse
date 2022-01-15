@@ -21,9 +21,23 @@ type Materi struct {
 	Order     int8   `gorm:"not null"`
 	Type      TYPE   `gorm:"not null"`
 	UrlMateri string `gorm:"not null"`
+
+	MateriUserComplate []MateriUserComplate `gorm:"foreignKey:MateriId;references:ID"`
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
+}
+
+type MateriUserComplate struct {
+	ID          string `gorm:"primaryKey;unique"`
+	MateriId    string `gorm:"not null;size:191;index:idx_unique1,unique"`
+	UserId      string `gorm:"not null;size:191;index:idx_unique1,unique"`
+	CurrentTime string
+	IsComplate  bool `gorm:"default:false"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt
 }
 
 func (m *Materi) BeforeCreate(db *gorm.DB) error {
@@ -43,7 +57,7 @@ func FromDomain(domain *materies.Domain) *Materi {
 		Title:     domain.Title,
 		ModulID:   domain.ModulId,
 		Order:     int8(domain.Order),
-		Type: 		TYPE(domain.Type),
+		Type:      TYPE(domain.Type),
 		UrlMateri: domain.UrlMateri,
 		CreatedAt: domain.CreatedAt,
 		UpdatedAt: domain.UpdatedAt,
@@ -62,7 +76,7 @@ func (r Materi) ToDomain() materies.Domain {
 		Title:      r.Title,
 		ModulId:    r.ModulID,
 		Order:      int(r.Order),
-		Type: 		int(r.Type),
+		Type:       int(r.Type),
 		TypeString: typeStr,
 		UrlMateri:  r.UrlMateri,
 		CreatedAt:  r.CreatedAt,

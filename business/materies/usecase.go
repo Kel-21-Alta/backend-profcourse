@@ -11,6 +11,20 @@ type MateriesUsecase struct {
 	ContextTimeout     time.Duration
 }
 
+func (u MateriesUsecase) GetOneMateri(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.ID_MATERI_EMPTY
+	}
+
+	result, err := u.MateriesRepository.GetOnemateri(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (u MateriesUsecase) DeleteMateri(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.ID == "" {
 		return Domain{}, controller.ID_MATERI_EMPTY
@@ -23,7 +37,6 @@ func (u MateriesUsecase) DeleteMateri(ctx context.Context, domain *Domain) (Doma
 	}
 	return result, nil
 }
-
 
 func (u MateriesUsecase) ValidasiMateri(ctx context.Context, domain *Domain) (*Domain, error) {
 
@@ -57,7 +70,7 @@ func (u MateriesUsecase) UpdateMateri(ctx context.Context, domain *Domain) (Doma
 		return Domain{}, controller.ID_MATERI_EMPTY
 	}
 
-	resultValidasi, err :=u.ValidasiMateri(ctx, domain)
+	resultValidasi, err := u.ValidasiMateri(ctx, domain)
 
 	if err != nil {
 		return Domain{}, err
