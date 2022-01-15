@@ -10,12 +10,14 @@ import (
 	"profcourse/app/middlewares"
 	"profcourse/app/routes"
 	_coursesUsecase "profcourse/business/courses"
+	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
 	_spesializationUsecase "profcourse/business/spesializations"
 	_summaryUsecase "profcourse/business/summary"
 	_userUsecase "profcourse/business/users"
 	_usersCourseUsercase "profcourse/business/users_courses"
 	"profcourse/controllers/courses"
+	"profcourse/controllers/materies"
 	_modulController "profcourse/controllers/moduls"
 	_spesializationsController "profcourse/controllers/spesializations"
 	_summaryController "profcourse/controllers/summary"
@@ -118,6 +120,10 @@ func main() {
 	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository, courseUsecase, timeout)
 	modulCtrl := _modulController.NewModulsController(modulUsecase)
 
+	mysqlMateriesRepository := _driversFectory.NewMysqlMateriesRepository(conn)
+	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, timeout)
+	materiesController := materies.NewMateriesController(materiesUsecase)
+
 	routesInit := routes.ControllerList{
 		UserController:           *userCtrl,
 		CourseController:         *couserCtrl,
@@ -126,6 +132,7 @@ func main() {
 		ModulController:          *modulCtrl,
 		SummaryController:        *summaryController,
 		SpesializationController: *spesializationController,
+		MateriesController:  *materiesController,
 	}
 
 	routesInit.RouteRegister(e)

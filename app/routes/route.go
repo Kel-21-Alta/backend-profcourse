@@ -2,6 +2,7 @@ package routes
 
 import (
 	"profcourse/controllers/courses"
+	"profcourse/controllers/materies"
 	"profcourse/controllers/moduls"
 	"profcourse/controllers/spesializations"
 	"profcourse/controllers/summary"
@@ -20,6 +21,7 @@ type ControllerList struct {
 	ModulController          moduls.ModulController
 	SummaryController        summary.SummaryController
 	SpesializationController spesializations.SpesializationController
+	MateriesController       materies.MateriesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -53,6 +55,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.GET("moduls/:modulid", cl.ModulController.GetOneModul)
 	withJWT.PUT("moduls/:modulid", cl.ModulController.UpdateModul)
 	withJWT.DELETE("moduls/:modulid", cl.ModulController.DeleteModul)
+
+	//Materi
+	withJWT.POST("materi", cl.MateriesController.CreateMateries)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 

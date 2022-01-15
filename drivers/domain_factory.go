@@ -3,6 +3,7 @@ package drivers
 import (
 	"gorm.io/gorm"
 	_coursesUsecase "profcourse/business/courses"
+	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
 	"profcourse/business/send_email"
 	_spesializationUsecase "profcourse/business/spesializations"
@@ -10,6 +11,7 @@ import (
 	_userUsecase "profcourse/business/users"
 	_usersCoursesUsecase "profcourse/business/users_courses"
 	"profcourse/drivers/databases/courses"
+	"profcourse/drivers/databases/materies"
 	"profcourse/drivers/databases/moduls"
 	"profcourse/drivers/databases/spesialization"
 	"profcourse/drivers/databases/users"
@@ -44,4 +46,8 @@ func NewMysqlModulRepository(conn *gorm.DB) _modulsUsecase.Repository {
 
 func NewMysqlSpesializationRepository(conn *gorm.DB) _spesializationUsecase.Repository {
 	return spesialization.NewMysqlRepository(conn)
+}
+
+func NewMysqlMateriesRepository(conn *gorm.DB) _materiesUsecase.Repository {
+	return materies.MateriesRepository{Conn: conn}
 }
