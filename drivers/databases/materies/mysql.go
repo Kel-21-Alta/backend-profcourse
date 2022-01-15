@@ -10,6 +10,17 @@ type MateriesRepository struct {
 	Conn *gorm.DB
 }
 
+func (m MateriesRepository) DeleteMateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
+	var rec Materi
+	err := m.Conn.Delete(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return materies.Domain{}, err
+	}
+
+	return *domain, nil
+}
+
 func (m MateriesRepository) CreateMateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
 	var req = FromDomain(domain)
 
