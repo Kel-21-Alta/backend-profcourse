@@ -28,4 +28,3 @@ var EMPTY_MODUL_ID = errors.New("Modul id tidak boleh kosong")
 var EMPTY_FILE_MATERI = errors.New("File materi tidak boleh kosong")
 var TYPE_MATERI_EMPTY = errors.New("Tipe materi tidak boleh kosong")
 var TYPE_MATERI_WRONG = errors.New("Tipe materi salah atau tidak valid")
-

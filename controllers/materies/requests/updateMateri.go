@@ -1,10 +1,9 @@
 package requests
 
-import (
-	"profcourse/business/materies"
-)
+import "profcourse/business/materies"
 
-type CreateMateriesRequest struct {
+type UpdateMateriRequest struct {
+	ID string `json:"id"`
 	ModulId    string `json:"modul_id"`
 	TypeMateri int `json:"type_materi"`
 	Title      string `json:"title"`
@@ -12,8 +11,9 @@ type CreateMateriesRequest struct {
 	Order      int    `json:"order"`
 }
 
-func (receiver *CreateMateriesRequest) ToDomain() *materies.Domain {
+func (receiver *UpdateMateriRequest) ToDomain() *materies.Domain {
 	return &materies.Domain{
+		ID: receiver.ID,
 		Title:     receiver.Title,
 		ModulId:   receiver.ModulId,
 		Order:     receiver.Order,

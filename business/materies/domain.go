@@ -18,9 +18,12 @@ type Domain struct {
 }
 
 type Usecase interface {
+	ValidasiMateri(ctx context.Context, domain *Domain) (*Domain, error)
 	CreateMateri(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateMateri(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
 	CreateMateri(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateMateri(ctx context.Context, domain *Domain) (Domain, error)
 }
