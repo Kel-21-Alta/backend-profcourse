@@ -12,6 +12,7 @@ import (
 	_coursesUsecase "profcourse/business/courses"
 	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
+	_quizsUsecase "profcourse/business/quizs"
 	_spesializationUsecase "profcourse/business/spesializations"
 	_summaryUsecase "profcourse/business/summary"
 	_userUsecase "profcourse/business/users"
@@ -19,6 +20,7 @@ import (
 	"profcourse/controllers/courses"
 	"profcourse/controllers/materies"
 	_modulController "profcourse/controllers/moduls"
+	"profcourse/controllers/quizs"
 	_spesializationsController "profcourse/controllers/spesializations"
 	_summaryController "profcourse/controllers/summary"
 	_userController "profcourse/controllers/users"
@@ -125,6 +127,10 @@ func main() {
 	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, timeout)
 	materiesController := materies.NewMateriesController(materiesUsecase)
 
+	myzqlQuizRepository := _driversFectory.NewMysqlQuizsRepository(conn)
+	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, timeout)
+	quizController := quizs.NewQuizsController(quizsUsecase)
+
 	routesInit := routes.ControllerList{
 		UserController:           *userCtrl,
 		CourseController:         *couserCtrl,
@@ -134,6 +140,7 @@ func main() {
 		SummaryController:        *summaryController,
 		SpesializationController: *spesializationController,
 		MateriesController:       *materiesController,
+		QuizController:           *quizController,
 	}
 
 	routesInit.RouteRegister(e)

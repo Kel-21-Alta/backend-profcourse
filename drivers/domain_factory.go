@@ -5,6 +5,7 @@ import (
 	_coursesUsecase "profcourse/business/courses"
 	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
+	_quizsUsecas "profcourse/business/quizs"
 	"profcourse/business/send_email"
 	_spesializationUsecase "profcourse/business/spesializations"
 	_localsRepository "profcourse/business/uploads"
@@ -13,6 +14,7 @@ import (
 	"profcourse/drivers/databases/courses"
 	"profcourse/drivers/databases/materies"
 	"profcourse/drivers/databases/moduls"
+	"profcourse/drivers/databases/quizs"
 	"profcourse/drivers/databases/spesialization"
 	"profcourse/drivers/databases/users"
 	"profcourse/drivers/databases/users_courses"
@@ -50,4 +52,8 @@ func NewMysqlSpesializationRepository(conn *gorm.DB) _spesializationUsecase.Repo
 
 func NewMysqlMateriesRepository(conn *gorm.DB) _materiesUsecase.Repository {
 	return materies.NewMysqlRepository(conn)
+}
+
+func NewMysqlQuizsRepository(conn *gorm.DB) _quizsUsecas.Repository {
+	return quizs.NewMysqlRepository(conn)
 }

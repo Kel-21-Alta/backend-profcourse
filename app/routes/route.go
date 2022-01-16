@@ -4,6 +4,7 @@ import (
 	"profcourse/controllers/courses"
 	"profcourse/controllers/materies"
 	"profcourse/controllers/moduls"
+	"profcourse/controllers/quizs"
 	"profcourse/controllers/spesializations"
 	"profcourse/controllers/summary"
 	"profcourse/controllers/users"
@@ -22,6 +23,7 @@ type ControllerList struct {
 	SummaryController        summary.SummaryController
 	SpesializationController spesializations.SpesializationController
 	MateriesController       materies.MateriesController
+	QuizController           quizs.QuizsController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -61,6 +63,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.DELETE("materi/:materiid", cl.MateriesController.DeleteMateries)
 	withJWT.PUT("materi/:materiid", cl.MateriesController.UpdateMateri)
 	withJWT.GET("materi/:materiid", cl.MateriesController.GetOneMateri)
+
+	//Quiz
+	withJWT.POST("quizs", cl.QuizController.CreateQuiz)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 
