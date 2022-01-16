@@ -16,6 +16,8 @@ func (u MateriesUsecase) GetOneMateri(ctx context.Context, domain *Domain) (Doma
 		return Domain{}, controller.ID_MATERI_EMPTY
 	}
 
+	// TODO: Validasi apakah user terdaftar di course materi ini
+
 	result, err := u.MateriesRepository.GetOnemateri(ctx, domain)
 
 	if err != nil {

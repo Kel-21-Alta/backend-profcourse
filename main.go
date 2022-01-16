@@ -12,6 +12,7 @@ import (
 	_coursesUsecase "profcourse/business/courses"
 	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
+	_quizsUsecase "profcourse/business/quizs"
 	_spesializationUsecase "profcourse/business/spesializations"
 	_summaryUsecase "profcourse/business/summary"
 	_userUsecase "profcourse/business/users"
@@ -19,6 +20,7 @@ import (
 	"profcourse/controllers/courses"
 	"profcourse/controllers/materies"
 	_modulController "profcourse/controllers/moduls"
+	"profcourse/controllers/quizs"
 	_spesializationsController "profcourse/controllers/spesializations"
 	_summaryController "profcourse/controllers/summary"
 	_userController "profcourse/controllers/users"
@@ -27,6 +29,7 @@ import (
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
 	_materiesMysqlRepo "profcourse/drivers/databases/materies"
 	_modulsMysqlRepo "profcourse/drivers/databases/moduls"
+	_quizsMysqlRepo "profcourse/drivers/databases/quizs"
 	_spesializationMysqlRepo "profcourse/drivers/databases/spesialization"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_usersCourseMysqlRepo "profcourse/drivers/databases/users_courses"
@@ -56,6 +59,8 @@ func DbMigration(db *gorm.DB) {
 		&_spesializationMysqlRepo.Spesialization{},
 		&_materiesMysqlRepo.Materi{},
 		&_materiesMysqlRepo.MateriUserComplate{},
+		&_quizsMysqlRepo.Quiz{},
+		&_quizsMysqlRepo.PilihanQuiz{},
 	)
 
 	if err != nil {
@@ -125,6 +130,10 @@ func main() {
 	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, timeout)
 	materiesController := materies.NewMateriesController(materiesUsecase)
 
+	myzqlQuizRepository := _driversFectory.NewMysqlQuizsRepository(conn)
+	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, timeout)
+	quizController := quizs.NewQuizsController(quizsUsecase)
+
 	routesInit := routes.ControllerList{
 		UserController:           *userCtrl,
 		CourseController:         *couserCtrl,
@@ -134,6 +143,7 @@ func main() {
 		SummaryController:        *summaryController,
 		SpesializationController: *spesializationController,
 		MateriesController:       *materiesController,
+		QuizController:           *quizController,
 	}
 
 	routesInit.RouteRegister(e)
