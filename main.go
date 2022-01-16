@@ -29,6 +29,7 @@ import (
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
 	_materiesMysqlRepo "profcourse/drivers/databases/materies"
 	_modulsMysqlRepo "profcourse/drivers/databases/moduls"
+	_quizsMysqlRepo "profcourse/drivers/databases/quizs"
 	_spesializationMysqlRepo "profcourse/drivers/databases/spesialization"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_usersCourseMysqlRepo "profcourse/drivers/databases/users_courses"
@@ -58,6 +59,8 @@ func DbMigration(db *gorm.DB) {
 		&_spesializationMysqlRepo.Spesialization{},
 		&_materiesMysqlRepo.Materi{},
 		&_materiesMysqlRepo.MateriUserComplate{},
+		&_quizsMysqlRepo.Quiz{},
+		&_quizsMysqlRepo.PilihanQuiz{},
 	)
 
 	if err != nil {
