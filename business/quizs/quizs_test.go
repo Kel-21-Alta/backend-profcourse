@@ -155,6 +155,13 @@ func TestQuizeUsecase_UpdateQuiz(t *testing.T) {
 		_, err := quizsService.UpdateQuiz(context.Background(), &quizsDomain)
 		assert.NotNil(t, err)
 	})
+	t.Run("Test 2 | id quiz kososng", func(t *testing.T) {
+		setUpUpdateQuiz()
+
+		_, err := quizsService.UpdateQuiz(context.Background(), &quizs.Domain{ID: ""})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_QUIZ_EMPTY, err)
+	})
 }
 
 func setUpDeleteQuiz() {
@@ -165,6 +172,16 @@ func TestQuizeUsecase_DeleteQuiz(t *testing.T) {
 	t.Run("Test 1 | success delete quiz", func(t *testing.T) {
 		setUpDeleteQuiz()
 		mysqlQuizsRepository.On("DeleteQuiz", mock.Anything, mock.Anything).Return("7c1ec4be-8565-4b25-82cf-244d7730c398", nil).Once()
+		result, err := quizsService.DeleteQuiz(context.Background(), "7c1ec4be-8565-4b25-82cf-244d7730c398")
 
+		assert.Nil(t, err)
+		assert.Equal(t, "7c1ec4be-8565-4b25-82cf-244d7730c398", result)
+	})
+	t.Run("Test 2 | id quiz kosong", func(t *testing.T) {
+		setUpDeleteQuiz()
+		_, err := quizsService.DeleteQuiz(context.Background(), "")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_QUIZ_EMPTY, err)
 	})
 }
