@@ -105,7 +105,7 @@ func TestQuizeUsecase_ValidasiQuiz(t *testing.T) {
 		assert.Equal(t, controller.PERTANYAAN_QUIZ_EMPTY, err)
 	})
 
-	t.Run("Test case 4 | handle error pilihan kosong", func(t *testing.T) {
+	t.Run("Test case 5 | handle error pilihan kosong", func(t *testing.T) {
 		setUpCreateQuizs()
 		_, err := quizsService.ValidasiQuiz(context.Background(), &quizs.Domain{
 			Pilihan:    nil,
@@ -117,7 +117,7 @@ func TestQuizeUsecase_ValidasiQuiz(t *testing.T) {
 		assert.Equal(t, controller.PILIHAN_QUIZ_EMPTY, err)
 	})
 
-	t.Run("Test case 4 | handle error pilihan kurang dari 2", func(t *testing.T) {
+	t.Run("Test case 6 | handle error pilihan kurang dari 2", func(t *testing.T) {
 		setUpCreateQuizs()
 		_, err := quizsService.ValidasiQuiz(context.Background(), &quizs.Domain{
 			Pilihan:    []string{"a"},
@@ -127,5 +127,37 @@ func TestQuizeUsecase_ValidasiQuiz(t *testing.T) {
 		})
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.PILIHAN_QUIZ_MINUS, err)
+	})
+}
+
+func setUpUpdateQuiz() {
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+	quizsDomain = quizs.Domain{
+		ID:         "7c1ec4be-8565-4b25-82cf-244d7730c398",
+		Pilihan:    []string{"a", "b", "c"},
+		Pertanyaan: "Makan apa?",
+		Jawaban:    "a",
+		ModulId:    "36d8d8bc-87cb-467d-97c0-2902920457df",
+		CreatedAt:  time.Time{},
+		UpdatedAt:  time.Time{},
+	}
+}
+
+func TestQuizeUsecase_UpdateQuiz(t *testing.T) {
+	t.Run("Test 1 | success update quiz", func(t *testing.T) {
+		setUpUpdateQuiz()
+		mysqlQuizsRepository.On("UpdateQuiz", mock.Anything, mock.Anything).Return(quizsDomain, nil).Once()
+
+		result, err := quizsService.UpdateQuiz(context.Background(), &quizsDomain)
+		assert.Nil(t, err)
+		assert.Equal(t, quizsDomain.ID, result.ID)
+	})
+	t.Run("Test 2 | err db", func(t *testing.T) {
+		setUpUpdateQuiz()
+
+		mysqlQuizsRepository.On("UpdateQuiz", mock.Anything, mock.Anything).Return(quizs.Domain{}, errors.New("db error")).Once()
+
+		_, err := quizsService.UpdateQuiz(context.Background(), &quizsDomain)
+		assert.NotNil(t, err)
 	})
 }

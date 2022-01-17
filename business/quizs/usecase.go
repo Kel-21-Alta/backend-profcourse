@@ -11,7 +11,24 @@ type QuizeUsecase struct {
 	ContextTimeOut time.Duration
 }
 
-func (q QuizeUsecase) ValidasiQuiz(ctx context.Context, domain *Domain) (*Domain, error) {
+func (q *QuizeUsecase) UpdateQuiz(ctx context.Context, domain *Domain) (Domain, error) {
+
+	resultValidasi, err := q.ValidasiQuiz(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	result, err := q.QuizRepository.UpdateQuiz(ctx, resultValidasi)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
+func (q *QuizeUsecase) ValidasiQuiz(ctx context.Context, domain *Domain) (*Domain, error) {
 	if domain.ModulId == "" {
 		return &Domain{}, controller.EMPTY_MODUL_ID
 	}
@@ -35,7 +52,7 @@ func (q QuizeUsecase) ValidasiQuiz(ctx context.Context, domain *Domain) (*Domain
 	return domain, nil
 }
 
-func (q QuizeUsecase) CreateQuiz(ctx context.Context, domain *Domain) (Domain, error) {
+func (q *QuizeUsecase) CreateQuiz(ctx context.Context, domain *Domain) (Domain, error) {
 	resultValidasi, err := q.ValidasiQuiz(ctx, domain)
 
 	if err != nil {

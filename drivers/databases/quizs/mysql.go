@@ -10,6 +10,34 @@ type QuizsRepository struct {
 	Conn *gorm.DB
 }
 
+func (q QuizsRepository) UpdateQuiz(ctx context.Context, domain *quizs.Domain) (quizs.Domain, error) {
+	var rec Quiz
+	var err error
+	err = q.Conn.First(&rec, "id = ?", domain.ID).Error
+	if err != nil {
+		return quizs.Domain{}, err
+	}
+
+	rec.Pertanyaan = domain.Pertanyaan
+	rec.Jawaban = domain.Jawaban
+	rec.ModulId = domain.ModulId
+
+	var listPilihan []PilihanQuiz
+
+	for _, pilihan := range domain.Pilihan {
+		listPilihan = append(listPilihan, PilihanQuiz{Pilihan: pilihan})
+	}
+	rec.Pilihans = listPilihan
+
+	err = q.Conn.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&rec).Error
+
+	if err != nil {
+		return quizs.Domain{}, err
+	}
+
+	return rec.ToDomain(), nil
+}
+
 func (q QuizsRepository) CreateQuiz(ctx context.Context, domain *quizs.Domain) (quizs.Domain, error) {
 	var rec = FromDomain(domain)
 	err := q.Conn.Create(rec).Error

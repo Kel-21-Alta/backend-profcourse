@@ -18,8 +18,10 @@ type Domain struct {
 type Usecase interface {
 	CreateQuiz(ctx context.Context, domain *Domain) (Domain, error)
 	ValidasiQuiz(ctx context.Context, domain *Domain) (*Domain, error)
+	UpdateQuiz(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
 	CreateQuiz(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateQuiz(ctx context.Context, domain *Domain) (Domain, error)
 }
