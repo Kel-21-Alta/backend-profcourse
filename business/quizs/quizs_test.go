@@ -43,7 +43,6 @@ func TestNewQuizUsecase(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, quizsDomain.ID, result.ID)
 	})
-
 	t.Run("Test case 1 | success create quiz", func(t *testing.T) {
 		setUpCreateQuizs()
 		mysqlQuizsRepository.On("CreateQuiz", mock.Anything, mock.Anything).Return(quizs.Domain{}, errors.New("db error")).Once()
@@ -80,7 +79,6 @@ func TestQuizeUsecase_ValidasiQuiz(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.EMPTY_MODUL_ID, err)
 	})
-
 	t.Run("Test case 3 | handle jawaban empty", func(t *testing.T) {
 		setUpCreateQuizs()
 		_, err := quizsService.ValidasiQuiz(context.Background(), &quizs.Domain{
@@ -92,7 +90,6 @@ func TestQuizeUsecase_ValidasiQuiz(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.JAWABAN_QUIZ_EMPTY, err)
 	})
-
 	t.Run("Test case 4 | handdle pertanyaan kosong", func(t *testing.T) {
 		setUpCreateQuizs()
 		_, err := quizsService.ValidasiQuiz(context.Background(), &quizs.Domain{
@@ -104,7 +101,6 @@ func TestQuizeUsecase_ValidasiQuiz(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.PERTANYAAN_QUIZ_EMPTY, err)
 	})
-
 	t.Run("Test case 5 | handle error pilihan kosong", func(t *testing.T) {
 		setUpCreateQuizs()
 		_, err := quizsService.ValidasiQuiz(context.Background(), &quizs.Domain{
@@ -116,7 +112,6 @@ func TestQuizeUsecase_ValidasiQuiz(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.PILIHAN_QUIZ_EMPTY, err)
 	})
-
 	t.Run("Test case 6 | handle error pilihan kurang dari 2", func(t *testing.T) {
 		setUpCreateQuizs()
 		_, err := quizsService.ValidasiQuiz(context.Background(), &quizs.Domain{
@@ -159,5 +154,34 @@ func TestQuizeUsecase_UpdateQuiz(t *testing.T) {
 
 		_, err := quizsService.UpdateQuiz(context.Background(), &quizsDomain)
 		assert.NotNil(t, err)
+	})
+	t.Run("Test 2 | id quiz kososng", func(t *testing.T) {
+		setUpUpdateQuiz()
+
+		_, err := quizsService.UpdateQuiz(context.Background(), &quizs.Domain{ID: ""})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_QUIZ_EMPTY, err)
+	})
+}
+
+func setUpDeleteQuiz() {
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+}
+
+func TestQuizeUsecase_DeleteQuiz(t *testing.T) {
+	t.Run("Test 1 | success delete quiz", func(t *testing.T) {
+		setUpDeleteQuiz()
+		mysqlQuizsRepository.On("DeleteQuiz", mock.Anything, mock.Anything).Return("7c1ec4be-8565-4b25-82cf-244d7730c398", nil).Once()
+		result, err := quizsService.DeleteQuiz(context.Background(), "7c1ec4be-8565-4b25-82cf-244d7730c398")
+
+		assert.Nil(t, err)
+		assert.Equal(t, "7c1ec4be-8565-4b25-82cf-244d7730c398", result)
+	})
+	t.Run("Test 2 | id quiz kosong", func(t *testing.T) {
+		setUpDeleteQuiz()
+		_, err := quizsService.DeleteQuiz(context.Background(), "")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_QUIZ_EMPTY, err)
 	})
 }

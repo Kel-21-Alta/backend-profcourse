@@ -2,7 +2,6 @@ package currentUser
 
 import (
 	"profcourse/business/users"
-	"time"
 )
 
 type UserCreated struct {
@@ -18,7 +17,7 @@ type UserCreated struct {
 }
 
 func FromDomain(domain users.Domain) UserCreated {
-	birth :=  domain.Birth.Format(time.RFC822)
+	birth :=  domain.Birth.String()
 	if birth == "01 Jan 01 00:00 UTC" {
 		birth = ""
 	}

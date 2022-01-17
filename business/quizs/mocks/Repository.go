@@ -35,6 +35,27 @@ func (_m *Repository) CreateQuiz(ctx context.Context, domain *quizs.Domain) (qui
 	return r0, r1
 }
 
+// DeleteQuiz provides a mock function with given fields: ctx, id
+func (_m *Repository) DeleteQuiz(ctx context.Context, id string) (string, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(context.Context, string) string); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateQuiz provides a mock function with given fields: ctx, domain
 func (_m *Repository) UpdateQuiz(ctx context.Context, domain *quizs.Domain) (quizs.Domain, error) {
 	ret := _m.Called(ctx, domain)
