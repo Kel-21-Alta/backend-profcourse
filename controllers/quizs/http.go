@@ -53,3 +53,20 @@ func (ctr *QuizsController) UpdateQuiz(c echo.Context) error {
 
 	return controller.NewResponseSuccess(c, http.StatusOK, updateQuiz.FromDomain(clean))
 }
+
+func (ctr QuizsController) DeleteQuiz(c echo.Context) error {
+	var id string
+
+	id = c.Param("quizid")
+	ctx := c.Request().Context()
+	resultId, err := ctr.QuizsUsecase.DeleteQuiz(ctx, id)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	type Message struct {
+		Message string
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: "Quis dengan id " + resultId + " berhasil dihapus"})
+}

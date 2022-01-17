@@ -10,6 +10,21 @@ type QuizsRepository struct {
 	Conn *gorm.DB
 }
 
+func (q QuizsRepository) DeleteQuiz(ctx context.Context, id string) (string, error) {
+	var rec Quiz
+	var rec2 PilihanQuiz
+
+	if err := q.Conn.Where("quiz_id = ?", id).Delete(&rec2).Error; err != nil {
+		return "", err
+	}
+
+	if err := q.Conn.Delete(&rec, "id = ?", id).Error; err != nil {
+		return "", err
+	}
+
+	return id, nil
+}
+
 func (q QuizsRepository) UpdateQuiz(ctx context.Context, domain *quizs.Domain) (quizs.Domain, error) {
 	var rec Quiz
 	var err error

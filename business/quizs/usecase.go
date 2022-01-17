@@ -11,7 +11,25 @@ type QuizeUsecase struct {
 	ContextTimeOut time.Duration
 }
 
+func (q *QuizeUsecase) DeleteQuiz(ctx context.Context, id string) (string, error) {
+	if id == "" {
+		return "", controller.ID_QUIZ_EMPTY
+	}
+
+	result, err := q.QuizRepository.DeleteQuiz(ctx, id)
+
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
+}
+
 func (q *QuizeUsecase) UpdateQuiz(ctx context.Context, domain *Domain) (Domain, error) {
+
+	if domain.ID == "" {
+		return Domain{}, controller.ID_QUIZ_EMPTY
+	}
 
 	resultValidasi, err := q.ValidasiQuiz(ctx, domain)
 
