@@ -7,6 +7,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/quizs/requests"
 	"profcourse/controllers/quizs/responses/createQuizs"
+	"profcourse/controllers/quizs/responses/updateQuiz"
 )
 
 type QuizsController struct {
@@ -17,7 +18,7 @@ func NewQuizsController(usecase quizs.Usecase) *QuizsController {
 	return &QuizsController{QuizsUsecase: usecase}
 }
 
-func (ctr QuizsController) CreateQuiz(c echo.Context) error {
+func (ctr *QuizsController) CreateQuiz(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	var req requests.CreateQuizRequest
@@ -31,4 +32,24 @@ func (ctr QuizsController) CreateQuiz(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 	return controller.NewResponseSuccess(c, http.StatusOK, createQuizs.FromDomain(clean))
+}
+
+func (ctr *QuizsController) UpdateQuiz(c echo.Context) error {
+
+	ctx := c.Request().Context()
+
+	var req requests.UpdateQuizRequest
+
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	req.ID = c.Param("quizid")
+
+	clean, err := ctr.QuizsUsecase.UpdateQuiz(ctx, req.ToDomain())
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, updateQuiz.FromDomain(clean))
 }

@@ -66,6 +66,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	//Quiz
 	withJWT.POST("quizs", cl.QuizController.CreateQuiz)
+	withJWT.PUT("quizs/:quizid", cl.QuizController.UpdateQuiz)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 
