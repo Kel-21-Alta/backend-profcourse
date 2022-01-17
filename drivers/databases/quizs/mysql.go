@@ -22,14 +22,24 @@ func (q QuizsRepository) UpdateQuiz(ctx context.Context, domain *quizs.Domain) (
 	rec.Jawaban = domain.Jawaban
 	rec.ModulId = domain.ModulId
 
+	//err = q.Conn.Model(&rec).Association("Pilihans").Clear()
+	var pilihanQuiz PilihanQuiz
+
+	err = q.Conn.Where("quiz_id = ?", domain.ID).Unscoped().Delete(&pilihanQuiz).Error
+
+	if err != nil {
+		return quizs.Domain{}, err
+	}
+
 	var listPilihan []PilihanQuiz
 
 	for _, pilihan := range domain.Pilihan {
 		listPilihan = append(listPilihan, PilihanQuiz{Pilihan: pilihan})
 	}
+
 	rec.Pilihans = listPilihan
 
-	err = q.Conn.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&rec).Error
+	err = q.Conn.Save(&rec).Error
 
 	if err != nil {
 		return quizs.Domain{}, err
