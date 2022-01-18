@@ -16,6 +16,7 @@ var mysqlMateriesRepository _mocksMateriesRepository.Repository
 
 var materiesService materies.Usecase
 var materiesDomain materies.Domain
+var allMaterisDomain materies.AllMateriModul
 
 func setUpCreateMateri() {
 	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
@@ -217,10 +218,56 @@ func TestMateriesUsecase_GetOneMateri(t *testing.T) {
 		_, err := materiesService.GetOneMateri(context.Background(), &materies.Domain{ID: ""})
 		assert.Equal(t, controller.ID_MATERI_EMPTY, err)
 	})
-	t.Run("Testcase 1 | handle err db", func(t *testing.T) {
+	t.Run("Testcase 3 | handle err db", func(t *testing.T) {
 		setUpGetOneMateri()
 		mysqlMateriesRepository.On("GetOnemateri", mock.Anything, mock.Anything).Return(materies.Domain{}, errors.New("error db")).Once()
 		_, err := materiesService.GetOneMateri(context.Background(), &materiesDomain)
+		assert.NotNil(t, err)
+	})
+}
+
+func setUpGetAllMateri() {
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
+	allMaterisDomain = materies.AllMateriModul{
+		JawabanMateri: 2,
+		Materi:        []materies.Domain{materiesDomain, materiesDomain},
+	}
+}
+
+func TestMateriesUsecase_GetAllMateri(t *testing.T) {
+	t.Run("Test case 1 | success get all materi", func(t *testing.T) {
+		setUpGetAllMateri()
+		mysqlMateriesRepository.On("GetAllMateri", mock.Anything, mock.Anything).Return(allMaterisDomain, nil).Once()
+
+		result, err := materiesService.GetAllMateri(context.Background(), &materies.Domain{ModulId: "d0b4fac1-09bf-4455-b3ec-74e5b54d2c7f", User: materies.CurrentUser{ID: "727c0932-1c4b-497a-af40-f373d519d242"}})
+
+		assert.Nil(t, err)
+		assert.Equal(t, allMaterisDomain.JawabanMateri, result.JawabanMateri)
+	})
+	t.Run("Test case 2 | handle modul id empty", func(t *testing.T) {
+		setUpGetAllMateri()
+
+		_, err := materiesService.GetAllMateri(context.Background(), &materies.Domain{ModulId: "", User: materies.CurrentUser{ID: "727c0932-1c4b-497a-af40-f373d519d242"}})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_MODUL_ID, err)
+	})
+
+	t.Run("Test case 3 | handle id user kosong", func(t *testing.T) {
+		setUpGetAllMateri()
+
+		_, err := materiesService.GetAllMateri(context.Background(), &materies.Domain{ModulId: "d0b4fac1-09bf-4455-b3ec-74e5b54d2c7f", User: materies.CurrentUser{ID: ""}})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+
+	t.Run("Test case 4 | handle error db", func(t *testing.T) {
+		setUpGetAllMateri()
+		mysqlMateriesRepository.On("GetAllMateri", mock.Anything, mock.Anything).Return(materies.AllMateriModul{}, errors.New("db err ni")).Once()
+
+		_, err := materiesService.GetAllMateri(context.Background(), &materies.Domain{ModulId: "d0b4fac1-09bf-4455-b3ec-74e5b54d2c7f", User: materies.CurrentUser{ID: "727c0932-1c4b-497a-af40-f373d519d242"}})
+
 		assert.NotNil(t, err)
 	})
 }

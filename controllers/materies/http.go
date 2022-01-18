@@ -8,6 +8,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/materies/requests"
 	"profcourse/controllers/materies/responses/createMateries"
+	"profcourse/controllers/materies/responses/getAllMateri"
 	"profcourse/controllers/materies/responses/getOneMateri"
 	"profcourse/controllers/materies/responses/updateMateri"
 )
@@ -20,7 +21,7 @@ func NewMateriesController(usecase materies.Usecase) *MateriesController {
 	return &MateriesController{MateriesUsecase: usecase}
 }
 
-func (ctr MateriesController) CreateMateries(c echo.Context) error {
+func (ctr *MateriesController) CreateMateries(c echo.Context) error {
 	ctx := c.Request().Context()
 	var req requests.CreateMateriesRequest
 
@@ -37,7 +38,7 @@ func (ctr MateriesController) CreateMateries(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusCreated, createMateries.FromDomain(clean))
 }
 
-func (ctr MateriesController) UpdateMateri(c echo.Context) error {
+func (ctr *MateriesController) UpdateMateri(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	var req requests.UpdateMateriRequest
@@ -57,7 +58,7 @@ func (ctr MateriesController) UpdateMateri(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusOK, updateMateri.FromDomain(clean))
 }
 
-func (ctr MateriesController) DeleteMateries(c echo.Context) error {
+func (ctr *MateriesController) DeleteMateries(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	var domain materies.Domain
@@ -76,7 +77,7 @@ func (ctr MateriesController) DeleteMateries(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: "Materi dengan id " + clean.ID + " telah dihapus"})
 }
 
-func (ctr MateriesController) GetOneMateri(c echo.Context) error {
+func (ctr *MateriesController) GetOneMateri(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	token, err := middlewares.ExtractClaims(c)
@@ -95,4 +96,24 @@ func (ctr MateriesController) GetOneMateri(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getOneMateri.FormDomain(clean))
+}
+
+func (ctr *MateriesController) GetAllMateri(c echo.Context) error {
+	var domain materies.Domain
+
+	domain.ModulId = c.Param("modulid")
+	token, err := middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain.User.ID = token.Userid
+
+	var ctx = c.Request().Context()
+	clean, err := ctr.MateriesUsecase.GetAllMateri(ctx, &domain)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllMateri.FromDomain(clean))
 }

@@ -54,12 +54,12 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	//Modul
 	withJWT.POST("moduls", cl.ModulController.CreateModul)
-	withJWT.GET("moduls/:modulid", cl.ModulController.GetOneModul)
 	withJWT.PUT("moduls/:modulid", cl.ModulController.UpdateModul)
 	withJWT.DELETE("moduls/:modulid", cl.ModulController.DeleteModul)
 
 	//Materi
 	withJWT.POST("materi", cl.MateriesController.CreateMateries)
+	withJWT.GET("moduls/:modulid", cl.MateriesController.GetAllMateri)
 	withJWT.DELETE("materi/:materiid", cl.MateriesController.DeleteMateries)
 	withJWT.PUT("materi/:materiid", cl.MateriesController.UpdateMateri)
 	withJWT.GET("materi/:materiid", cl.MateriesController.GetOneMateri)

@@ -11,6 +11,21 @@ type MateriesRepository struct {
 	Conn *gorm.DB
 }
 
+func (m MateriesRepository) GetAllMateri(ctx context.Context, domain *materies.Domain) (materies.AllMateriModul, error) {
+
+	var rec []Materi
+
+	err := m.Conn.Preload("MateriUserComplate").Where("modul_id = ?", domain.ModulId).Find(&rec).Error
+
+	if err != nil {
+		return materies.AllMateriModul{}, err
+	}
+
+	result := ToAllMateriModul(rec, domain.User.ID)
+
+	return result, nil
+}
+
 func (m MateriesRepository) GetOnemateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
 
 	var rec Materi

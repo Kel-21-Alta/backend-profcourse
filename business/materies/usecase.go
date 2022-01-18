@@ -11,6 +11,23 @@ type MateriesUsecase struct {
 	ContextTimeout     time.Duration
 }
 
+func (u MateriesUsecase) GetAllMateri(ctx context.Context, domain *Domain) (AllMateriModul, error) {
+	if domain.ModulId == "" {
+		return AllMateriModul{}, controller.EMPTY_MODUL_ID
+	}
+	if domain.User.ID == "" {
+		return AllMateriModul{}, controller.ID_EMPTY
+	}
+
+	result, err := u.MateriesRepository.GetAllMateri(ctx, domain)
+
+	if err != nil {
+		return AllMateriModul{}, err
+	}
+
+	return result, nil
+}
+
 func (u MateriesUsecase) GetOneMateri(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.ID == "" {
 		return Domain{}, controller.ID_MATERI_EMPTY
