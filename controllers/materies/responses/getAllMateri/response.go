@@ -10,6 +10,7 @@ type GetAllMateriResponse struct {
 }
 
 type Materi struct {
+	ID string `json:"id"`
 	UrlMateri   string `json:"url_materi"`
 	Type        int    `json:"type"`
 	TypeString  string `json:"type_string"`
@@ -23,6 +24,7 @@ func FromDomain(domain materies.AllMateriModul) *GetAllMateriResponse {
 	var listMateri []Materi
 	for _, materi := range domain.Materi {
 		listMateri = append(listMateri, Materi{
+			ID: materi.ID,
 			UrlMateri:   materi.UrlMateri,
 			Type:        materi.Type,
 			TypeString:  materi.TypeString,
