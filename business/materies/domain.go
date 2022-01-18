@@ -19,6 +19,11 @@ type Domain struct {
 	User CurrentUser
 }
 
+type AllMateriModul struct {
+	JawabanMateri int `json:"jawaban_materi"`
+	Materi        []Domain
+}
+
 type CurrentUser struct {
 	ID          string
 	CurrentTime string
@@ -31,6 +36,7 @@ type Usecase interface {
 	UpdateMateri(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteMateri(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneMateri(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllMateri(ctx context.Context, domain *Domain) (AllMateriModul, error)
 }
 
 type Repository interface {
@@ -38,4 +44,5 @@ type Repository interface {
 	CreateMateri(ctx context.Context, domain *Domain) (Domain, error)
 	UpdateMateri(ctx context.Context, domain *Domain) (Domain, error)
 	GetOnemateri(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllMateri(ctx context.Context, domain *Domain) (AllMateriModul, error)
 }

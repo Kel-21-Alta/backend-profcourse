@@ -83,3 +83,54 @@ func (r Materi) ToDomain() materies.Domain {
 		UpdatedAt:  r.UpdatedAt,
 	}
 }
+
+type CurrentUser struct {
+	ID string
+	IsComplate bool
+	CurrentTime string
+}
+
+func (r Materi) ToDomainWithUser(userId string) materies.Domain {
+	var typeStr string
+	if r.Type == 1 {
+		typeStr = "text"
+	} else {
+		typeStr = "video"
+	}
+
+	var currentUser CurrentUser
+	for _, user := range r.MateriUserComplate {
+		if user.UserId == userId {
+			currentUser.CurrentTime = user.CurrentTime
+			currentUser.ID = user.UserId
+			currentUser.IsComplate = user.IsComplate
+		}
+	}
+
+	return materies.Domain{
+		ID:         r.ID,
+		Title:      r.Title,
+		ModulId:    r.ModulID,
+		Order:      int(r.Order),
+		Type:       int(r.Type),
+		TypeString: typeStr,
+		UrlMateri:  r.UrlMateri,
+		CreatedAt:  r.CreatedAt,
+		UpdatedAt:  r.UpdatedAt,
+		User: materies.CurrentUser{
+			ID:          currentUser.ID,
+			CurrentTime: currentUser.CurrentTime,
+			IsComplate:  currentUser.IsComplate,
+		},
+	}
+}
+
+func ToAllMateriModul(materis []Materi, userId string) materies.AllMateriModul {
+
+	var listDomainMateri []materies.Domain
+	for _, materi := range materis {
+		listDomainMateri = append(listDomainMateri, materi.ToDomainWithUser(userId))
+	}
+
+	return materies.AllMateriModul{JawabanMateri: len(materis), Materi: listDomainMateri}
+}

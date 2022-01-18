@@ -54,7 +54,7 @@ func (ctr *QuizsController) UpdateQuiz(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusOK, updateQuiz.FromDomain(clean))
 }
 
-func (ctr QuizsController) DeleteQuiz(c echo.Context) error {
+func (ctr *QuizsController) DeleteQuiz(c echo.Context) error {
 	var id string
 
 	id = c.Param("quizid")
