@@ -11,6 +11,20 @@ type QuizeUsecase struct {
 	ContextTimeOut time.Duration
 }
 
+func (q *QuizeUsecase) GetOneQuiz(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.ID_QUIZ_EMPTY
+	}
+
+	result, err := q.QuizRepository.GetOneQuiz(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (q *QuizeUsecase) GetAllQuizModul(ctx context.Context, domain *Domain) ([]Domain, error) {
 
 	if domain.ModulId == "" {

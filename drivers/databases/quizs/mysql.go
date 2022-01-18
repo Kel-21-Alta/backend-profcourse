@@ -10,6 +10,18 @@ type QuizsRepository struct {
 	Conn *gorm.DB
 }
 
+func (q QuizsRepository) GetOneQuiz(ctx context.Context, domain *quizs.Domain) (quizs.Domain, error) {
+	var rec Quiz
+
+	err := q.Conn.Preload("Pilihans").First(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return quizs.Domain{}, err
+	}
+
+	return rec.ToDomain(), nil
+}
+
 func (q QuizsRepository) GetAllQuizModul(ctx context.Context, domain *quizs.Domain) ([]quizs.Domain, error) {
 	var rec []Quiz
 
