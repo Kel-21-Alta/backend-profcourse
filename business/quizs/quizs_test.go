@@ -16,6 +16,7 @@ var mysqlQuizsRepository _mocksQuizRepository.Repository
 
 var quizsService quizs.Usecase
 var quizsDomain quizs.Domain
+var listDomain []quizs.Domain
 
 func setUpCreateQuizs() {
 	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
@@ -43,7 +44,7 @@ func TestNewQuizUsecase(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, quizsDomain.ID, result.ID)
 	})
-	t.Run("Test case 1 | success create quiz", func(t *testing.T) {
+	t.Run("Test case 2 | success create quiz", func(t *testing.T) {
 		setUpCreateQuizs()
 		mysqlQuizsRepository.On("CreateQuiz", mock.Anything, mock.Anything).Return(quizs.Domain{}, errors.New("db error")).Once()
 		_, err := quizsService.CreateQuiz(context.Background(), &quizs.Domain{
@@ -183,5 +184,46 @@ func TestQuizeUsecase_DeleteQuiz(t *testing.T) {
 
 		assert.NotNil(t, err)
 		assert.Equal(t, controller.ID_QUIZ_EMPTY, err)
+	})
+}
+
+func setUpGetAllQuiz() {
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+	quizsDomain = quizs.Domain{
+		ID:         "7c1ec4be-8565-4b25-82cf-244d7730c398",
+		Pilihan:    []string{"a", "b", "c"},
+		Pertanyaan: "Makan apa?",
+		Jawaban:    "a",
+		ModulId:    "36d8d8bc-87cb-467d-97c0-2902920457df",
+		CreatedAt:  time.Time{},
+		UpdatedAt:  time.Time{},
+	}
+	listDomain = []quizs.Domain{quizsDomain, quizsDomain}
+}
+
+func TestQuizeUsecase_GetAllQuizModul(t *testing.T) {
+	t.Run("test case 1 | success get all quiz from modul", func(t *testing.T) {
+		setUpGetAllQuiz()
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
+
+		_, err := quizsService.GetAllQuizModul(context.Background(), &quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df"})
+
+		assert.Nil(t, err)
+	})
+	t.Run("test case 2 | handle err modul id empty", func(t *testing.T) {
+		setUpGetAllQuiz()
+
+		_, err := quizsService.GetAllQuizModul(context.Background(), &quizs.Domain{ModulId: ""})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_MODUL_ID, err)
+	})
+	t.Run("test case 1 | success get all quiz from modul", func(t *testing.T) {
+		setUpGetAllQuiz()
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return([]quizs.Domain{}, errors.New("db error ni")).Once()
+
+		_, err := quizsService.GetAllQuizModul(context.Background(), &quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df"})
+
+		assert.NotNil(t, err)
 	})
 }

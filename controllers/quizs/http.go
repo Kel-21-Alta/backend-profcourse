@@ -7,6 +7,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/quizs/requests"
 	"profcourse/controllers/quizs/responses/createQuizs"
+	"profcourse/controllers/quizs/responses/getAllQuizModul"
 	"profcourse/controllers/quizs/responses/updateQuiz"
 )
 
@@ -69,4 +70,20 @@ func (ctr *QuizsController) DeleteQuiz(c echo.Context) error {
 		Message string
 	}
 	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: "Quis dengan id " + resultId + " berhasil dihapus"})
+}
+
+func (ctr *QuizsController) GetAllQuizModul(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	var domain quizs.Domain
+
+	domain.ModulId = c.Param("modulid")
+
+	clean, err := ctr.QuizsUsecase.GetAllQuizModul(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllQuizModul.FromListDomain(clean))
 }
