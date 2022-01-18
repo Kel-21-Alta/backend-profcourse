@@ -10,6 +10,18 @@ type QuizsRepository struct {
 	Conn *gorm.DB
 }
 
+func (q QuizsRepository) GetAllQuizModul(ctx context.Context, domain *quizs.Domain) ([]quizs.Domain, error) {
+	var rec []Quiz
+
+	err := q.Conn.Preload("Pilihans").Where("modul_id = ?", domain.ModulId).Find(&rec).Order("created_at desc").Error
+
+	if err != nil {
+		return []quizs.Domain{}, err
+	}
+
+	return ToListDomain(rec), nil
+}
+
 func (q QuizsRepository) DeleteQuiz(ctx context.Context, id string) (string, error) {
 	var rec Quiz
 	var rec2 PilihanQuiz

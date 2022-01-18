@@ -11,6 +11,22 @@ type QuizeUsecase struct {
 	ContextTimeOut time.Duration
 }
 
+func (q *QuizeUsecase) GetAllQuizModul(ctx context.Context, domain *Domain) ([]Domain, error) {
+
+	if domain.ModulId == "" {
+		return []Domain{}, controller.EMPTY_MODUL_ID
+	}
+
+	result, err := q.QuizRepository.GetAllQuizModul(ctx, domain)
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
+
+}
+
 func (q *QuizeUsecase) DeleteQuiz(ctx context.Context, id string) (string, error) {
 	if id == "" {
 		return "", controller.ID_QUIZ_EMPTY

@@ -20,10 +20,12 @@ type Usecase interface {
 	ValidasiQuiz(ctx context.Context, domain *Domain) (*Domain, error)
 	UpdateQuiz(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteQuiz(ctx context.Context, id string) (string, error)
+	GetAllQuizModul(ctx context.Context, domain *Domain) ([]Domain, error)
 }
 
 type Repository interface {
 	CreateQuiz(ctx context.Context, domain *Domain) (Domain, error)
 	UpdateQuiz(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteQuiz(ctx context.Context, id string) (string, error)
+	GetAllQuizModul(ctx context.Context, domain *Domain) ([]Domain, error)
 }

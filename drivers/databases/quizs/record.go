@@ -84,3 +84,13 @@ func FromDomain(domain *quizs.Domain) *Quiz {
 		ModulId:    domain.ModulId,
 	}
 }
+
+func ToListDomain(recs []Quiz) []quizs.Domain {
+	var listDomain []quizs.Domain
+
+	for _, rec := range recs {
+		listDomain = append(listDomain, rec.ToDomain())
+	}
+
+	return listDomain
+}
