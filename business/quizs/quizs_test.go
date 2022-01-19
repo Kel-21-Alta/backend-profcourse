@@ -156,7 +156,7 @@ func TestQuizeUsecase_UpdateQuiz(t *testing.T) {
 		_, err := quizsService.UpdateQuiz(context.Background(), &quizsDomain)
 		assert.NotNil(t, err)
 	})
-	t.Run("Test 2 | id quiz kososng", func(t *testing.T) {
+	t.Run("Test 3 | id quiz kososng", func(t *testing.T) {
 		setUpUpdateQuiz()
 
 		_, err := quizsService.UpdateQuiz(context.Background(), &quizs.Domain{ID: ""})
@@ -223,6 +223,47 @@ func TestQuizeUsecase_GetAllQuizModul(t *testing.T) {
 		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return([]quizs.Domain{}, errors.New("db error ni")).Once()
 
 		_, err := quizsService.GetAllQuizModul(context.Background(), &quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df"})
+
+		assert.NotNil(t, err)
+	})
+}
+
+func setUpGetOneQuiz() {
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+	quizsDomain = quizs.Domain{
+		ID:         "7c1ec4be-8565-4b25-82cf-244d7730c398",
+		Pilihan:    []string{"a", "b", "c"},
+		Pertanyaan: "Makan apa?",
+		Jawaban:    "a",
+		ModulId:    "36d8d8bc-87cb-467d-97c0-2902920457df",
+		CreatedAt:  time.Time{},
+		UpdatedAt:  time.Time{},
+	}
+}
+
+func TestQuizeUsecase_GetOneQuiz(t *testing.T) {
+	t.Run("Test case 1 | get one quiz success", func(t *testing.T) {
+		setUpGetOneQuiz()
+		mysqlQuizsRepository.On("GetOneQuiz", mock.Anything, mock.Anything).Return(quizsDomain, nil).Once()
+
+		result, err := quizsService.GetOneQuiz(context.Background(), &quizsDomain)
+
+		assert.Nil(t, err)
+		assert.Equal(t, quizsDomain.ID, result.ID)
+	})
+	t.Run("Test case 2 | empty quiz id", func(t *testing.T) {
+		setUpGetOneQuiz()
+
+		_, err := quizsService.GetOneQuiz(context.Background(), &quizs.Domain{ID: ""})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_QUIZ_EMPTY, err)
+	})
+	t.Run("Test case 3 | get one quiz db error", func(t *testing.T) {
+		setUpGetOneQuiz()
+		mysqlQuizsRepository.On("GetOneQuiz", mock.Anything, mock.Anything).Return(quizsDomain, errors.New("eror guys")).Once()
+
+		_, err := quizsService.GetOneQuiz(context.Background(), &quizsDomain)
 
 		assert.NotNil(t, err)
 	})
