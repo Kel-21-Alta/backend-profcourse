@@ -21,6 +21,7 @@ type Usecase interface {
 	UpdateQuiz(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteQuiz(ctx context.Context, id string) (string, error)
 	GetAllQuizModul(ctx context.Context, domain *Domain) ([]Domain, error)
+	GetOneQuiz(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
@@ -28,4 +29,5 @@ type Repository interface {
 	UpdateQuiz(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteQuiz(ctx context.Context, id string) (string, error)
 	GetAllQuizModul(ctx context.Context, domain *Domain) ([]Domain, error)
+	GetOneQuiz(ctx context.Context, domain *Domain) (Domain, error)
 }

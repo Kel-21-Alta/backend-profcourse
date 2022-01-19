@@ -79,6 +79,27 @@ func (_m *Repository) GetAllQuizModul(ctx context.Context, domain *quizs.Domain)
 	return r0, r1
 }
 
+// GetOneQuiz provides a mock function with given fields: ctx, domain
+func (_m *Repository) GetOneQuiz(ctx context.Context, domain *quizs.Domain) (quizs.Domain, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 quizs.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, *quizs.Domain) quizs.Domain); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(quizs.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *quizs.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateQuiz provides a mock function with given fields: ctx, domain
 func (_m *Repository) UpdateQuiz(ctx context.Context, domain *quizs.Domain) (quizs.Domain, error) {
 	ret := _m.Called(ctx, domain)

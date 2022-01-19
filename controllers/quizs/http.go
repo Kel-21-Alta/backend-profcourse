@@ -8,6 +8,7 @@ import (
 	"profcourse/controllers/quizs/requests"
 	"profcourse/controllers/quizs/responses/createQuizs"
 	"profcourse/controllers/quizs/responses/getAllQuizModul"
+	"profcourse/controllers/quizs/responses/getOneQuiz"
 	"profcourse/controllers/quizs/responses/updateQuiz"
 )
 
@@ -73,6 +74,7 @@ func (ctr *QuizsController) DeleteQuiz(c echo.Context) error {
 }
 
 func (ctr *QuizsController) GetAllQuizModul(c echo.Context) error {
+
 	ctx := c.Request().Context()
 
 	var domain quizs.Domain
@@ -86,4 +88,18 @@ func (ctr *QuizsController) GetAllQuizModul(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getAllQuizModul.FromListDomain(clean))
+}
+
+func (ctr *QuizsController) GetOneQuiz(c echo.Context) error {
+	ctx := c.Request().Context()
+	var domain quizs.Domain
+	domain.ID = c.Param("quizid")
+
+	clean, err := ctr.QuizsUsecase.GetOneQuiz(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getOneQuiz.FromDomain(clean))
 }
