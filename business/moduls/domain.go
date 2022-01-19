@@ -44,6 +44,7 @@ type Usecase interface {
 	GetOneModul(ctx context.Context, domain *Domain) (Domain, error)
 	UpdateModul(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteModul(ctx context.Context, domain *Domain) (Message, error)
+	GetAllModulCourse(ctx context.Context, domain *Domain) ([]Domain, error)
 }
 
 type Repository interface {
@@ -52,4 +53,5 @@ type Repository interface {
 	UpdateModul(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteModul(ctx context.Context, id string) (Message, error)
 	GetOneModulWithCourse(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllModulCourse(ctx context.Context, domain *Domain) ([]Domain, error)
 }

@@ -10,6 +10,17 @@ type mysqlModulsRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlModulsRepository) GetAllModulCourse(ctx context.Context, domain *moduls.Domain) ([]moduls.Domain, error) {
+	var recs []Moduls
+
+	err := m.Conn.Where("course_id = ?", domain.CourseId).Find(&recs).Order("order asc").Error
+	if err != nil {
+		return []moduls.Domain{}, err
+	}
+
+	return TolistDomain(recs), nil
+}
+
 func (m mysqlModulsRepository) DeleteModul(ctx context.Context, id string) (moduls.Message, error) {
 	var modul Moduls
 	err := m.Conn.Delete(&modul, "id = ?", id).Error

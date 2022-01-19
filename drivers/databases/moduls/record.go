@@ -70,3 +70,20 @@ func FromDomain(domain *moduls.Domain) *Moduls {
 		CourseId: domain.CourseId,
 	}
 }
+
+func TolistDomain(recs []Moduls) []moduls.Domain {
+	var listDomain []moduls.Domain
+
+	for _, modul := range recs {
+		listDomain = append(listDomain, moduls.Domain{
+			ID:            modul.ID,
+			Title:         modul.Title,
+			Order:         modul.Order,
+			CourseId:      modul.CourseId,
+			CreatedAt:     modul.CreatedAt,
+			UpdatedAt:     modul.UpdatedAt,
+		})
+	}
+
+	return listDomain
+}

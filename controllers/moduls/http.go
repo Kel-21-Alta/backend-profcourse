@@ -8,6 +8,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/moduls/request"
 	"profcourse/controllers/moduls/responses/createModul"
+	"profcourse/controllers/moduls/responses/getAllModul"
 	"profcourse/controllers/moduls/responses/getOneModul"
 	"profcourse/controllers/moduls/responses/updateModul"
 )
@@ -20,7 +21,7 @@ func NewModulsController(usecase moduls.Usecase) *ModulController {
 	return &ModulController{ModulsUsecase: usecase}
 }
 
-func (ctr ModulController) CreateModul(c echo.Context) error {
+func (ctr *ModulController) CreateModul(c echo.Context) error {
 	//	mendapatkan data dari request
 	req := request.CreateModulsRequest{}
 	if err := c.Bind(&req); err != nil {
@@ -47,7 +48,7 @@ func (ctr ModulController) CreateModul(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusCreated, createModul.FromDomain(&clean))
 }
 
-func (ctr ModulController) GetOneModul(c echo.Context) error {
+func (ctr *ModulController) GetOneModul(c echo.Context) error {
 
 	ctx := c.Request().Context()
 	clean, err := ctr.ModulsUsecase.GetOneModul(ctx, &moduls.Domain{ID: c.Param("modulid")})
@@ -59,7 +60,7 @@ func (ctr ModulController) GetOneModul(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusOK, getOneModul.FromDomain(&clean))
 }
 
-func (ctr ModulController) UpdateModul(c echo.Context) error {
+func (ctr *ModulController) UpdateModul(c echo.Context) error {
 
 	ctx := c.Request().Context()
 
@@ -87,7 +88,7 @@ func (ctr ModulController) UpdateModul(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusOK, updateModul.FromDomain(clean))
 }
 
-func (ctr ModulController) DeleteModul(c echo.Context) error {
+func (ctr *ModulController) DeleteModul(c echo.Context) error {
 	var domain moduls.Domain
 
 	token, err := middlewares.ExtractClaims(c)
@@ -104,8 +105,24 @@ func (ctr ModulController) DeleteModul(c echo.Context) error {
 	}
 
 	type Message struct {
-		 Message string `json:"message"`
+		Message string `json:"message"`
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: string(clean)})
+}
+
+func (ctr *ModulController) GetAllModulCourse(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	var domain moduls.Domain
+
+	domain.CourseId = c.Param("courseid")
+
+	clean, err := ctr.ModulsUsecase.GetAllModulCourse(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllModul.FromListDomain(clean))
 }

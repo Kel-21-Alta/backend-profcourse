@@ -21,6 +21,7 @@ var modulDomain moduls.Domain
 var modulServices moduls.Usecase
 var courseDomain courses.Domain
 var materi moduls.Materi
+var listModul []moduls.Domain
 
 func setUpCreateModul() {
 	modulServices = moduls.NewModulUsecase(&mysqlModulrepository, &courseUsecase, time.Hour*1)
@@ -269,5 +270,51 @@ func TestModulUsecase_DeleteModul(t *testing.T) {
 			&moduls.Domain{ID: "", RoleUser: 2, UserMakeModul: "9cc1fc86-4c02-4fe2-8c57-93b4c56225ee"})
 
 		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+}
+
+func setUpGetAllModul() {
+	modulServices = moduls.NewModulUsecase(&mysqlModulrepository, &courseUsecase, time.Hour*1)
+	modulDomain = moduls.Domain{
+		ID:            "985c0e69-8a38-4774-9a12-2c279f7f258d",
+		Title:         "Pengenalan Docker",
+		Order:         1,
+		CourseId:      "41f99e51-bd6a-4e67-b631-25a58acb39f4",
+		Materi:        []moduls.Materi{materi, materi},
+		JumlahMateri:  5,
+		UserMakeModul: "9cc1fc86-4c02-4fe2-8c57-93b4c56225ee",
+		RoleUser:      1,
+		CreatedAt:     time.Time{},
+		UpdatedAt:     time.Time{},
+	}
+	listModul = []moduls.Domain{modulDomain, modulDomain}
+}
+
+func TestModulUsecase_GetAllModulCourse(t *testing.T) {
+	t.Run("test case 1 | succes get modul form course", func(t *testing.T) {
+		setUpGetAllModul()
+
+		mysqlModulrepository.On("GetAllModulCourse", mock.Anything, mock.Anything).Return(listModul, nil).Once()
+
+		_, err := modulServices.GetAllModulCourse(context.Background(), &moduls.Domain{CourseId: "41f99e51-bd6a-4e67-b631-25a58acb39f4"})
+
+		assert.Nil(t, err)
+	})
+	t.Run("test case 1 | succes get modul form course", func(t *testing.T) {
+		setUpGetAllModul()
+
+		_, err := modulServices.GetAllModulCourse(context.Background(), &moduls.Domain{CourseId: ""})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_COURSE, err)
+	})
+	t.Run("test case 1 | succes get modul form course", func(t *testing.T) {
+		setUpGetAllModul()
+
+		mysqlModulrepository.On("GetAllModulCourse", mock.Anything, mock.Anything).Return(listModul, errors.New("err db")).Once()
+
+		_, err := modulServices.GetAllModulCourse(context.Background(), &moduls.Domain{CourseId: "41f99e51-bd6a-4e67-b631-25a58acb39f4"})
+
+		assert.NotNil(t, err)
 	})
 }
