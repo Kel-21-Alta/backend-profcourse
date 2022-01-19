@@ -27,6 +27,7 @@ type GetOneCourseResponses struct {
 	Description     string          `json:"description"`
 	UrlImage        string          `json:"url_image"`
 	Teacher         string          `json:"teacher"`
+	TeacherId 		string `json:"teacher_id"`
 	Moduls          []Modul         `json:"moduls"`
 	UserTakenCourse int             `json:"user_taken_course"`
 	Rangking        []Ranking       `json:"rangking"`
@@ -60,6 +61,7 @@ func FromDomain(domain *courses.Domain) *GetOneCourseResponses {
 		Description: domain.Description,
 		UrlImage:    domain.ImgUrl,
 		Teacher:     domain.TeacherName,
+		TeacherId: 		domain.TeacherId,
 		InfoUser: InfoCurrentUser{
 			CurrentUser: domain.InfoUser.CurrentUser,
 			IsRegister:  domain.InfoUser.IsRegister,
