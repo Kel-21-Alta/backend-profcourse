@@ -67,6 +67,7 @@ func (c Courses) ToDomain() *courses.Domain {
 		listModuls = append(listModuls, courses.Modul{
 			NameModul: modul.Title,
 			ModulID:   modul.ID,
+			Order: modul.Order,
 		})
 	}
 

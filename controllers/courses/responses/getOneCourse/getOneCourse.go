@@ -11,6 +11,7 @@ type InfoCurrentUser struct {
 type Modul struct {
 	NameModul string `json:"name_modul"`
 	ModulID   string `json:"modul_id"`
+	Order     int    `json:"order"`
 }
 
 type Ranking struct {
@@ -39,6 +40,7 @@ func FromDomain(domain *courses.Domain) *GetOneCourseResponses {
 		listModuls = append(listModuls, Modul{
 			NameModul: modul.NameModul,
 			ModulID:   modul.ModulID,
+			Order:     modul.Order,
 		})
 	}
 

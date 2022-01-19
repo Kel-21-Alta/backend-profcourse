@@ -14,6 +14,7 @@ type InfoCurrentUser struct {
 type Modul struct {
 	NameModul string
 	ModulID   string
+	Order int
 }
 
 type Rangking struct {
