@@ -117,3 +117,29 @@ func (ctr *MateriesController) GetAllMateri(c echo.Context) error {
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getAllMateri.FromDomain(clean))
 }
+
+func (ctr *MateriesController) UpdateProgressMateri(c echo.Context) error {
+
+	var rec requests.ProgressMateriProgress
+
+	if err := c.Bind(&rec); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	token, err := middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	rec.UserId = token.Userid
+
+	ctx := c.Request().Context()
+	_, err = ctr.MateriesUsecase.UpdateProgressMateri(ctx, rec.ToDomain())
+
+	if err != nil {
+		return controller.NewResponseError(c, err )
+	}
+	type Message struct {
+		 Message string
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: "Success mengupdate progess"})
+}

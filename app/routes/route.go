@@ -52,6 +52,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// untuk melakukan register course user
 	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
 
+	// update progress
+	withJWT.PUT("materi/progress", cl.MateriesController.UpdateProgressMateri)
+
 	//Modul
 	withJWT.POST("moduls", cl.ModulController.CreateModul)
 	withJWT.GET("moduls/course/:courseid", cl.ModulController.GetAllModulCourse)

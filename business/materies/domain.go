@@ -16,7 +16,8 @@ type Domain struct {
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 
-	User CurrentUser
+	User       CurrentUser
+	UserCourse UserCourse
 }
 
 type AllMateriModul struct {
@@ -28,6 +29,11 @@ type CurrentUser struct {
 	ID          string
 	CurrentTime string
 	IsComplate  bool
+	CourseId    string
+}
+
+type UserCourse struct {
+	UserCourseId string
 }
 
 type Usecase interface {
@@ -37,6 +43,7 @@ type Usecase interface {
 	DeleteMateri(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneMateri(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllMateri(ctx context.Context, domain *Domain) (AllMateriModul, error)
+	UpdateProgressMateri(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
@@ -45,4 +52,7 @@ type Repository interface {
 	UpdateMateri(ctx context.Context, domain *Domain) (Domain, error)
 	GetOnemateri(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllMateri(ctx context.Context, domain *Domain) (AllMateriModul, error)
+	UpdateProgressMateri(ctx context.Context, domain *Domain) (Domain, error)
+	GetCountMateriFinish(ctx context.Context, domain *Domain) (int, error)
+	GetCountMateriCourse(ctx context.Context, domain *Domain) (int, error)
 }

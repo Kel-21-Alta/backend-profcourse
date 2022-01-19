@@ -127,7 +127,7 @@ func main() {
 	modulCtrl := _modulController.NewModulsController(modulUsecase)
 
 	mysqlMateriesRepository := _driversFectory.NewMysqlMateriesRepository(conn)
-	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, timeout)
+	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, userCourseUsecase, timeout)
 	materiesController := materies.NewMateriesController(materiesUsecase)
 
 	myzqlQuizRepository := _driversFectory.NewMysqlQuizsRepository(conn)

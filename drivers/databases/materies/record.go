@@ -4,6 +4,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"profcourse/business/materies"
+	"profcourse/drivers/databases/users_courses"
 	"time"
 )
 
@@ -30,14 +31,17 @@ type Materi struct {
 }
 
 type MateriUserComplate struct {
-	ID          string `gorm:"primaryKey;unique"`
-	MateriId    string `gorm:"not null;size:191;index:idx_unique1,unique"`
-	UserId      string `gorm:"not null;size:191;index:idx_unique1,unique"`
-	CurrentTime string
-	IsComplate  bool `gorm:"default:false"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt
+	ID           string `gorm:"primaryKey;unique"`
+	MateriId     string `gorm:"not null;size:191;index:idx_unique1,unique"`
+	UserCourseID string `gorm:"not null;size:191;index:idx_unique1,unique"`
+	CurrentTime  string
+
+	UserCourse users_courses.UsersCourses `gorm:"foreignKey:UserCourseID"`
+
+	IsComplate bool `gorm:"default:false"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  gorm.DeletedAt
 }
 
 func (m *Materi) BeforeCreate(db *gorm.DB) error {
@@ -49,6 +53,26 @@ func (m *Materi) BeforeCreate(db *gorm.DB) error {
 func (m *Materi) BeforeUpdate(db *gorm.DB) error {
 	m.UpdatedAt = time.Now().Local()
 	return nil
+}
+
+func (m *MateriUserComplate) BeforeCreate(db *gorm.DB) error {
+	m.ID = uuid.NewV4().String()
+	m.CreatedAt = time.Now().Local()
+	return nil
+}
+
+func (m *MateriUserComplate) BeforeUpdate(db *gorm.DB) error {
+	m.UpdatedAt = time.Now().Local()
+	return nil
+}
+
+func FromDomainToMateriUserComplate(domain *materies.Domain) MateriUserComplate {
+	return MateriUserComplate{
+		MateriId:     domain.ID,
+		UserCourseID: domain.UserCourse.UserCourseId,
+		CurrentTime:  domain.User.CurrentTime,
+		IsComplate:   domain.User.IsComplate,
+	}
 }
 
 func FromDomain(domain *materies.Domain) *Materi {
@@ -85,8 +109,8 @@ func (r Materi) ToDomain() materies.Domain {
 }
 
 type CurrentUser struct {
-	ID string
-	IsComplate bool
+	ID          string
+	IsComplate  bool
 	CurrentTime string
 }
 
@@ -100,9 +124,9 @@ func (r Materi) ToDomainWithUser(userId string) materies.Domain {
 
 	var currentUser CurrentUser
 	for _, user := range r.MateriUserComplate {
-		if user.UserId == userId {
+		if user.UserCourse.UserId == userId {
 			currentUser.CurrentTime = user.CurrentTime
-			currentUser.ID = user.UserId
+			currentUser.ID = user.UserCourse.UserId
 			currentUser.IsComplate = user.IsComplate
 		}
 	}

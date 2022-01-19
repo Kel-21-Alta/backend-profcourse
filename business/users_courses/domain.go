@@ -18,9 +18,13 @@ type Domain struct {
 
 type Usecase interface {
 	UserRegisterCourse(ctx context.Context, domain *Domain) (*Domain, error)
+	UpdateProgressCourse(ctx context.Context, domain *Domain) (Domain, error)
+	GetOneUserCourse(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
 	UserRegisterCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	GetEndRollCourseUserById(ctx context.Context, domain *Domain) (*Domain, error)
+	UpdateProgressCourse(ctx context.Context, domain *Domain) (Domain, error)
+	GetOneUserCourse(ctx context.Context, domain *Domain) (Domain, error)
 }
