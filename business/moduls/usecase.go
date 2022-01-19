@@ -13,6 +13,20 @@ type modulUsecase struct {
 	CourseUsecase   courses.Usecase
 }
 
+func (m *modulUsecase) GetAllModulCourse(ctx context.Context, domain *Domain) ([]Domain, error) {
+	if domain.CourseId == "" {
+		return []Domain{}, controller.EMPTY_COURSE
+	}
+
+	result, err := m.ModulRepository.GetAllModulCourse(ctx, domain)
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (m *modulUsecase) DeleteModul(ctx context.Context, domain *Domain) (Message, error) {
 	if domain.ID == "" {
 		return "", controller.ID_EMPTY

@@ -54,6 +54,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	//Modul
 	withJWT.POST("moduls", cl.ModulController.CreateModul)
+	withJWT.GET("moduls/course/:courseid", cl.ModulController.GetAllModulCourse)
 	withJWT.PUT("moduls/:modulid", cl.ModulController.UpdateModul)
 	withJWT.DELETE("moduls/:modulid", cl.ModulController.DeleteModul)
 
