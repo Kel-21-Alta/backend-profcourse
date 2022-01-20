@@ -10,6 +10,18 @@ type msqlUserCourseRepository struct {
 	Conn *gorm.DB
 }
 
+func (m msqlUserCourseRepository) UpdateScoreCourse(ctx context.Context, domain *_usersCoursesUsecase.Domain) (_usersCoursesUsecase.Domain, error) {
+	var rec = FromDomain(*domain)
+
+	err := m.Conn.Updates(&rec).Error
+
+	if err != nil {
+		return _usersCoursesUsecase.Domain{}, err
+	}
+
+	return *rec.ToDomain(), nil
+}
+
 func (m msqlUserCourseRepository) GetOneUserCourse(ctx context.Context, domain *_usersCoursesUsecase.Domain) (_usersCoursesUsecase.Domain, error) {
 	var rec UsersCourses
 

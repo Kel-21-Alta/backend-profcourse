@@ -131,7 +131,7 @@ func main() {
 	materiesController := materies.NewMateriesController(materiesUsecase)
 
 	myzqlQuizRepository := _driversFectory.NewMysqlQuizsRepository(conn)
-	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, timeout)
+	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, modulUsecase, userCourseUsecase, timeout)
 	quizController := quizs.NewQuizsController(quizsUsecase)
 
 	routesInit := routes.ControllerList{

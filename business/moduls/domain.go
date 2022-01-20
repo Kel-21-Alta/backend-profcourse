@@ -37,6 +37,15 @@ type Materi struct {
 	CurrentTime string
 }
 
+type ScoreUserModul struct {
+	ID           string
+	Nilai        int
+	ModulID      string
+	UserCourseId string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
 type Message string
 
 type Usecase interface {
@@ -45,6 +54,7 @@ type Usecase interface {
 	UpdateModul(ctx context.Context, domain *Domain) (Domain, error)
 	DeleteModul(ctx context.Context, domain *Domain) (Message, error)
 	GetAllModulCourse(ctx context.Context, domain *Domain) ([]Domain, error)
+	CreateScoreModul(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error)
 }
 
 type Repository interface {
@@ -54,4 +64,5 @@ type Repository interface {
 	DeleteModul(ctx context.Context, id string) (Message, error)
 	GetOneModulWithCourse(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllModulCourse(ctx context.Context, domain *Domain) ([]Domain, error)
+	CreateScoreModul(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error)
 }

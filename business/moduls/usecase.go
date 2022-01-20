@@ -13,6 +13,24 @@ type modulUsecase struct {
 	CourseUsecase   courses.Usecase
 }
 
+func (m *modulUsecase) CreateScoreModul(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error) {
+	if domain.ModulID == "" {
+		return ScoreUserModul{}, controller.EMPTY_MODUL_ID
+	}
+
+	if domain.UserCourseId == "" {
+		return ScoreUserModul{}, controller.EMPTY_COURSE
+	}
+
+	result, err := m.ModulRepository.CreateScoreModul(ctx, domain)
+
+	if err != nil {
+		return ScoreUserModul{}, err
+	}
+
+	return result, nil
+}
+
 func (m *modulUsecase) GetAllModulCourse(ctx context.Context, domain *Domain) ([]Domain, error) {
 	if domain.CourseId == "" {
 		return []Domain{}, controller.EMPTY_COURSE
