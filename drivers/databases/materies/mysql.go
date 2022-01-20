@@ -11,6 +11,47 @@ type MateriesRepository struct {
 	Conn *gorm.DB
 }
 
+func (m MateriesRepository) GetCountMateriFinish(ctx context.Context, domain *materies.Domain) (int, error) {
+	var result int
+	err := m.Conn.Table("materi_user_complates").Select("COUNT(materi_id) as result").Where("user_course_id = ?", domain.UserCourse.UserCourseId).Where("is_complate = ?", true).Scan(&result).Error
+	if err != nil {
+		return 0, err
+	}
+	return result, nil
+}
+
+func (m MateriesRepository) GetCountMateriCourse(ctx context.Context, domain *materies.Domain) (int, error) {
+	var result int
+	// jumlah materi => SELECT COUNT(*) FROM materis INNER JOIN moduls m on materis.modul_id = m.id INNER JOIN courses c on m.course_id = c.id where course_id = "a7234d7d-ebc5-495c-ad41-782f3eb906b8"
+	err := m.Conn.Table("materis").Select("COUNT(*) as result").Joins("INNER JOIN moduls m on materis.modul_id = m.id").Joins("INNER JOIN courses c on m.course_id = c.id").Where("course_id = ?", domain.User.CourseId).Scan(&result).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return result, nil
+}
+
+func (m MateriesRepository) UpdateProgressMateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
+
+	var rec = FromDomainToMateriUserComplate(domain)
+	if m.Conn.Model(&rec).Where("materi_id = ?", rec.MateriId).Where("user_course_id = ?", rec.UserCourseID).Updates(&rec).RowsAffected == 0 {
+		m.Conn.Create(&rec)
+	}
+
+	var rec2 Materi
+
+	err := m.Conn.First(&rec2, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return materies.Domain{}, err
+	}
+	result := *domain
+
+	result.ModulId = rec2.ModulID
+
+	return result, nil
+}
+
 func (m MateriesRepository) GetAllMateri(ctx context.Context, domain *materies.Domain) (materies.AllMateriModul, error) {
 
 	var rec []Materi
@@ -40,7 +81,7 @@ func (m MateriesRepository) GetOnemateri(ctx context.Context, domain *materies.D
 	result.User.ID = domain.User.ID
 
 	for _, user := range rec.MateriUserComplate {
-		if user.UserId == domain.User.ID {
+		if user.UserCourse.UserId == domain.User.ID {
 			result.User.IsComplate = user.IsComplate
 			result.User.CurrentTime = user.CurrentTime
 			result.User.ID = user.ID

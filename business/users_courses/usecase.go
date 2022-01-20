@@ -11,6 +11,46 @@ type UsersCoursesUsecase struct {
 	ContextTime            time.Duration
 }
 
+func (u *UsersCoursesUsecase) GetOneUserCourse(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.CourseId == "" {
+		return Domain{}, controller.EMPTY_COURSE
+	}
+
+	if domain.UserId == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+
+	result, err := u.UsersCoursesRepository.GetOneUserCourse(ctx, domain)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
+func (u *UsersCoursesUsecase) UpdateProgressCourse(ctx context.Context, domain *Domain) (Domain, error) {
+
+	if domain.CourseId == "" {
+		return Domain{}, controller.EMPTY_COURSE
+	}
+
+	if domain.UserId == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+
+	if domain.LastVideoId == "" {
+		return Domain{}, controller.LAST_MATERI_EMPTY
+	}
+
+	result, err := u.UsersCoursesRepository.UpdateProgressCourse(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (u *UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Domain) (*Domain, error) {
 	// Validasi request empty
 	if domain.UserId == "" {

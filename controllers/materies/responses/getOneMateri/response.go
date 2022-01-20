@@ -35,7 +35,11 @@ func FormDomain(domain materies.Domain) *GetOneMateriResponse {
 		TypeText:  domain.TypeString,
 		CreatedAt: domain.CreatedAt,
 		UpdatedAt: domain.UpdatedAt,
-		User:      CurrentUser(domain.User),
+		User:      CurrentUser{
+			ID:          domain.User.ID,
+			CurrentTime: domain.User.CurrentTime,
+			IsComplate:  domain.User.IsComplate,
+		},
 	}
 }
 
