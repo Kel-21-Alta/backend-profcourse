@@ -9,9 +9,9 @@ import (
 )
 
 type QuizeUsecase struct {
-	QuizRepository Repository
-	ContextTimeOut time.Duration
-	ModulUsecase   moduls.Usecase
+	QuizRepository    Repository
+	ContextTimeOut    time.Duration
+	ModulUsecase      moduls.Usecase
 	UserCourseUsecase users_courses.Usecase
 }
 
@@ -57,8 +57,8 @@ func (q *QuizeUsecase) CalculateScoreQuiz(ctx context.Context, domain []Domain, 
 	}
 
 	userCourse, err := q.UserCourseUsecase.GetOneUserCourse(ctx, &users_courses.Domain{
-		UserId:      userId,
-		CourseId:    modul.CourseId,
+		UserId:   userId,
+		CourseId: modul.CourseId,
 	})
 
 	if err != nil {
@@ -77,7 +77,8 @@ func (q *QuizeUsecase) CalculateScoreQuiz(ctx context.Context, domain []Domain, 
 	}
 
 	// Mengupdate score course
-	userCourse.Score += skor
+	// BUG: kalo disubmit 2 kali maka akan doble nilai dari 1 modul
+	userCourse.Score = userCourse.Score + skor
 	_, err = q.UserCourseUsecase.UpdateScoreCourse(ctx, &userCourse)
 
 	if err != nil {
@@ -198,4 +199,3 @@ func (q *QuizeUsecase) CreateQuiz(ctx context.Context, domain *Domain) (Domain, 
 func NewQuizUsecase(repo Repository, modul moduls.Usecase, userCourse users_courses.Usecase, timeout time.Duration) Usecase {
 	return &QuizeUsecase{QuizRepository: repo, ContextTimeOut: timeout, ModulUsecase: modul, UserCourseUsecase: userCourse}
 }
-

@@ -61,6 +61,7 @@ func DbMigration(db *gorm.DB) {
 		&_materiesMysqlRepo.MateriUserComplate{},
 		&_quizsMysqlRepo.Quiz{},
 		&_quizsMysqlRepo.PilihanQuiz{},
+		&_modulsMysqlRepo.SkorUserModul{},
 	)
 
 	if err != nil {

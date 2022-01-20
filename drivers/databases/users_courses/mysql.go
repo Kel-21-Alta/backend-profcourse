@@ -11,13 +11,23 @@ type msqlUserCourseRepository struct {
 }
 
 func (m msqlUserCourseRepository) UpdateScoreCourse(ctx context.Context, domain *_usersCoursesUsecase.Domain) (_usersCoursesUsecase.Domain, error) {
-	var rec = FromDomain(*domain)
+	var rec UsersCourses
 
-	err := m.Conn.Updates(&rec).Error
+	err := m.Conn.First(&rec, "id = ?", domain.ID).Error
 
 	if err != nil {
 		return _usersCoursesUsecase.Domain{}, err
 	}
+
+	rec.Skor = domain.Score
+
+	err = m.Conn.Save(&rec).Error;
+
+
+	if err != nil {
+		return _usersCoursesUsecase.Domain{}, err
+	}
+
 
 	return *rec.ToDomain(), nil
 }

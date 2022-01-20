@@ -15,7 +15,7 @@ func (m mysqlModulsRepository) CreateScoreModul(ctx context.Context, domain *mod
 	var err error
 
 	if m.Conn.Model(&req).Where("modul_id = ?", req.ModulId).Where("user_course_id = ?", req.UserCourseId).Updates(&req).RowsAffected == 0 {
-		err = m.Conn.Create(&req).Error
+		m.Conn.Create(&req)
 	}
 	if err != nil {
 		return moduls.ScoreUserModul{}, err
