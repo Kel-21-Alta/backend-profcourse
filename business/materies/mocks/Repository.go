@@ -77,6 +77,48 @@ func (_m *Repository) GetAllMateri(ctx context.Context, domain *materies.Domain)
 	return r0, r1
 }
 
+// GetCountMateriCourse provides a mock function with given fields: ctx, domain
+func (_m *Repository) GetCountMateriCourse(ctx context.Context, domain *materies.Domain) (int, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, *materies.Domain) int); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *materies.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetCountMateriFinish provides a mock function with given fields: ctx, domain
+func (_m *Repository) GetCountMateriFinish(ctx context.Context, domain *materies.Domain) (int, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, *materies.Domain) int); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *materies.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetOnemateri provides a mock function with given fields: ctx, domain
 func (_m *Repository) GetOnemateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
 	ret := _m.Called(ctx, domain)
@@ -100,6 +142,27 @@ func (_m *Repository) GetOnemateri(ctx context.Context, domain *materies.Domain)
 
 // UpdateMateri provides a mock function with given fields: ctx, domain
 func (_m *Repository) UpdateMateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 materies.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, *materies.Domain) materies.Domain); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(materies.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *materies.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateProgressMateri provides a mock function with given fields: ctx, domain
+func (_m *Repository) UpdateProgressMateri(ctx context.Context, domain *materies.Domain) (materies.Domain, error) {
 	ret := _m.Called(ctx, domain)
 
 	var r0 materies.Domain

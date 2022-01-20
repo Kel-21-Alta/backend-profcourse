@@ -22,6 +22,10 @@ func (u MateriesUsecase) UpdateProgressMateri(ctx context.Context, domain *Domai
 		return Domain{}, controller.ID_EMPTY
 	}
 
+	if domain.User.CourseId == "" {
+		return Domain{}, controller.EMPTY_COURSE
+	}
+
 	// mencari user_course_id
 	userCourseDomain, err := u.UserCourse.GetOneUserCourse(ctx, &users_courses.Domain{CourseId: domain.User.CourseId, UserId: domain.User.ID})
 

@@ -7,19 +7,23 @@ import (
 	"golang.org/x/net/context"
 	"profcourse/business/materies"
 	_mocksMateriesRepository "profcourse/business/materies/mocks"
+	"profcourse/business/users_courses"
+	_mocksUsersCoursesUsecase "profcourse/business/users_courses/mocks"
 	controller "profcourse/controllers"
 	"testing"
 	"time"
 )
 
 var mysqlMateriesRepository _mocksMateriesRepository.Repository
+var userCourseUsecase _mocksUsersCoursesUsecase.Usecase
 
 var materiesService materies.Usecase
 var materiesDomain materies.Domain
 var allMaterisDomain materies.AllMateriModul
+var userCourseDomain users_courses.Domain
 
 func setUpCreateMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
 	materiesDomain = materies.Domain{
 		ID:        "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
 		Title:     "Pengenalan Golang",
@@ -49,7 +53,7 @@ func TestMateriesUsecase_CreateMateri(t *testing.T) {
 }
 
 func setUpDeleteMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
 	materiesDomain = materies.Domain{
 		ID: "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
 	}
@@ -152,7 +156,7 @@ func TestMateriesUsecase_ValidasiMateri(t *testing.T) {
 }
 
 func setUpUpdateMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
 	materiesDomain = materies.Domain{
 		ID:        "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
 		Title:     "Pengenalan Golang",
@@ -187,7 +191,7 @@ func TestMateriesUsecase_UpdateMateri(t *testing.T) {
 }
 
 func setUpGetOneMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
 	materiesDomain = materies.Domain{
 		ID:        "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
 		Title:     "Pengenalan Golang",
@@ -227,7 +231,7 @@ func TestMateriesUsecase_GetOneMateri(t *testing.T) {
 }
 
 func setUpGetAllMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
 	allMaterisDomain = materies.AllMateriModul{
 		JawabanMateri: 2,
 		Materi:        []materies.Domain{materiesDomain, materiesDomain},
@@ -269,5 +273,73 @@ func TestMateriesUsecase_GetAllMateri(t *testing.T) {
 		_, err := materiesService.GetAllMateri(context.Background(), &materies.Domain{ModulId: "d0b4fac1-09bf-4455-b3ec-74e5b54d2c7f", User: materies.CurrentUser{ID: "727c0932-1c4b-497a-af40-f373d519d242"}})
 
 		assert.NotNil(t, err)
+	})
+}
+
+func setUpUpdateProgressMateri() {
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
+	userCourseDomain = users_courses.Domain{
+		ID:          "",
+		UserId:      "",
+		CourseId:    "",
+		Progres:     0,
+		LastVideoId: "",
+		LastModulId: "",
+		CreatedAt:   time.Time{},
+		UpdatedAt:   time.Time{},
+	}
+	materiesDomain = materies.Domain{
+		ID:         "",
+		Title:      "",
+		ModulId:    "",
+		Order:      0,
+		Type:       0,
+		TypeString: "",
+		UrlMateri:  "",
+		CreatedAt:  time.Time{},
+		UpdatedAt:  time.Time{},
+		User:       materies.CurrentUser{},
+		UserCourse: materies.UserCourse{},
+	}
+}
+
+func TestMateriesUsecase_UpdateProgressMateri(t *testing.T) {
+	t.Run("Test case 1 | success update progress", func(t *testing.T) {
+		setUpUpdateProgressMateri()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+		mysqlMateriesRepository.On("UpdateProgressMateri", mock.Anything, mock.Anything).Return(materiesDomain, nil).Once()
+		mysqlMateriesRepository.On("GetCountMateriFinish", mock.Anything, mock.Anything).Return(10, nil).Once()
+		mysqlMateriesRepository.On("GetCountMateriCourse", mock.Anything, mock.Anything).Return(20, nil).Once()
+		userCourseUsecase.On("UpdateProgressCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+
+		_, err := materiesService.UpdateProgressMateri(context.Background(), &materies.Domain{ID: "c56780b2-dee3-45c6-9bb0-2496f7a13b94", User: materies.CurrentUser{ID: "123", CourseId: "123"}, UserCourse: materies.UserCourse{UserCourseId: "123"}})
+
+		assert.Nil(t, err)
+	})
+	t.Run("Test case 2 | error empty id materi", func(t *testing.T) {
+		setUpUpdateProgressMateri()
+
+		_, err := materiesService.UpdateProgressMateri(context.Background(), &materies.Domain{ID: "", User: materies.CurrentUser{ID: "123", CourseId: "123"}, UserCourse: materies.UserCourse{UserCourseId: "123"}})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_MATERI_EMPTY, err)
+	})
+
+	t.Run("Test case 3 | error empty id user", func(t *testing.T) {
+		setUpUpdateProgressMateri()
+
+		_, err := materiesService.UpdateProgressMateri(context.Background(), &materies.Domain{ID: "123", User: materies.CurrentUser{ID: "", CourseId: "123"}, UserCourse: materies.UserCourse{UserCourseId: "123"}})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+
+	t.Run("Test case 4 | error empty id course", func(t *testing.T) {
+		setUpUpdateProgressMateri()
+
+		_, err := materiesService.UpdateProgressMateri(context.Background(), &materies.Domain{ID: "123", User: materies.CurrentUser{ID: "123", CourseId: ""}, UserCourse: materies.UserCourse{UserCourseId: "123"}})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_COURSE, err)
 	})
 }
