@@ -49,6 +49,7 @@ func TestSummaryUsecase_GetAllSummary(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, summaryDomain.CountUser, allSummary.CountUser)
 	})
+
 	t.Run("Test case 2 | error usecase course", func(t *testing.T) {
 		setUpGetAllSummary()
 		courseUsecase.On("GetCountCourse", mock.Anything).Return(&courseSummary, errors.New("Error woi")).Once()
@@ -56,6 +57,7 @@ func TestSummaryUsecase_GetAllSummary(t *testing.T) {
 		_, err := summaryService.GetAllSummary(context.Background())
 		assert.NotNil(t, err)
 	})
+
 	t.Run("Test case 3 | error usecase user", func(t *testing.T) {
 		setUpGetAllSummary()
 
