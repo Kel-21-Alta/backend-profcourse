@@ -116,12 +116,12 @@ func main() {
 	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository, timeout)
 	userCourseController := _usersCourseController.NewUsesrCoursesController(userCourseUsecase)
 
-	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout, courseUsecase, userUsecase)
-	summaryController := _summaryController.NewSummaryController(summaryUsecase)
-
 	mysqlSpesializationRepository := _driversFectory.NewMysqlSpesializationRepository(conn)
 	spesializationUsecae := _spesializationUsecase.NewSpesializationUsecase(mysqlSpesializationRepository, timeout)
 	spesializationController := _spesializationsController.NewSpesializationController(spesializationUsecae)
+
+	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout, courseUsecase, userUsecase, spesializationUsecae)
+	summaryController := _summaryController.NewSummaryController(summaryUsecase)
 
 	mysqlModulRepository := _driversFectory.NewMysqlModulRepository(conn)
 	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository, courseUsecase, timeout)

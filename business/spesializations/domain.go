@@ -32,14 +32,20 @@ type Course struct {
 	Description string
 }
 
+type Summary struct {
+	CountSpesialization int
+}
+
 type Repository interface {
 	CreateSpasialization(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneSpesialization(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllSpesializations(ctx context.Context, domain *Domain) ([]Domain, error)
+	GetCountSpesializations(ctx context.Context) (Summary, error)
 }
 
 type Usecase interface {
 	GetOneSpesialization(ctx context.Context, domain *Domain) (Domain, error)
 	CreateSpasialization(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllSpesializations(ctx context.Context, domain *Domain) ([]Domain, error)
+	GetCountSpesializations(ctx context.Context) (Summary, error)
 }
