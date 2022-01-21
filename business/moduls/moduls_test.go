@@ -22,6 +22,7 @@ var modulServices moduls.Usecase
 var courseDomain courses.Domain
 var materi moduls.Materi
 var listModul []moduls.Domain
+var scoreModulDomain moduls.ScoreUserModul
 
 func setUpCreateModul() {
 	modulServices = moduls.NewModulUsecase(&mysqlModulrepository, &courseUsecase, time.Hour*1)
@@ -314,6 +315,94 @@ func TestModulUsecase_GetAllModulCourse(t *testing.T) {
 		mysqlModulrepository.On("GetAllModulCourse", mock.Anything, mock.Anything).Return(listModul, errors.New("err db")).Once()
 
 		_, err := modulServices.GetAllModulCourse(context.Background(), &moduls.Domain{CourseId: "41f99e51-bd6a-4e67-b631-25a58acb39f4"})
+
+		assert.NotNil(t, err)
+	})
+}
+
+func setUpCalculateScoreCourse() {
+	modulServices = moduls.NewModulUsecase(&mysqlModulrepository, &courseUsecase, time.Hour*1)
+	scoreModulDomain = moduls.ScoreUserModul{
+		Nilai: 4,
+	}
+}
+
+func TestModulUsecase_CalculateScoreCourse(t *testing.T) {
+	t.Run("Test case 1 | Success calculate", func(t *testing.T) {
+		setUpCalculateScoreCourse()
+		mysqlModulrepository.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreModulDomain, nil).Once()
+
+		result, err := modulServices.CalculateScoreCourse(context.Background(), &moduls.ScoreUserModul{UserCourseId: "123"})
+
+		assert.Nil(t, err)
+		assert.NotEqual(t, "", result.Nilai)
+	})
+	t.Run("Test case 2 | User course id empty", func(t *testing.T) {
+		setUpCalculateScoreCourse()
+
+		_, err := modulServices.CalculateScoreCourse(context.Background(), &moduls.ScoreUserModul{UserCourseId: ""})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_COURSE, err)
+	})
+	t.Run("Test case 3 | Error db", func(t *testing.T) {
+		setUpCalculateScoreCourse()
+		mysqlModulrepository.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreModulDomain, errors.New("error db")).Once()
+
+		_, err := modulServices.CalculateScoreCourse(context.Background(), &moduls.ScoreUserModul{UserCourseId: "123"})
+
+		assert.NotNil(t, err)
+	})
+}
+
+func setUpCreateScoreModul() {
+	modulServices = moduls.NewModulUsecase(&mysqlModulrepository, &courseUsecase, time.Hour*1)
+	scoreModulDomain = moduls.ScoreUserModul{
+		Nilai:        4,
+		ModulID:      "123",
+		UserCourseId: "1234",
+		CreatedAt:    time.Time{},
+		UpdatedAt:    time.Time{},
+	}
+}
+
+func TestModulUsecase_CreateScoreModul(t *testing.T) {
+	t.Run("Test case 1 | success create score modul", func(t *testing.T) {
+		setUpCreateScoreModul()
+		mysqlModulrepository.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreModulDomain, nil).Once()
+
+		result, err := modulServices.CreateScoreModul(context.Background(), &scoreModulDomain)
+
+		assert.Nil(t, err)
+		assert.Equal(t, scoreModulDomain.ModulID, result.ModulID)
+	})
+	t.Run("Test case 2 | modul id empty", func(t *testing.T) {
+		setUpCreateScoreModul()
+
+		_, err := modulServices.CreateScoreModul(context.Background(), &moduls.ScoreUserModul{
+			ModulID:      "",
+			UserCourseId: "123",
+		})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_MODUL_ID, err)
+	})
+	t.Run("Test case 3 | user course id empty", func(t *testing.T) {
+		setUpCreateScoreModul()
+
+		_, err := modulServices.CreateScoreModul(context.Background(), &moduls.ScoreUserModul{
+			ModulID:      "123",
+			UserCourseId: "",
+		})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_COURSE, err)
+	})
+	t.Run("Test case 4 | err db", func(t *testing.T) {
+		setUpCreateScoreModul()
+		mysqlModulrepository.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreModulDomain, errors.New("error ni")).Once()
+
+		_, err := modulServices.CreateScoreModul(context.Background(), &scoreModulDomain)
 
 		assert.NotNil(t, err)
 	})
