@@ -10,6 +10,15 @@ type spesializationRepository struct {
 	Conn *gorm.DB
 }
 
+func (r *spesializationRepository) GetCountSpesializations(ctx context.Context) (spesializations.Summary, error) {
+	var result int
+	err := r.Conn.Raw("SELECT COUNT(*) as result FROM spesializations").Scan(&result).Error
+	if err != nil {
+		return spesializations.Summary{}, nil
+	}
+	return spesializations.Summary{CountSpesialization: result}, nil
+}
+
 func (r *spesializationRepository) GetOneSpesialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
 	var rec Spesialization
 	rec.ID = domain.ID
