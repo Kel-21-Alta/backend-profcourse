@@ -61,6 +61,7 @@ func DbMigration(db *gorm.DB) {
 		&_materiesMysqlRepo.MateriUserComplate{},
 		&_quizsMysqlRepo.Quiz{},
 		&_quizsMysqlRepo.PilihanQuiz{},
+		&_modulsMysqlRepo.SkorUserModul{},
 	)
 
 	if err != nil {
@@ -131,7 +132,7 @@ func main() {
 	materiesController := materies.NewMateriesController(materiesUsecase)
 
 	myzqlQuizRepository := _driversFectory.NewMysqlQuizsRepository(conn)
-	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, timeout)
+	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, modulUsecase, userCourseUsecase, timeout)
 	quizController := quizs.NewQuizsController(quizsUsecase)
 
 	routesInit := routes.ControllerList{

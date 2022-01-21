@@ -5,21 +5,31 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/net/context"
+	"profcourse/business/moduls"
+	_mockModulUsecase "profcourse/business/moduls/mocks"
 	"profcourse/business/quizs"
 	_mocksQuizRepository "profcourse/business/quizs/mocks"
+	"profcourse/business/users_courses"
+	_mocksUsersCoursesUsecase "profcourse/business/users_courses/mocks"
 	controller "profcourse/controllers"
 	"testing"
 	"time"
 )
 
 var mysqlQuizsRepository _mocksQuizRepository.Repository
+var userCourseUsecase _mocksUsersCoursesUsecase.Usecase
+var modulsUsecase _mockModulUsecase.Usecase
+var usecaseQuiz _mocksUsersCoursesUsecase.Usecase
 
 var quizsService quizs.Usecase
 var quizsDomain quizs.Domain
 var listDomain []quizs.Domain
+var modulDomain moduls.Domain
+var userCourseDomain users_courses.Domain
+var scoreUserModulDomain moduls.ScoreUserModul
 
 func setUpCreateQuizs() {
-	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, &modulsUsecase, &userCourseUsecase, time.Hour*1)
 	quizsDomain = quizs.Domain{
 		ID:         "7c1ec4be-8565-4b25-82cf-244d7730c398",
 		Pilihan:    []string{"a", "b", "c"},
@@ -127,7 +137,8 @@ func TestQuizeUsecase_ValidasiQuiz(t *testing.T) {
 }
 
 func setUpUpdateQuiz() {
-	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, &modulsUsecase, &userCourseUsecase, time.Hour*1)
+
 	quizsDomain = quizs.Domain{
 		ID:         "7c1ec4be-8565-4b25-82cf-244d7730c398",
 		Pilihan:    []string{"a", "b", "c"},
@@ -166,7 +177,8 @@ func TestQuizeUsecase_UpdateQuiz(t *testing.T) {
 }
 
 func setUpDeleteQuiz() {
-	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, &modulsUsecase, &userCourseUsecase, time.Hour*1)
+
 }
 
 func TestQuizeUsecase_DeleteQuiz(t *testing.T) {
@@ -188,7 +200,8 @@ func TestQuizeUsecase_DeleteQuiz(t *testing.T) {
 }
 
 func setUpGetAllQuiz() {
-	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, &modulsUsecase, &userCourseUsecase, time.Hour*1)
+
 	quizsDomain = quizs.Domain{
 		ID:         "7c1ec4be-8565-4b25-82cf-244d7730c398",
 		Pilihan:    []string{"a", "b", "c"},
@@ -229,7 +242,8 @@ func TestQuizeUsecase_GetAllQuizModul(t *testing.T) {
 }
 
 func setUpGetOneQuiz() {
-	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, time.Hour*1)
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, &modulsUsecase, &userCourseUsecase, time.Hour*1)
+
 	quizsDomain = quizs.Domain{
 		ID:         "7c1ec4be-8565-4b25-82cf-244d7730c398",
 		Pilihan:    []string{"a", "b", "c"},
@@ -264,6 +278,207 @@ func TestQuizeUsecase_GetOneQuiz(t *testing.T) {
 		mysqlQuizsRepository.On("GetOneQuiz", mock.Anything, mock.Anything).Return(quizsDomain, errors.New("eror guys")).Once()
 
 		_, err := quizsService.GetOneQuiz(context.Background(), &quizsDomain)
+
+		assert.NotNil(t, err)
+	})
+}
+
+func setUpCalculateScoreQuiz() {
+	quizsService = quizs.NewQuizUsecase(&mysqlQuizsRepository, &modulsUsecase, &userCourseUsecase, time.Hour*1)
+
+	quizsDomain = quizs.Domain{
+		ID:      "7c1ec4be-8565-4b25-82cf-244d7730c398",
+		Jawaban: "a",
+		ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df",
+	}
+
+	var quizsDomain2 = quizs.Domain{
+		ID:      "7c1ec4be-8565-4b25-82cf-244d7730c396",
+		Jawaban: "b",
+		ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df",
+	}
+
+	listDomain = []quizs.Domain{
+		quizsDomain,
+		quizsDomain2,
+	}
+
+	modulDomain = moduls.Domain{
+		ID:       "36d8d8bc-87cb-467d-97c0-2902920457df",
+		Title:    "ikan",
+		Order:    1,
+		CourseId: "123",
+	}
+
+	userCourseDomain = users_courses.Domain{
+		ID:          "123",
+		UserId:      "123",
+		CourseId:    "123",
+		Progres:     0,
+		LastVideoId: "",
+		LastModulId: "",
+		Score:       0,
+		CreatedAt:   time.Time{},
+		UpdatedAt:   time.Time{},
+	}
+
+	scoreUserModulDomain = moduls.ScoreUserModul{
+		ID:           "123",
+		Nilai:        2,
+		ModulID:      "36d8d8bc-87cb-467d-97c0-2902920457df",
+		UserCourseId: userCourseDomain.ID,
+	}
+}
+
+func TestQuizeUsecase_CalculateScoreQuiz(t *testing.T) {
+	t.Run("Test case 1 | success calculate Score and if jawaban benar dapat score 2 dan jika tidak dijawab mendapat 0", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
+		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		modulsUsecase.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+
+		result, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
+		}, "123")
+
+		assert.Nil(t, err)
+		assert.Equal(t, quizsDomain.ModulId, result.ModulId)
+		assert.Equal(t, 2, result.Skor)
+	})
+	t.Run("Test case 2 | success calculate Score and if jawaban benar dapat score 2 dan jika dijawab kosong mendapat 0", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
+		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		modulsUsecase.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+
+		result, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
+
+		assert.Nil(t, err)
+		assert.Equal(t, quizsDomain.ModulId, result.ModulId)
+		assert.Equal(t, 2, result.Skor)
+	})
+	t.Run("Test case 3 | success calculate Score and if jawaban benar dapat score 2 dan jika dijawab salah mendapat -1", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
+		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+		modulsUsecase.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+
+		result, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "c", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
+
+		assert.Nil(t, err)
+		assert.Equal(t, quizsDomain.ModulId, result.ModulId)
+		assert.Equal(t, 1, result.Skor)
+	})
+	t.Run("Test case 4 | id quiz ditemukan kosong", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: ""},
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "c", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_QUIZ_EMPTY, err)
+	})
+	t.Run("Test case 5 | id modul ditemukan kosong", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "", Jawaban: "a", ID: "123"},
+			quizs.Domain{ModulId: "", Jawaban: "c", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.EMPTY_MODUL_ID, err)
+	})
+	t.Run("Test case 6 | error db get all quiz", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, errors.New("db err")).Once()
+
+		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "c", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
+
+		assert.NotNil(t, err)
+	})
+	t.Run("Test case 7 | error business get one modul", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
+		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, errors.New("usecase err")).Once()
+
+		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "c", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
+
+		assert.NotNil(t, err)
+	})
+	t.Run("Test case 8 | error business get one modul", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
+		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, errors.New("usecase err")).Once()
+
+		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "c", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("Test case 9 | error business CreateScoreModul", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
+		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, errors.New("usecase err")).Once()
+
+		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "c", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("Test case 10 | error business UpdateScoreCourse", func(t *testing.T) {
+		setUpCalculateScoreQuiz()
+
+		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
+		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		modulsUsecase.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, errors.New("usecase err")).Once()
+
+		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
+			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "c", ID: "7c1ec4be-8565-4b25-82cf-244d7730c396"},
+		}, "123")
 
 		assert.NotNil(t, err)
 	})

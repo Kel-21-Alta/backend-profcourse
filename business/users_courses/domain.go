@@ -12,6 +12,7 @@ type Domain struct {
 	Progres     int
 	LastVideoId string
 	LastModulId string
+	Score int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -20,6 +21,7 @@ type Usecase interface {
 	UserRegisterCourse(ctx context.Context, domain *Domain) (*Domain, error)
 	UpdateProgressCourse(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneUserCourse(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateScoreCourse(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
@@ -27,4 +29,5 @@ type Repository interface {
 	GetEndRollCourseUserById(ctx context.Context, domain *Domain) (*Domain, error)
 	UpdateProgressCourse(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneUserCourse(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateScoreCourse(ctx context.Context, domain *Domain) (Domain, error)
 }

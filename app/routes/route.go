@@ -74,6 +74,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.DELETE("quizs/:quizid", cl.QuizController.DeleteQuiz)
 	withJWT.GET("quizs/modul/:modulid", cl.QuizController.GetAllQuizModul)
 	withJWT.GET("quizs/:quizid", cl.QuizController.GetOneQuiz)
+	withJWT.POST("quizs/modul/:modulid", cl.QuizController.CalculateScoreQuiz)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 

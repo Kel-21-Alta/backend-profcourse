@@ -11,6 +11,24 @@ type UsersCoursesUsecase struct {
 	ContextTime            time.Duration
 }
 
+func (u *UsersCoursesUsecase) UpdateScoreCourse(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.CourseId == "" {
+		return Domain{}, controller.EMPTY_COURSE
+	}
+	if domain.UserId == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	if domain.ID == "" {
+		return Domain{}, controller.EMPTY_COURSE
+	}
+	result, err := u.UsersCoursesRepository.UpdateScoreCourse(ctx, domain)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (u *UsersCoursesUsecase) GetOneUserCourse(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.CourseId == "" {
 		return Domain{}, controller.EMPTY_COURSE

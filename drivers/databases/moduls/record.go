@@ -19,6 +19,26 @@ type Moduls struct {
 	Materies  []materies.Materi `gorm:"foreignKey:ModulID;references:ID"`
 }
 
+type SkorUserModul struct {
+	ID           string `gorm:"primaryKey;unique"`
+	Nilai        int    `gorm:"not null;default:0"`
+	ModulId      string `gorm:"not null;size:191;index:idx_unique2,unique"`
+	UserCourseId string `gorm:"not null;size:191;index:idx_unique2,unique"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
+func (c *SkorUserModul) BeforeCreate(db *gorm.DB) error {
+	c.ID = uuid.NewV4().String()
+	c.CreatedAt = time.Now().Local()
+	return nil
+}
+
+func (c *SkorUserModul) BeforeUpdate(db *gorm.DB) error {
+	c.UpdatedAt = time.Now().Local()
+	return nil
+}
+
 func (c *Moduls) BeforeCreate(db *gorm.DB) error {
 	c.ID = uuid.NewV4().String()
 	c.CreatedAt = time.Now().Local()
@@ -76,14 +96,36 @@ func TolistDomain(recs []Moduls) []moduls.Domain {
 
 	for _, modul := range recs {
 		listDomain = append(listDomain, moduls.Domain{
-			ID:            modul.ID,
-			Title:         modul.Title,
-			Order:         modul.Order,
-			CourseId:      modul.CourseId,
-			CreatedAt:     modul.CreatedAt,
-			UpdatedAt:     modul.UpdatedAt,
+			ID:        modul.ID,
+			Title:     modul.Title,
+			Order:     modul.Order,
+			CourseId:  modul.CourseId,
+			CreatedAt: modul.CreatedAt,
+			UpdatedAt: modul.UpdatedAt,
 		})
 	}
 
 	return listDomain
+}
+
+func (c *SkorUserModul) ToDomain() moduls.ScoreUserModul {
+	return moduls.ScoreUserModul{
+		ID:           c.ID,
+		Nilai:        c.Nilai,
+		ModulID:      c.ModulId,
+		UserCourseId: c.UserCourseId,
+		CreatedAt:    c.CreatedAt,
+		UpdatedAt:    c.UpdatedAt,
+	}
+}
+
+func FromDomainToScoreUserModul(domain *moduls.ScoreUserModul) SkorUserModul {
+	return SkorUserModul{
+		ID:           domain.UserCourseId,
+		Nilai:        domain.Nilai,
+		ModulId:      domain.ModulID,
+		UserCourseId: domain.UserCourseId,
+		CreatedAt:    domain.CreatedAt,
+		UpdatedAt:    domain.UpdatedAt,
+	}
 }

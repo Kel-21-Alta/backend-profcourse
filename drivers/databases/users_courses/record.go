@@ -46,6 +46,7 @@ func (u UsersCourses) ToDomain() *users_courses.Domain {
 		LastModulId: u.LastModulId,
 		CreatedAt:   u.CreatedAt,
 		UpdatedAt:   u.CreatedAt,
+		Score: u.Skor,
 	}
 }
 
@@ -56,5 +57,6 @@ func FromDomain(domain users_courses.Domain) *UsersCourses {
 		Progress:    0,
 		LastVideoId: domain.LastVideoId,
 		LastModulId: domain.LastModulId,
+		Skor: domain.Score,
 	}
 }

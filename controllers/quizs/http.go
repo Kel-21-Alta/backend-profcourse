@@ -3,12 +3,14 @@ package quizs
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"profcourse/app/middlewares"
 	"profcourse/business/quizs"
 	controller "profcourse/controllers"
 	"profcourse/controllers/quizs/requests"
 	"profcourse/controllers/quizs/responses/createQuizs"
 	"profcourse/controllers/quizs/responses/getAllQuizModul"
 	"profcourse/controllers/quizs/responses/getOneQuiz"
+	"profcourse/controllers/quizs/responses/jawabanQuiz"
 	"profcourse/controllers/quizs/responses/updateQuiz"
 )
 
@@ -102,4 +104,28 @@ func (ctr *QuizsController) GetOneQuiz(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getOneQuiz.FromDomain(clean))
+}
+
+func (ctr *QuizsController) CalculateScoreQuiz(c echo.Context) error {
+	var req requests.RequestJawabans
+
+	token, err := middlewares.ExtractClaims(c)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	ctx := c.Request().Context()
+	req.ModulId = c.Param("modulid")
+
+	clean, err := ctr.QuizsUsecase.CalculateScoreQuiz(ctx, requests.ToListDomain(req), token.Userid)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, jawabanQuiz.FromDomain(clean))
 }
