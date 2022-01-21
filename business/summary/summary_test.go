@@ -1,6 +1,7 @@
 package summary_test
 
 import (
+	"errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/net/context"
@@ -42,13 +43,19 @@ func TestSummaryUsecase_GetAllSummary(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, summaryDomain.CountUser, allSummary.CountUser)
 	})
-	t.Run("Test case 2 | '", func(t *testing.T) {
+	t.Run("Test case 2 | error use case get count user", func(t *testing.T) {
 		setUpGetAllSummary()
-		usersUsecase.On("GetCountUser", mock.Anything).Return(&userSummary, nil).Once()
-		courseUsecase.On("GetCountCourse", mock.Anything).Return(&courseSummary, nil).Once()
+		courseUsecase.On("GetCountCourse", mock.Anything).Return(&courseSummary, errors.New("err")).Once()
 
-		allSummary, err := summaryService.GetAllSummary(context.Background())
-		assert.Nil(t, err)
-		assert.Equal(t, summaryDomain.CountUser, allSummary.CountUser)
+		_, err := summaryService.GetAllSummary(context.Background())
+		assert.NotNil(t, err)
+	})
+	t.Run("Test case 3 | error use case get count user", func(t *testing.T) {
+		setUpGetAllSummary()
+		courseUsecase.On("GetCountCourse", mock.Anything).Return(&courseSummary, nil).Once()
+		usersUsecase.On("GetCountUser", mock.Anything).Return(&userSummary, errors.New("err")).Once()
+
+		_, err := summaryService.GetAllSummary(context.Background())
+		assert.NotNil(t, err)
 	})
 }
