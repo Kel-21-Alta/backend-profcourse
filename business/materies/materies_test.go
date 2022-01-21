@@ -7,6 +7,7 @@ import (
 	"golang.org/x/net/context"
 	"profcourse/business/materies"
 	_mocksMateriesRepository "profcourse/business/materies/mocks"
+	_mockModulUsecase "profcourse/business/moduls/mocks"
 	"profcourse/business/users_courses"
 	_mocksUsersCoursesUsecase "profcourse/business/users_courses/mocks"
 	controller "profcourse/controllers"
@@ -16,6 +17,7 @@ import (
 
 var mysqlMateriesRepository _mocksMateriesRepository.Repository
 var userCourseUsecase _mocksUsersCoursesUsecase.Usecase
+var modulUsecase _mockModulUsecase.Usecase
 
 var materiesService materies.Usecase
 var materiesDomain materies.Domain
@@ -23,7 +25,7 @@ var allMaterisDomain materies.AllMateriModul
 var userCourseDomain users_courses.Domain
 
 func setUpCreateMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, &modulUsecase, time.Hour*1)
 	materiesDomain = materies.Domain{
 		ID:        "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
 		Title:     "Pengenalan Golang",
@@ -53,7 +55,7 @@ func TestMateriesUsecase_CreateMateri(t *testing.T) {
 }
 
 func setUpDeleteMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, &modulUsecase, time.Hour*1)
 	materiesDomain = materies.Domain{
 		ID: "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
 	}
@@ -156,7 +158,7 @@ func TestMateriesUsecase_ValidasiMateri(t *testing.T) {
 }
 
 func setUpUpdateMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, &modulUsecase, time.Hour*1)
 	materiesDomain = materies.Domain{
 		ID:        "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
 		Title:     "Pengenalan Golang",
@@ -191,7 +193,7 @@ func TestMateriesUsecase_UpdateMateri(t *testing.T) {
 }
 
 func setUpGetOneMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, &modulUsecase, time.Hour*1)
 	materiesDomain = materies.Domain{
 		ID:        "3ee0c5e0-ab38-4c4a-8c74-346ebcfa04e8",
 		Title:     "Pengenalan Golang",
@@ -231,7 +233,7 @@ func TestMateriesUsecase_GetOneMateri(t *testing.T) {
 }
 
 func setUpGetAllMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, &modulUsecase, time.Hour*1)
 	allMaterisDomain = materies.AllMateriModul{
 		JawabanMateri: 2,
 		Materi:        []materies.Domain{materiesDomain, materiesDomain},
@@ -277,7 +279,7 @@ func TestMateriesUsecase_GetAllMateri(t *testing.T) {
 }
 
 func setUpUpdateProgressMateri() {
-	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, time.Hour*1)
+	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, &modulUsecase, time.Hour*1)
 	userCourseDomain = users_courses.Domain{
 		ID:          "",
 		UserId:      "",
