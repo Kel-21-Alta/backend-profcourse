@@ -13,6 +13,18 @@ type modulUsecase struct {
 	CourseUsecase   courses.Usecase
 }
 
+func (m *modulUsecase) CalculateScoreCourse(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error) {
+	if domain.UserCourseId == "" {
+		return ScoreUserModul{}, controller.EMPTY_COURSE
+	}
+
+	result, err := m.ModulRepository.CalculateScoreCourse(ctx, domain)
+	if err != nil {
+		return ScoreUserModul{}, err
+	}
+	return result, nil
+}
+
 func (m *modulUsecase) CreateScoreModul(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error) {
 	if domain.ModulID == "" {
 		return ScoreUserModul{}, controller.EMPTY_MODUL_ID

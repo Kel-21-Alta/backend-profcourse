@@ -50,12 +50,14 @@ func (q *QuizeUsecase) CalculateScoreQuiz(ctx context.Context, domain []Domain, 
 		}
 	}
 
+	// Mendapatkan id course
 	modul, err := q.ModulUsecase.GetOneModul(ctx, &moduls.Domain{ID: result.ModulId})
 
 	if err != nil {
 		return Domain{}, err
 	}
 
+	// Mendapatkan id user course
 	userCourse, err := q.UserCourseUsecase.GetOneUserCourse(ctx, &users_courses.Domain{
 		UserId:   userId,
 		CourseId: modul.CourseId,
@@ -76,9 +78,15 @@ func (q *QuizeUsecase) CalculateScoreQuiz(ctx context.Context, domain []Domain, 
 		return Domain{}, err
 	}
 
+
+	allScoreCourse, err := q.ModulUsecase.CalculateScoreCourse(ctx, &moduls.ScoreUserModul{UserCourseId: userCourse.ID})
+
+	if err != nil {
+		return Domain{}, err
+	}
+
 	// Mengupdate score course
-	// BUG: kalo disubmit 2 kali maka akan doble nilai dari 1 modul
-	userCourse.Score = userCourse.Score + skor
+	userCourse.Score = allScoreCourse.Nilai
 	_, err = q.UserCourseUsecase.UpdateScoreCourse(ctx, &userCourse)
 
 	if err != nil {

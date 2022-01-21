@@ -10,6 +10,17 @@ type mysqlModulsRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlModulsRepository) CalculateScoreCourse(ctx context.Context, domain *moduls.ScoreUserModul) (moduls.ScoreUserModul, error) {
+	var result int
+	err := m.Conn.Table("skor_user_moduls").Select("SUM(nilai) as result").Where("user_course_id = ?", domain.UserCourseId).Scan(&result).Error
+	if err != nil {
+		return moduls.ScoreUserModul{}, err
+
+	}
+
+	return moduls.ScoreUserModul{Nilai: result}, nil
+}
+
 func (m mysqlModulsRepository) CreateScoreModul(ctx context.Context, domain *moduls.ScoreUserModul) (moduls.ScoreUserModul, error) {
 	var req = FromDomainToScoreUserModul(domain)
 	var err error

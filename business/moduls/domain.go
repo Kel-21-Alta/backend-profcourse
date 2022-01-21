@@ -55,6 +55,7 @@ type Usecase interface {
 	DeleteModul(ctx context.Context, domain *Domain) (Message, error)
 	GetAllModulCourse(ctx context.Context, domain *Domain) ([]Domain, error)
 	CreateScoreModul(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error)
+	CalculateScoreCourse(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error)
 }
 
 type Repository interface {
@@ -65,4 +66,5 @@ type Repository interface {
 	GetOneModulWithCourse(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllModulCourse(ctx context.Context, domain *Domain) ([]Domain, error)
 	CreateScoreModul(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error)
+	CalculateScoreCourse(ctx context.Context, domain *ScoreUserModul) (ScoreUserModul, error)
 }

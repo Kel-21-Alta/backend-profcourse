@@ -338,6 +338,7 @@ func TestQuizeUsecase_CalculateScoreQuiz(t *testing.T) {
 		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
 		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		modulsUsecase.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
 		userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 
 		result, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
@@ -355,6 +356,7 @@ func TestQuizeUsecase_CalculateScoreQuiz(t *testing.T) {
 		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
 		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		modulsUsecase.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
 		userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 
 		result, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
@@ -372,6 +374,7 @@ func TestQuizeUsecase_CalculateScoreQuiz(t *testing.T) {
 		mysqlQuizsRepository.On("GetAllQuizModul", mock.Anything, mock.Anything).Return(listDomain, nil).Once()
 		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
 		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
+		modulsUsecase.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
 		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
 		userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 
@@ -453,7 +456,6 @@ func TestQuizeUsecase_CalculateScoreQuiz(t *testing.T) {
 		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
 		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, errors.New("usecase err")).Once()
-		//userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 
 		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
 			quizs.Domain{ModulId: "36d8d8bc-87cb-467d-97c0-2902920457df", Jawaban: "a", ID: "7c1ec4be-8565-4b25-82cf-244d7730c398"},
@@ -470,6 +472,7 @@ func TestQuizeUsecase_CalculateScoreQuiz(t *testing.T) {
 		modulsUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomain, nil).Once()
 		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 		modulsUsecase.On("CreateScoreModul", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
+		modulsUsecase.On("CalculateScoreCourse", mock.Anything, mock.Anything).Return(scoreUserModulDomain, nil).Once()
 		userCourseUsecase.On("UpdateScoreCourse", mock.Anything, mock.Anything).Return(userCourseDomain, errors.New("usecase err")).Once()
 
 		_, err := quizsService.CalculateScoreQuiz(context.Background(), []quizs.Domain{
