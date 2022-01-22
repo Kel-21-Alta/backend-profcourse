@@ -76,7 +76,7 @@ func (ctr *ModulController) UpdateModul(c echo.Context) error {
 	}
 
 	domain := req.ToDomain()
-	domain.ID = c.QueryParam("modulid")
+	domain.ID = c.Param("modulid")
 	domain.UserMakeModul = token.Userid
 	domain.RoleUser = token.Role
 
