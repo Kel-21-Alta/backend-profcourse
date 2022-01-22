@@ -114,7 +114,7 @@ type CurrentUser struct {
 	CurrentTime string
 }
 
-func (r Materi) ToDomainWithUser(userId string) materies.Domain {
+func (r Materi) ToDomainWithUser(userCourseID string) materies.Domain {
 	var typeStr string
 	if r.Type == 1 {
 		typeStr = "text"
@@ -124,9 +124,8 @@ func (r Materi) ToDomainWithUser(userId string) materies.Domain {
 
 	var currentUser CurrentUser
 	for _, user := range r.MateriUserComplate {
-		if user.UserCourse.UserId == userId {
+		if user.UserCourseID == userCourseID {
 			currentUser.CurrentTime = user.CurrentTime
-			currentUser.ID = user.UserCourse.UserId
 			currentUser.IsComplate = user.IsComplate
 		}
 	}
@@ -142,18 +141,17 @@ func (r Materi) ToDomainWithUser(userId string) materies.Domain {
 		CreatedAt:  r.CreatedAt,
 		UpdatedAt:  r.UpdatedAt,
 		User: materies.CurrentUser{
-			ID:          currentUser.ID,
 			CurrentTime: currentUser.CurrentTime,
 			IsComplate:  currentUser.IsComplate,
 		},
 	}
 }
 
-func ToAllMateriModul(materis []Materi, userId string) materies.AllMateriModul {
+func ToAllMateriModul(materis []Materi, userCourseId string) materies.AllMateriModul {
 
 	var listDomainMateri []materies.Domain
 	for _, materi := range materis {
-		listDomainMateri = append(listDomainMateri, materi.ToDomainWithUser(userId))
+		listDomainMateri = append(listDomainMateri, materi.ToDomainWithUser(userCourseId))
 	}
 
 	return materies.AllMateriModul{JawabanMateri: len(materis), Materi: listDomainMateri}
