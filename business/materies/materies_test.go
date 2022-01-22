@@ -7,6 +7,7 @@ import (
 	"golang.org/x/net/context"
 	"profcourse/business/materies"
 	_mocksMateriesRepository "profcourse/business/materies/mocks"
+	"profcourse/business/moduls"
 	_mockModulUsecase "profcourse/business/moduls/mocks"
 	"profcourse/business/users_courses"
 	_mocksUsersCoursesUsecase "profcourse/business/users_courses/mocks"
@@ -23,6 +24,7 @@ var materiesService materies.Usecase
 var materiesDomain materies.Domain
 var allMaterisDomain materies.AllMateriModul
 var userCourseDomain users_courses.Domain
+var modulDomamin moduls.Domain
 
 func setUpCreateMateri() {
 	materiesService = materies.NewMateriesUsecase(&mysqlMateriesRepository, &userCourseUsecase, &modulUsecase, time.Hour*1)
@@ -238,12 +240,24 @@ func setUpGetAllMateri() {
 		JawabanMateri: 2,
 		Materi:        []materies.Domain{materiesDomain, materiesDomain},
 	}
+	modulDomamin = moduls.Domain{
+		ID:       "123",
+		CourseId: "321",
+	}
+	userCourseDomain = users_courses.Domain{
+		ID:       "123",
+		UserId:   "312",
+		CourseId: "321",
+	}
 }
 
 func TestMateriesUsecase_GetAllMateri(t *testing.T) {
 	t.Run("Test case 1 | success get all materi", func(t *testing.T) {
 		setUpGetAllMateri()
 		mysqlMateriesRepository.On("GetAllMateri", mock.Anything, mock.Anything).Return(allMaterisDomain, nil).Once()
+
+		modulUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomamin, nil).Once()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 
 		result, err := materiesService.GetAllMateri(context.Background(), &materies.Domain{ModulId: "d0b4fac1-09bf-4455-b3ec-74e5b54d2c7f", User: materies.CurrentUser{ID: "727c0932-1c4b-497a-af40-f373d519d242"}})
 
@@ -271,6 +285,9 @@ func TestMateriesUsecase_GetAllMateri(t *testing.T) {
 	t.Run("Test case 4 | handle error db", func(t *testing.T) {
 		setUpGetAllMateri()
 		mysqlMateriesRepository.On("GetAllMateri", mock.Anything, mock.Anything).Return(materies.AllMateriModul{}, errors.New("db err ni")).Once()
+
+		modulUsecase.On("GetOneModul", mock.Anything, mock.Anything).Return(modulDomamin, nil).Once()
+		userCourseUsecase.On("GetOneUserCourse", mock.Anything, mock.Anything).Return(userCourseDomain, nil).Once()
 
 		_, err := materiesService.GetAllMateri(context.Background(), &materies.Domain{ModulId: "d0b4fac1-09bf-4455-b3ec-74e5b54d2c7f", User: materies.CurrentUser{ID: "727c0932-1c4b-497a-af40-f373d519d242"}})
 
