@@ -56,5 +56,24 @@ func (f *Feedback) ToDomain() feedback.Domain {
 		Rating:    f.Rating,
 		CreatedAt: f.CreatedAt,
 		UpdateAt:  f.UpdatedAt,
+		User: feedback.User{
+			NameUser:     f.User.Name,
+			UrlImageUser: f.User.ImgProfile,
+		},
+	}
+}
+
+func ToCourseReview(review []Feedback) feedback.CourseReviews {
+
+	var listFeedback []feedback.Domain
+
+	for _, rev := range review {
+		listFeedback = append(listFeedback, rev.ToDomain())
+	}
+
+	return feedback.CourseReviews{
+		Review:    listFeedback,
+		CourseId:  "",
+		RatingAll: 0,
 	}
 }

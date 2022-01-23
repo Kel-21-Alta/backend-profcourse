@@ -11,6 +11,30 @@ type FeedbackUsecase struct {
 	ContextTimeOut     time.Duration
 }
 
+func (f FeedbackUsecase) GetAllFeedbackByCourse(ctx context.Context, domain *CourseReviews) (CourseReviews, error) {
+
+	if domain.CourseId == "" {
+		return CourseReviews{}, controller.EMPTY_COURSE
+	}
+
+	result, err := f.FeedbackRepository.GetAllFeedbackByCourse(ctx, domain)
+
+	if err != nil {
+		return CourseReviews{}, err
+	}
+
+	ratingAll, err := f.FeedbackRepository.GetAvegareRatingCourse(ctx, domain)
+
+	if err != nil {
+		return CourseReviews{}, err
+	}
+
+	result.CourseId = domain.CourseId
+	result.RatingAll = ratingAll.RatingAll
+
+	return result, nil
+}
+
 func (f FeedbackUsecase) CreateFeedback(ctx context.Context, domain *Domain) (Domain, error) {
 
 	if domain.CourseId == "" {
