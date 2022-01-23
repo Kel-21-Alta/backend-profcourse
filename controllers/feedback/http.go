@@ -60,3 +60,22 @@ func (ctr *FeedbackController) GetAllFeedbackByCourse(c echo.Context) error {
 
 	return controller.NewResponseSuccess(c, http.StatusOK, response)
 }
+
+func (ctr *FeedbackController) DeleteFeedback(c echo.Context) error {
+	var domain feedback.Domain
+
+	domain.ID = c.Param("feedbackid")
+
+	ctx := c.Request().Context()
+	result, err := ctr.FeedbackUsecase.DeleteFeedback(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	type Message struct {
+		Message string
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: "Feedback dengan id " + result.ID + " berhasil dihapus"})
+}

@@ -30,6 +30,7 @@ type CourseReviews struct {
 type Usecase interface {
 	CreateFeedback(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllFeedbackByCourse(ctx context.Context, domain *CourseReviews) (CourseReviews, error)
+	DeleteFeedback(ctx context.Context, domain *Domain) (Domain,error)
 }
 
 type Repository interface {
@@ -38,4 +39,5 @@ type Repository interface {
 	CreateFeedback(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllFeedbackByCourse(ctx context.Context, domain *CourseReviews) (CourseReviews, error)
 	GetAvegareRatingCourse(ctx context.Context, domain *CourseReviews)(CourseReviews, error)
+	DeleteFeedback(ctx context.Context, domain *Domain) (Domain,error)
 }

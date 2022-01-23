@@ -11,6 +11,20 @@ type FeedbackUsecase struct {
 	ContextTimeOut     time.Duration
 }
 
+func (f FeedbackUsecase) DeleteFeedback(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.ID == "" {
+		return Domain{}, controller.FEEDBACK_EMPTY
+	}
+
+	result, err := f.FeedbackRepository.DeleteFeedback(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, err
+}
+
 func (f FeedbackUsecase) GetAllFeedbackByCourse(ctx context.Context, domain *CourseReviews) (CourseReviews, error) {
 
 	if domain.CourseId == "" {
