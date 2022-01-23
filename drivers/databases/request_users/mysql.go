@@ -24,7 +24,7 @@ func (r *RequestUserRepo) CreateRequest(ctx context.Context, domain *request_use
 	return rec.ToDomain(), nil
 }
 
-func NewRequestUserRepository(conn *gorm.DB) request_users.Repository {
+func NewMysqlRepository(conn *gorm.DB) request_users.Repository {
 	return &RequestUserRepo{
 		Conn: conn,
 	}

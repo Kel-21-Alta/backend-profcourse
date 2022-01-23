@@ -14,8 +14,8 @@ type RequestUserController struct {
 	RequestUserUsecase request_users.Usecase
 }
 
-func NewRequestUserController(usecase request_users.Usecase) RequestUserController {
-	return RequestUserController{RequestUserUsecase: usecase}
+func NewRequestUserController(usecase request_users.Usecase) *RequestUserController {
+	return &RequestUserController{RequestUserUsecase: usecase}
 }
 
 func (ctr *RequestUserController) CreateRequest(c echo.Context) error {
