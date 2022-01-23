@@ -17,7 +17,7 @@ type UsersCoursesUsecase struct {
 
 func (u *UsersCoursesUsecase) GetUserCourseEndroll(ctx context.Context, domain *User) (User, error) {
 	if domain.UserID == "" {
-		return User{}, nil
+		return User{}, controller.ID_EMPTY
 	}
 
 	result, err := u.UsersCoursesRepository.GetUserCourseEndroll(ctx, domain)
