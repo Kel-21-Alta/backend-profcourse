@@ -113,7 +113,7 @@ func main() {
 	couserCtrl := courses.NewCourseController(courseUsecase)
 
 	mysqlUserCourseRepository := _driversFectory.NewMysqlUserCourseRepository(conn)
-	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository, timeout)
+	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository, userUsecase, courseUsecase, timeout)
 	userCourseController := _usersCourseController.NewUsesrCoursesController(userCourseUsecase)
 
 	mysqlSpesializationRepository := _driversFectory.NewMysqlSpesializationRepository(conn)
@@ -128,7 +128,7 @@ func main() {
 	modulCtrl := _modulController.NewModulsController(modulUsecase)
 
 	mysqlMateriesRepository := _driversFectory.NewMysqlMateriesRepository(conn)
-	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, userCourseUsecase,modulUsecase, timeout)
+	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, userCourseUsecase, modulUsecase, timeout)
 	materiesController := materies.NewMateriesController(materiesUsecase)
 
 	myzqlQuizRepository := _driversFectory.NewMysqlQuizsRepository(conn)

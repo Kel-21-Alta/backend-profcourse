@@ -6,6 +6,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	_mockUserUsecase "profcourse/business/users/mocks"
 	"profcourse/business/users_courses"
 	_mocksUsersCoursesRepository "profcourse/business/users_courses/mocks"
 	controller "profcourse/controllers"
@@ -14,12 +15,13 @@ import (
 )
 
 var usersCoursesRepository _mocksUsersCoursesRepository.Repository
+var userUsecase _mockUserUsecase.Usecase
 
 var usersCoursesService users_courses.Usecase
 var usersCoursesDomain users_courses.Domain
 
 func setupUserRegisterCourse() {
-	usersCoursesService = users_courses.NewUsersCoursesUsecase(&usersCoursesRepository, time.Hour*1)
+	usersCoursesService = users_courses.NewUsersCoursesUsecase(&usersCoursesRepository, &userUsecase, time.Hour*1)
 	usersCoursesDomain = users_courses.Domain{
 		ID:          uuid.NewV4().String(),
 		UserId:      uuid.NewV4().String(),
@@ -35,7 +37,7 @@ func setupUserRegisterCourse() {
 func TestUsersCoursesUsecase_UserRegisterCourse(t *testing.T) {
 	t.Run("Test Case 1 | Handle error empty user", func(t *testing.T) {
 		setupUserRegisterCourse()
-		
+
 		_, err := usersCoursesService.UserRegisterCourse(context.Background(), &users_courses.Domain{UserId: "", CourseId: uuid.NewV4().String()})
 
 		assert.NotNil(t, err)
