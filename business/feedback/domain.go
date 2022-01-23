@@ -20,5 +20,7 @@ type Usecase interface {
 }
 
 type Repository interface {
+	GetOneFeedbackByUserAndCourse(ctx context.Context, domain *Domain) (Domain, error)
+	UpdateFeedback(ctx context.Context, domain *Domain) (Domain, error)
 	CreateFeedback(ctx context.Context, domain *Domain) (Domain, error)
 }
