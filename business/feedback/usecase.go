@@ -14,7 +14,7 @@ type FeedbackUsecase struct {
 func (f FeedbackUsecase) GetAllFeedbackByCourse(ctx context.Context, domain *CourseReviews) (CourseReviews, error) {
 
 	if domain.CourseId == "" {
-		return CourseReviews{}, nil
+		return CourseReviews{}, controller.EMPTY_COURSE
 	}
 
 	result, err := f.FeedbackRepository.GetAllFeedbackByCourse(ctx, domain)
@@ -24,6 +24,10 @@ func (f FeedbackUsecase) GetAllFeedbackByCourse(ctx context.Context, domain *Cou
 	}
 
 	ratingAll, err := f.FeedbackRepository.GetAvegareRatingCourse(ctx, domain)
+
+	if err != nil {
+		return CourseReviews{}, err
+	}
 
 	result.CourseId = domain.CourseId
 	result.RatingAll = ratingAll.RatingAll
