@@ -169,3 +169,31 @@ func TestFeedbackUsecase_GetAllFeedbackByCourse(t *testing.T) {
 		assert.Equal(t, controller.EMPTY_COURSE, err)
 	})
 }
+
+func setUpDeleteFeedback() {
+	feedbackService = feedback.NewFeedbackUsecase(&mysqlFeedbackRespository, time.Hour*1)
+	feedbackDomain = feedback.Domain{
+		ID:       "123",
+		UserId:   "234",
+		CourseId: "345",
+		Review:   "qwer5ty",
+		Rating:   4.5,
+	}
+}
+
+func TestFeedbackUsecase_DeleteFeedback(t *testing.T) {
+	t.Run("Test case 1 | success", func(t *testing.T) {
+		setUpDeleteFeedback()
+		mysqlFeedbackRespository.On("DeleteFeedback", mock.Anything, mock.Anything).Return(feedbackDomain, nil).Once()
+
+		result, err := feedbackService.DeleteFeedback(context.Background(), &feedback.Domain{ID: "123"})
+		assert.Nil(t, err)
+		assert.Equal(t, "123", result.ID)
+	})
+	t.Run("Test case 2 | error id empty", func(t *testing.T) {
+		setUpDeleteFeedback()
+
+		_, err := feedbackService.DeleteFeedback(context.Background(), &feedback.Domain{ID: ""})
+		assert.NotNil(t, err)
+	})
+}
