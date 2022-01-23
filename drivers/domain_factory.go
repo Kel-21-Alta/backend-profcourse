@@ -3,6 +3,7 @@ package drivers
 import (
 	"gorm.io/gorm"
 	_coursesUsecase "profcourse/business/courses"
+	_feedbackUsecase "profcourse/business/feedback"
 	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
 	_quizsUsecas "profcourse/business/quizs"
@@ -12,6 +13,7 @@ import (
 	_userUsecase "profcourse/business/users"
 	_usersCoursesUsecase "profcourse/business/users_courses"
 	"profcourse/drivers/databases/courses"
+	"profcourse/drivers/databases/feedback"
 	"profcourse/drivers/databases/materies"
 	"profcourse/drivers/databases/moduls"
 	"profcourse/drivers/databases/quizs"
@@ -56,4 +58,8 @@ func NewMysqlMateriesRepository(conn *gorm.DB) _materiesUsecase.Repository {
 
 func NewMysqlQuizsRepository(conn *gorm.DB) _quizsUsecas.Repository {
 	return quizs.NewMysqlRepository(conn)
+}
+
+func NewMysqlFeedbackRepository(conn *gorm.DB) _feedbackUsecase.Repository {
+	return feedback.NewMysqlRepository(conn)
 }

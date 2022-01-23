@@ -2,6 +2,7 @@ package routes
 
 import (
 	"profcourse/controllers/courses"
+	"profcourse/controllers/feedback"
 	"profcourse/controllers/materies"
 	"profcourse/controllers/moduls"
 	"profcourse/controllers/quizs"
@@ -24,6 +25,7 @@ type ControllerList struct {
 	SpesializationController spesializations.SpesializationController
 	MateriesController       materies.MateriesController
 	QuizController           quizs.QuizsController
+	FeedbackController       feedback.FeedbackController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -84,4 +86,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.GET("spesializations/:spesializationid", cl.SpesializationController.GetOneSpesialization)
 	withJWT.GET("spesializations", cl.SpesializationController.GetAllSpesialization)
 
+	//	feedback
+	withJWT.POST("feedback", cl.FeedbackController.CreateFeedback)
 }

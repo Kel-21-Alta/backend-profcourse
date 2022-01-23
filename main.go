@@ -10,6 +10,7 @@ import (
 	"profcourse/app/middlewares"
 	"profcourse/app/routes"
 	_coursesUsecase "profcourse/business/courses"
+	_feedbackUsecase "profcourse/business/feedback"
 	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
 	_quizsUsecase "profcourse/business/quizs"
@@ -18,6 +19,7 @@ import (
 	_userUsecase "profcourse/business/users"
 	_usersCourseUsercase "profcourse/business/users_courses"
 	"profcourse/controllers/courses"
+	"profcourse/controllers/feedback"
 	"profcourse/controllers/materies"
 	_modulController "profcourse/controllers/moduls"
 	"profcourse/controllers/quizs"
@@ -27,6 +29,7 @@ import (
 	_usersCourseController "profcourse/controllers/users_courses"
 	_driversFectory "profcourse/drivers"
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
+	_feedbackMysqlRepo "profcourse/drivers/databases/feedback"
 	_materiesMysqlRepo "profcourse/drivers/databases/materies"
 	_modulsMysqlRepo "profcourse/drivers/databases/moduls"
 	_quizsMysqlRepo "profcourse/drivers/databases/quizs"
@@ -62,6 +65,7 @@ func DbMigration(db *gorm.DB) {
 		&_quizsMysqlRepo.Quiz{},
 		&_quizsMysqlRepo.PilihanQuiz{},
 		&_modulsMysqlRepo.SkorUserModul{},
+		&_feedbackMysqlRepo.Feedback{},
 	)
 
 	if err != nil {
@@ -135,6 +139,10 @@ func main() {
 	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, modulUsecase, userCourseUsecase, timeout)
 	quizController := quizs.NewQuizsController(quizsUsecase)
 
+	mysqlFeedbackRepository := _driversFectory.NewMysqlFeedbackRepository(conn)
+	feedbackUsecase := _feedbackUsecase.NewFeedbackUsecase(mysqlFeedbackRepository, timeout)
+	feedbackController := feedback.NewFeedbackController(feedbackUsecase)
+
 	routesInit := routes.ControllerList{
 		UserController:           *userCtrl,
 		CourseController:         *couserCtrl,
@@ -145,6 +153,7 @@ func main() {
 		SpesializationController: *spesializationController,
 		MateriesController:       *materiesController,
 		QuizController:           *quizController,
+		FeedbackController: *feedbackController,
 	}
 
 	routesInit.RouteRegister(e)
