@@ -89,4 +89,5 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	//	feedback
 	withJWT.POST("feedback", cl.FeedbackController.CreateFeedback)
 	withJWT.GET("feedback/course/:courseid", cl.FeedbackController.GetAllFeedbackByCourse)
+	withJWT.DELETE("feedback/:feedbackid", cl.FeedbackController.DeleteFeedback)
 }

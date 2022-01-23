@@ -10,6 +10,19 @@ type FeedbackRepository struct {
 	Conn *gorm.DB
 }
 
+func (f FeedbackRepository) DeleteFeedback(ctx context.Context, domain *feedback.Domain) (feedback.Domain, error) {
+
+	var rec = FromDomain(domain)
+
+	err := f.Conn.Unscoped().Delete(&rec, "id = ?", rec.ID).Error
+
+	if err != nil {
+		return feedback.Domain{}, err
+	}
+
+	return rec.ToDomain(), nil
+}
+
 func (f FeedbackRepository) GetAvegareRatingCourse(ctx context.Context, domain *feedback.CourseReviews) (feedback.CourseReviews, error) {
 	var result float32
 
