@@ -10,6 +10,31 @@ type FeedbackRepository struct {
 	Conn *gorm.DB
 }
 
+func (f FeedbackRepository) GetAvegareRatingCourse(ctx context.Context, domain *feedback.CourseReviews) (feedback.CourseReviews, error) {
+	var result float32
+
+	err := f.Conn.Table("feedbacks").Select("AVG(rating) as result").Where("course_id = ?",domain.CourseId).Scan(&result).Error
+
+	if err != nil {
+		return feedback.CourseReviews{}, err
+	}
+	return feedback.CourseReviews{RatingAll: result}, err
+}
+
+func (f FeedbackRepository) GetAllFeedbackByCourse(ctx context.Context, domain *feedback.CourseReviews) (feedback.CourseReviews, error) {
+	var recs []Feedback
+
+	err := f.Conn.Preload("User").Where("course_id = ?", domain.CourseId).Find(&recs).Order("rating desc").Error
+
+	if err != nil {
+		return feedback.CourseReviews{}, err
+	}
+
+	result := ToCourseReview(recs)
+
+	return result, nil
+}
+
 func (f FeedbackRepository) GetOneFeedbackByUserAndCourse(ctx context.Context, domain *feedback.Domain) (feedback.Domain, error) {
 	var rec Feedback
 

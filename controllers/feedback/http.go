@@ -8,6 +8,7 @@ import (
 	controller "profcourse/controllers"
 	"profcourse/controllers/feedback/requests"
 	"profcourse/controllers/feedback/responses/createFeedback"
+	"profcourse/controllers/feedback/responses/getAllFeedbackCourse"
 )
 
 type FeedbackController struct {
@@ -41,4 +42,21 @@ func (ctr *FeedbackController) CreateFeedback(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusCreated, createFeedback.FromDomain(result))
+}
+
+func (ctr *FeedbackController) GetAllFeedbackByCourse(c echo.Context) error {
+	var domain feedback.CourseReviews
+
+	domain.CourseId = c.Param("courseid")
+
+	ctx := c.Request().Context()
+	result, err := ctr.FeedbackUsecase.GetAllFeedbackByCourse(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	response := getAllFeedbackCourse.FromListDomain(result)
+
+	return controller.NewResponseSuccess(c, http.StatusOK, response)
 }
