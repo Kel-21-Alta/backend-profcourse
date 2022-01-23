@@ -2,13 +2,61 @@ package users_courses
 
 import (
 	"context"
+	"profcourse/business/courses"
+	"profcourse/business/users"
 	controller "profcourse/controllers"
 	"time"
 )
 
 type UsersCoursesUsecase struct {
 	UsersCoursesRepository Repository
+	UsersUsecase           users.Usecase
+	CourseUsecase          courses.Usecase
 	ContextTime            time.Duration
+}
+
+func (u *UsersCoursesUsecase) GetUserCourseEndroll(ctx context.Context, domain *User) (User, error) {
+	if domain.UserID == "" {
+		return User{}, controller.ID_EMPTY
+	}
+
+	result, err := u.UsersCoursesRepository.GetUserCourseEndroll(ctx, domain)
+	if err != nil {
+		return User{}, err
+	}
+
+	result.UserID = domain.UserID
+
+	user, err := u.UsersUsecase.GetCurrentUser(ctx, users.Domain{ID: domain.UserID})
+
+	if err != nil {
+		return User{}, err
+	}
+	result.Name = user.Name
+
+	var listCourse []Domain
+
+	for _, courseid := range result.Courses {
+		course, err := u.CourseUsecase.GetOneCourse(ctx, &courses.Domain{ID: courseid.CourseId})
+		if err != nil {
+			return User{}, err
+		}
+		listCourse = append(listCourse, Domain{
+			ID:          courseid.ID,
+			UserId:      courseid.UserId,
+			CourseId:    courseid.CourseId,
+			Progres:     courseid.Progres,
+			LastVideoId: courseid.LastVideoId,
+			LastModulId: courseid.LastModulId,
+			Score:       courseid.Score,
+			CourseTitle: course.Title,
+			UrlImage:    course.ImgUrl,
+			CreatedAt:   courseid.CreatedAt,
+			UpdatedAt:   courseid.UpdatedAt,
+		})
+	}
+	result.Courses = listCourse
+	return result, nil
 }
 
 func (u *UsersCoursesUsecase) UpdateScoreCourse(ctx context.Context, domain *Domain) (Domain, error) {
@@ -94,6 +142,6 @@ func (u *UsersCoursesUsecase) UserRegisterCourse(ctx context.Context, domain *Do
 	return userCourseDomain, nil
 }
 
-func NewUsersCoursesUsecase(r Repository, timeout time.Duration) Usecase {
-	return &UsersCoursesUsecase{UsersCoursesRepository: r, ContextTime: timeout}
+func NewUsersCoursesUsecase(r Repository, user users.Usecase, courseUsecase courses.Usecase, timeout time.Duration) Usecase {
+	return &UsersCoursesUsecase{UsersCoursesRepository: r, ContextTime: timeout, UsersUsecase: user, CourseUsecase: courseUsecase}
 }
