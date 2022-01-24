@@ -13,6 +13,15 @@ type Domain struct {
 	Category   Category
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+
+	Query Query
+}
+
+type Query struct {
+	Sort string
+	Search string
+	Limit int
+	Offset int
 }
 
 type Category struct {
@@ -25,10 +34,12 @@ type Category struct {
 type Usecase interface {
 	CreateRequest(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllCategoryRequest(ctx context.Context) ([]Category, error)
+	GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error)
 }
 
 type Repository interface {
 	CreateRequest(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneRequest(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllCategoryRequest(ctx context.Context) ([]Category, error)
+	GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error)
 }

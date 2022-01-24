@@ -19,7 +19,7 @@ func NewUsesrCoursesController(ucc users_courses.Usecase) *UsersCoursesControlle
 	return &UsersCoursesController{UsersCoursesUsecase: ucc}
 }
 
-func (uc UsersCoursesController) UserRegisterCourse(c echo.Context) error {
+func (uc *UsersCoursesController) UserRegisterCourse(c echo.Context) error {
 	var err error
 	var token *middlewares.JwtCustomClaims
 
@@ -44,7 +44,7 @@ func (uc UsersCoursesController) UserRegisterCourse(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusOK, userRegisterCourse.UserRegisterCourseResponse{Message: "Berhasil mendaftarkan user pada kursus"})
 }
 
-func (uc UsersCoursesController) GetUserCourseEndroll(c echo.Context) error {
+func (uc *UsersCoursesController) GetUserCourseEndroll(c echo.Context) error {
 	var req users_courses.User
 
 	token, err := middlewares.ExtractClaims(c)

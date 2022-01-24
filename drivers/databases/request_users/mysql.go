@@ -10,6 +10,29 @@ import (
 type RequestUserRepo struct {
 	Conn *gorm.DB
 }
+// Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
+func Paginate(domain request_users.Domain) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		offset := domain.Query.Offset
+		limit := domain.Query.Limit
+		if limit == 0 {
+			limit = 10
+		}
+		return db.Offset(offset).Limit(limit)
+	}
+}
+
+func (r *RequestUserRepo) GetAllRequestUser(ctx context.Context, domain *request_users.Domain) ([]request_users.Domain, error) {
+	var recs []RequestUser
+	var err error
+	err = r.Conn.Preload("CategoryRequest").Scopes(Paginate(*domain)).Order("created_at "+domain.Query.Sort).Where("user_id = ?", domain.UserId).Where("request Like ?", "%"+domain.Query.Search+"%").Find(&recs).Error
+
+	if err != nil {
+		return []request_users.Domain{}, err
+	}
+
+	return ToListRequestUserDomain(recs), nil
+}
 
 func (r *RequestUserRepo) GetAllCategoryRequest(ctx context.Context) ([]request_users.Category, error) {
 	var rec []CategoryRequest

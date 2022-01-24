@@ -1,6 +1,7 @@
 package requestusers
 
 import (
+	"github.com/labstack/echo/v4"
 	"net/http"
 	"profcourse/app/middlewares"
 	"profcourse/business/request_users"
@@ -8,8 +9,8 @@ import (
 	"profcourse/controllers/request_users/requests"
 	createrequestuser "profcourse/controllers/request_users/responses/createRequestuser"
 	getAllCategoryRequestUser "profcourse/controllers/request_users/responses/getAllCategoryRequestUser"
-
-	"github.com/labstack/echo/v4"
+	"profcourse/controllers/request_users/responses/getAllRequestUser"
+	"strconv"
 )
 
 type RequestUserController struct {
@@ -55,4 +56,31 @@ func (ctr *RequestUserController) GetAllCategoryRequest(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getAllCategoryRequestUser.FromListDomain(result))
+}
+
+func (ctr *RequestUserController) GetAllRequestUser(c echo.Context) error {
+
+	ctx := c.Request().Context()
+
+	var domain request_users.Domain
+
+	token, err := middlewares.ExtractClaims(c)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain.UserId = token.Userid
+	domain.Query.Sort = c.QueryParam("sort")
+	domain.Query.Offset, _ = strconv.Atoi(c.QueryParam("offset"))
+	domain.Query.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
+	domain.Query.Search = c.QueryParam("s")
+
+	result, err := ctr.RequestUserUsecase.GetAllRequestUser(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllRequestUser.FromListDomain(result))
 }

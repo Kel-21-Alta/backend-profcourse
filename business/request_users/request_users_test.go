@@ -17,6 +17,7 @@ var mysqlRequestUser _mockRequestuser.Repository
 var requestUserService request_users.Usecase
 var requestUserDoamin request_users.Domain
 var listCategory []request_users.Category
+var listRequest []request_users.Domain
 
 func setupCreateRequestuser() {
 	requestUserService = request_users.NewRequestUserUsecase(&mysqlRequestUser, time.Hour*1)
@@ -144,5 +145,37 @@ func TestRequestUserUsecase_GetAllCategoryRequest(t *testing.T) {
 		_, err := requestUserService.GetAllCategoryRequest(context.Background())
 
 		assert.NotNil(t, err)
+	})
+}
+
+func setupGetAllRequestUser() {
+	requestUserService = request_users.NewRequestUserUsecase(&mysqlRequestUser, time.Hour*1)
+
+	requestUserDoamin = request_users.Domain{
+		Id:         "123",
+		UserId:     "234",
+		CategoryID: "345",
+		Request:    "Hai",
+		Category: request_users.Category{
+			ID:        "234",
+			Title:     "Online Course",
+			CreatedAt: time.Time{},
+			UpdatedAt: time.Time{},
+		},
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+	}
+
+	listRequest = []request_users.Domain{requestUserDoamin}
+}
+
+func TestRequestUserUsecase_GetAllRequestUser(t *testing.T) {
+	t.Run("Test case 1 | success", func(t *testing.T) {
+		setupGetAllRequestUser()
+		mysqlRequestUser.On("GetAllRequestUser", mock.Anything, mock.Anything).Return(listRequest, nil).Once()
+
+		_, err := requestUserService.GetAllRequestUser(context.Background(), &request_users.Domain{UserId: "123"})
+
+		assert.Nil(t, err)
 	})
 }
