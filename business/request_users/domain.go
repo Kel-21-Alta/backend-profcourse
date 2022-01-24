@@ -24,9 +24,11 @@ type Category struct {
 
 type Usecase interface {
 	CreateRequest(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllCategoryRequest(ctx context.Context) ([]Category, error)
 }
 
 type Repository interface {
 	CreateRequest(ctx context.Context, domain *Domain) (Domain, error)
 	GetOneRequest(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllCategoryRequest(ctx context.Context) ([]Category, error)
 }

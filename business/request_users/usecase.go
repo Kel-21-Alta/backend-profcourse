@@ -11,6 +11,16 @@ type RequestUserUsecase struct {
 	ContextTimeOut            time.Duration
 }
 
+func (r *RequestUserUsecase) GetAllCategoryRequest(ctx context.Context) ([]Category, error) {
+	result, err := r.RequestUsercaseRepository.GetAllCategoryRequest(ctx)
+
+	if err != nil {
+		return []Category{}, err
+	}
+
+	return result, nil
+}
+
 func (r *RequestUserUsecase) CreateRequest(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.Request == "" {
 		return Domain{}, controller.REQUEST_EMPTY
@@ -21,7 +31,7 @@ func (r *RequestUserUsecase) CreateRequest(ctx context.Context, domain *Domain) 
 	if domain.CategoryID == "" {
 		return Domain{}, controller.CATEGORY_EMPTY
 	}
-	resultCreateReuqust , err := r.RequestUsercaseRepository.CreateRequest(ctx, domain)
+	resultCreateReuqust, err := r.RequestUsercaseRepository.CreateRequest(ctx, domain)
 	if err != nil {
 		return Domain{}, err
 	}
