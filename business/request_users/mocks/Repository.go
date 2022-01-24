@@ -35,6 +35,27 @@ func (_m *Repository) CreateRequest(ctx context.Context, domain *request_users.D
 	return r0, r1
 }
 
+// DeleteRequestUset provides a mock function with given fields: ctx, domain
+func (_m *Repository) DeleteRequestUset(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 request_users.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, *request_users.Domain) request_users.Domain); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(request_users.Domain)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *request_users.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetAllCategoryRequest provides a mock function with given fields: ctx
 func (_m *Repository) GetAllCategoryRequest(ctx context.Context) ([]request_users.Category, error) {
 	ret := _m.Called(ctx)

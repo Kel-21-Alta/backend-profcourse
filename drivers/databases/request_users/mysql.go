@@ -10,6 +10,16 @@ import (
 type RequestUserRepo struct {
 	Conn *gorm.DB
 }
+
+func (r *RequestUserRepo) DeleteRequestUset(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
+	var rec RequestUser
+	err := r.Conn.Delete(&rec, "id = ?", domain.Id).Error
+	if err != nil {
+		return request_users.Domain{}, err
+	}
+	return rec.ToDomain(), nil
+}
+
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
 func Paginate(domain request_users.Domain) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
