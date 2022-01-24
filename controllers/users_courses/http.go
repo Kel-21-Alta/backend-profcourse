@@ -7,6 +7,7 @@ import (
 	"profcourse/business/users_courses"
 	controller "profcourse/controllers"
 	"profcourse/controllers/users_courses/request"
+	"profcourse/controllers/users_courses/responses/courseUserEndroll"
 	"profcourse/controllers/users_courses/responses/userRegisterCourse"
 )
 
@@ -41,4 +42,22 @@ func (uc UsersCoursesController) UserRegisterCourse(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 	return controller.NewResponseSuccess(c, http.StatusOK, userRegisterCourse.UserRegisterCourseResponse{Message: "Berhasil mendaftarkan user pada kursus"})
+}
+
+func (uc UsersCoursesController) GetUserCourseEndroll(c echo.Context) error {
+	var req users_courses.User
+
+	token, err := middlewares.ExtractClaims(c)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	req.UserID = token.Userid
+	ctx := c.Request().Context()
+	result, err := uc.UsersCoursesUsecase.GetUserCourseEndroll(ctx, &req)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, courseUserEndroll.FromDomain(result))
 }

@@ -14,6 +14,27 @@ type Repository struct {
 	mock.Mock
 }
 
+// CalculateScoreCourse provides a mock function with given fields: ctx, domain
+func (_m *Repository) CalculateScoreCourse(ctx context.Context, domain *moduls.ScoreUserModul) (moduls.ScoreUserModul, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 moduls.ScoreUserModul
+	if rf, ok := ret.Get(0).(func(context.Context, *moduls.ScoreUserModul) moduls.ScoreUserModul); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(moduls.ScoreUserModul)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *moduls.ScoreUserModul) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateModul provides a mock function with given fields: ctx, domain
 func (_m *Repository) CreateModul(ctx context.Context, domain *moduls.Domain) (moduls.Domain, error) {
 	ret := _m.Called(ctx, domain)
@@ -27,6 +48,27 @@ func (_m *Repository) CreateModul(ctx context.Context, domain *moduls.Domain) (m
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *moduls.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// CreateScoreModul provides a mock function with given fields: ctx, domain
+func (_m *Repository) CreateScoreModul(ctx context.Context, domain *moduls.ScoreUserModul) (moduls.ScoreUserModul, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 moduls.ScoreUserModul
+	if rf, ok := ret.Get(0).(func(context.Context, *moduls.ScoreUserModul) moduls.ScoreUserModul); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		r0 = ret.Get(0).(moduls.ScoreUserModul)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *moduls.ScoreUserModul) error); ok {
 		r1 = rf(ctx, domain)
 	} else {
 		r1 = ret.Error(1)

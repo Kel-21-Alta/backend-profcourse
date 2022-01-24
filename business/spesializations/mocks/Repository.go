@@ -58,6 +58,27 @@ func (_m *Repository) GetAllSpesializations(ctx context.Context, domain *spesial
 	return r0, r1
 }
 
+// GetCountSpesializations provides a mock function with given fields: ctx
+func (_m *Repository) GetCountSpesializations(ctx context.Context) (spesializations.Summary, error) {
+	ret := _m.Called(ctx)
+
+	var r0 spesializations.Summary
+	if rf, ok := ret.Get(0).(func(context.Context) spesializations.Summary); ok {
+		r0 = rf(ctx)
+	} else {
+		r0 = ret.Get(0).(spesializations.Summary)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetOneSpesialization provides a mock function with given fields: ctx, domain
 func (_m *Repository) GetOneSpesialization(ctx context.Context, domain *spesializations.Domain) (spesializations.Domain, error) {
 	ret := _m.Called(ctx, domain)

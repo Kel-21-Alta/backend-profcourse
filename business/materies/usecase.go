@@ -1,8 +1,8 @@
 package materies
 
 import (
-	"fmt"
 	"golang.org/x/net/context"
+	"profcourse/business/moduls"
 	"profcourse/business/users_courses"
 	controller "profcourse/controllers"
 	"time"
@@ -12,6 +12,7 @@ type MateriesUsecase struct {
 	MateriesRepository Repository
 	ContextTimeout     time.Duration
 	UserCourse         users_courses.Usecase
+	ModulUsecase       moduls.Usecase
 }
 
 func (u MateriesUsecase) UpdateProgressMateri(ctx context.Context, domain *Domain) (Domain, error) {
@@ -49,10 +50,8 @@ func (u MateriesUsecase) UpdateProgressMateri(ctx context.Context, domain *Domai
 	}
 	// materi yang selesai / jumlah materi *100
 
-	progress := (materiFinist*100)  / allMateriCourse
-	fmt.Println(materiFinist)
-	fmt.Println(allMateriCourse)
-	fmt.Println(progress)
+	progress := (materiFinist * 100) / allMateriCourse
+
 	_, err = u.UserCourse.UpdateProgressCourse(ctx, &users_courses.Domain{
 		UserId:      resultUpdateProgressMateri.User.ID,
 		CourseId:    resultUpdateProgressMateri.User.CourseId,
@@ -75,6 +74,18 @@ func (u MateriesUsecase) GetAllMateri(ctx context.Context, domain *Domain) (AllM
 	if domain.User.ID == "" {
 		return AllMateriModul{}, controller.ID_EMPTY
 	}
+
+	modulDomain, err := u.ModulUsecase.GetOneModul(ctx, &moduls.Domain{ID: domain.ModulId})
+	if err != nil {
+		return AllMateriModul{}, err
+	}
+
+	userCourse, err := u.UserCourse.GetOneUserCourse(ctx, &users_courses.Domain{CourseId: modulDomain.CourseId, UserId: domain.User.ID})
+	if err != nil {
+		return AllMateriModul{}, err
+	}
+
+	domain.UserCourse.UserCourseId = userCourse.ID
 
 	result, err := u.MateriesRepository.GetAllMateri(ctx, domain)
 
@@ -174,6 +185,6 @@ func (u MateriesUsecase) CreateMateri(ctx context.Context, domain *Domain) (Doma
 	return materi, nil
 }
 
-func NewMateriesUsecase(repo Repository, userCourse users_courses.Usecase, timeout time.Duration) Usecase {
-	return &MateriesUsecase{MateriesRepository: repo, UserCourse: userCourse, ContextTimeout: timeout}
+func NewMateriesUsecase(repo Repository, userCourse users_courses.Usecase, moduls moduls.Usecase, timeout time.Duration) Usecase {
+	return &MateriesUsecase{MateriesRepository: repo, UserCourse: userCourse, ContextTimeout: timeout, ModulUsecase: moduls}
 }

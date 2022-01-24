@@ -51,7 +51,7 @@ func FromDomain(domain *courses.Domain) *GetOneCourseResponses {
 		listRangking = append(listRangking, Ranking{
 			UserID:   rangking.UserId,
 			NameUser: rangking.NameUser,
-			Skor:     0,
+			Skor:     rangking.Skor,
 		})
 	}
 

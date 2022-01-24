@@ -10,6 +10,38 @@ type msqlUserCourseRepository struct {
 	Conn *gorm.DB
 }
 
+func (m msqlUserCourseRepository) GetUserCourseEndroll(ctx context.Context, domain *_usersCoursesUsecase.User) (_usersCoursesUsecase.User, error) {
+	var rec []UsersCourses
+
+	err := m.Conn.Where("user_id = ?", domain.UserID).Find(&rec).Order("progress desc").Error
+
+	if err != nil {
+		return _usersCoursesUsecase.User{}, err
+	}
+
+	return ToUserDomain(rec), nil
+}
+
+func (m msqlUserCourseRepository) UpdateScoreCourse(ctx context.Context, domain *_usersCoursesUsecase.Domain) (_usersCoursesUsecase.Domain, error) {
+	var rec UsersCourses
+
+	err := m.Conn.First(&rec, "id = ?", domain.ID).Error
+
+	if err != nil {
+		return _usersCoursesUsecase.Domain{}, err
+	}
+
+	rec.Skor = domain.Score
+
+	err = m.Conn.Save(&rec).Error
+
+	if err != nil {
+		return _usersCoursesUsecase.Domain{}, err
+	}
+
+	return *rec.ToDomain(), nil
+}
+
 func (m msqlUserCourseRepository) GetOneUserCourse(ctx context.Context, domain *_usersCoursesUsecase.Domain) (_usersCoursesUsecase.Domain, error) {
 	var rec UsersCourses
 

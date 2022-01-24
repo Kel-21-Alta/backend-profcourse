@@ -103,12 +103,19 @@ func (r *mysqlCourseRepository) GetOneCourse(ctx context.Context, domain *course
 	var RegisteredUsers []RegisteredUser
 
 	// Mendapatkan jumlah user yang mengambil course
-	r.Conn.Table("courses").Select("COUNT(users_courses.id) as count").Joins("INNER JOIN users_courses ON users_courses.course_id = courses.id").Where("courses.id = ?", resultDomain.ID).Scan(&count)
+	err = r.Conn.Table("courses").Select("COUNT(users_courses.id) as count").Joins("INNER JOIN users_courses ON users_courses.course_id = courses.id").Where("courses.id = ?", resultDomain.ID).Scan(&count).Error
+
+	if err != nil {
+		return nil, err
+	}
 
 	resultDomain.UserTakenCourse = count
 
 	// Mendapatkan list user yang mengambil course untuk rangking
-	r.Conn.Table("courses").Select(" users_courses.user_id  as user_id, users.name as name_user, users_courses.skor as skor, users_courses.progress as progress").Joins("INNER JOIN users_courses ON users_courses.course_id = courses.id").Joins("INNER JOIN users ON users_courses.user_id = users.id").Where("courses.id = ?", resultDomain.ID).Order("users_courses.skor desc").Limit(10).Scan(&RegisteredUsers)
+	err = r.Conn.Table("courses").Select(" users_courses.user_id  as user_id, users.name as name_user, users_courses.skor as skor, users_courses.progress as progress").Joins("INNER JOIN users_courses ON users_courses.course_id = courses.id").Joins("INNER JOIN users ON users_courses.user_id = users.id").Where("courses.id = ?", resultDomain.ID).Order("users_courses.skor desc").Limit(10).Scan(&RegisteredUsers).Error
+	if err != nil {
+		return nil, err
+	}
 
 	resultDomain.InfoUser = domain.InfoUser
 

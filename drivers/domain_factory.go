@@ -3,18 +3,22 @@ package drivers
 import (
 	"gorm.io/gorm"
 	_coursesUsecase "profcourse/business/courses"
+	_feedbackUsecase "profcourse/business/feedback"
 	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
 	_quizsUsecas "profcourse/business/quizs"
+	_requestUsersUsecase "profcourse/business/request_users"
 	"profcourse/business/send_email"
 	_spesializationUsecase "profcourse/business/spesializations"
 	_localsRepository "profcourse/business/uploads"
 	_userUsecase "profcourse/business/users"
 	_usersCoursesUsecase "profcourse/business/users_courses"
 	"profcourse/drivers/databases/courses"
+	"profcourse/drivers/databases/feedback"
 	"profcourse/drivers/databases/materies"
 	"profcourse/drivers/databases/moduls"
 	"profcourse/drivers/databases/quizs"
+	requestusers "profcourse/drivers/databases/request_users"
 	"profcourse/drivers/databases/spesialization"
 	"profcourse/drivers/databases/users"
 	"profcourse/drivers/databases/users_courses"
@@ -56,4 +60,12 @@ func NewMysqlMateriesRepository(conn *gorm.DB) _materiesUsecase.Repository {
 
 func NewMysqlQuizsRepository(conn *gorm.DB) _quizsUsecas.Repository {
 	return quizs.NewMysqlRepository(conn)
+}
+
+func NewMysqlFeedbackRepository(conn *gorm.DB) _feedbackUsecase.Repository {
+	return feedback.NewMysqlRepository(conn)
+}
+
+func NewRequestUserRepository(conn *gorm.DB) _requestUsersUsecase.Repository {
+	return requestusers.NewMysqlRepository(conn)
 }

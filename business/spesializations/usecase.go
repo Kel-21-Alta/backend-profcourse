@@ -12,6 +12,14 @@ type spesializationUsecase struct {
 	ContextTimeOut           time.Duration
 }
 
+func (s spesializationUsecase) GetCountSpesializations(ctx context.Context) (Summary, error) {
+	result, err := s.SpesializationRepository.GetCountSpesializations(ctx)
+	if err != nil {
+		return Summary{}, err
+	}
+	return result, nil
+}
+
 func (s spesializationUsecase) GetOneSpesialization(ctx context.Context, domain *Domain) (Domain, error) {
 
 	if domain.ID == "" {

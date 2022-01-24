@@ -2,9 +2,11 @@ package routes
 
 import (
 	"profcourse/controllers/courses"
+	"profcourse/controllers/feedback"
 	"profcourse/controllers/materies"
 	"profcourse/controllers/moduls"
 	"profcourse/controllers/quizs"
+	requestusers "profcourse/controllers/request_users"
 	"profcourse/controllers/spesializations"
 	"profcourse/controllers/summary"
 	"profcourse/controllers/users"
@@ -24,6 +26,8 @@ type ControllerList struct {
 	SpesializationController spesializations.SpesializationController
 	MateriesController       materies.MateriesController
 	QuizController           quizs.QuizsController
+	FeedbackController       feedback.FeedbackController
+	RequestUserController    requestusers.RequestUserController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -48,6 +52,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.PUT("courses/:courseid", cl.CourseController.UpdateCourse)
 	withJWT.DELETE("courses/:courseid", cl.CourseController.DeleteCourse)
 	withJWT.GET("courses", cl.CourseController.GetAllCourses)
+	withJWT.GET("coursesendroll", cl.UserCourseController.GetUserCourseEndroll)
 
 	// untuk melakukan register course user
 	withJWT.POST("course/register", cl.UserCourseController.UserRegisterCourse)
@@ -74,6 +79,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.DELETE("quizs/:quizid", cl.QuizController.DeleteQuiz)
 	withJWT.GET("quizs/modul/:modulid", cl.QuizController.GetAllQuizModul)
 	withJWT.GET("quizs/:quizid", cl.QuizController.GetOneQuiz)
+	withJWT.POST("quizs/modul/:modulid", cl.QuizController.CalculateScoreQuiz)
 
 	withJWT.GET("summary", cl.SummaryController.GetAllSummary)
 
@@ -82,4 +88,12 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.GET("spesializations/:spesializationid", cl.SpesializationController.GetOneSpesialization)
 	withJWT.GET("spesializations", cl.SpesializationController.GetAllSpesialization)
 
+	//	feedback
+	withJWT.POST("feedback", cl.FeedbackController.CreateFeedback)
+	withJWT.GET("feedback/course/:courseid", cl.FeedbackController.GetAllFeedbackByCourse)
+	withJWT.DELETE("feedback/:feedbackid", cl.FeedbackController.DeleteFeedback)
+
+	// Request User
+	withJWT.POST("requestusers", cl.RequestUserController.CreateRequest)
+	withJWT.GET("categoryrequestuser", cl.RequestUserController.GetAllCategoryRequest)
 }

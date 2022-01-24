@@ -46,6 +46,7 @@ func (u UsersCourses) ToDomain() *users_courses.Domain {
 		LastModulId: u.LastModulId,
 		CreatedAt:   u.CreatedAt,
 		UpdatedAt:   u.CreatedAt,
+		Score:       u.Skor,
 	}
 }
 
@@ -56,5 +57,23 @@ func FromDomain(domain users_courses.Domain) *UsersCourses {
 		Progress:    0,
 		LastVideoId: domain.LastVideoId,
 		LastModulId: domain.LastModulId,
+		Skor:        domain.Score,
 	}
+}
+
+func ToUserDomain(user_course []UsersCourses) users_courses.User {
+
+	var listCourse []users_courses.Domain
+
+	for _, course := range user_course {
+		listCourse = append(listCourse, *course.ToDomain())
+	}
+
+	return users_courses.User{
+		UserID:      "",
+		Name:        "",
+		CountCourse: len(user_course),
+		Courses:     listCourse,
+	}
+
 }

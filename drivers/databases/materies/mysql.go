@@ -62,7 +62,7 @@ func (m MateriesRepository) GetAllMateri(ctx context.Context, domain *materies.D
 		return materies.AllMateriModul{}, err
 	}
 
-	result := ToAllMateriModul(rec, domain.User.ID)
+	result := ToAllMateriModul(rec, domain.UserCourse.UserCourseId)
 
 	return result, nil
 }

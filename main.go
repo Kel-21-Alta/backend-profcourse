@@ -10,26 +10,32 @@ import (
 	"profcourse/app/middlewares"
 	"profcourse/app/routes"
 	_coursesUsecase "profcourse/business/courses"
+	_feedbackUsecase "profcourse/business/feedback"
 	_materiesUsecase "profcourse/business/materies"
 	_modulsUsecase "profcourse/business/moduls"
 	_quizsUsecase "profcourse/business/quizs"
+	_requestUsersUsecase "profcourse/business/request_users"
 	_spesializationUsecase "profcourse/business/spesializations"
 	_summaryUsecase "profcourse/business/summary"
 	_userUsecase "profcourse/business/users"
 	_usersCourseUsercase "profcourse/business/users_courses"
 	"profcourse/controllers/courses"
+	"profcourse/controllers/feedback"
 	"profcourse/controllers/materies"
 	_modulController "profcourse/controllers/moduls"
 	"profcourse/controllers/quizs"
+	requestusers "profcourse/controllers/request_users"
 	_spesializationsController "profcourse/controllers/spesializations"
 	_summaryController "profcourse/controllers/summary"
 	_userController "profcourse/controllers/users"
 	_usersCourseController "profcourse/controllers/users_courses"
 	_driversFectory "profcourse/drivers"
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
+	_feedbackMysqlRepo "profcourse/drivers/databases/feedback"
 	_materiesMysqlRepo "profcourse/drivers/databases/materies"
 	_modulsMysqlRepo "profcourse/drivers/databases/moduls"
 	_quizsMysqlRepo "profcourse/drivers/databases/quizs"
+	_requestuserMysqlRepo "profcourse/drivers/databases/request_users"
 	_spesializationMysqlRepo "profcourse/drivers/databases/spesialization"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_usersCourseMysqlRepo "profcourse/drivers/databases/users_courses"
@@ -61,6 +67,10 @@ func DbMigration(db *gorm.DB) {
 		&_materiesMysqlRepo.MateriUserComplate{},
 		&_quizsMysqlRepo.Quiz{},
 		&_quizsMysqlRepo.PilihanQuiz{},
+		&_modulsMysqlRepo.SkorUserModul{},
+		&_feedbackMysqlRepo.Feedback{},
+		&_requestuserMysqlRepo.RequestUser{},
+		&_requestuserMysqlRepo.CategoryRequest{},
 	)
 
 	if err != nil {
@@ -112,27 +122,35 @@ func main() {
 	couserCtrl := courses.NewCourseController(courseUsecase)
 
 	mysqlUserCourseRepository := _driversFectory.NewMysqlUserCourseRepository(conn)
-	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository, timeout)
+	userCourseUsecase := _usersCourseUsercase.NewUsersCoursesUsecase(mysqlUserCourseRepository, userUsecase, courseUsecase, timeout)
 	userCourseController := _usersCourseController.NewUsesrCoursesController(userCourseUsecase)
-
-	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout, courseUsecase, userUsecase)
-	summaryController := _summaryController.NewSummaryController(summaryUsecase)
 
 	mysqlSpesializationRepository := _driversFectory.NewMysqlSpesializationRepository(conn)
 	spesializationUsecae := _spesializationUsecase.NewSpesializationUsecase(mysqlSpesializationRepository, timeout)
 	spesializationController := _spesializationsController.NewSpesializationController(spesializationUsecae)
+
+	summaryUsecase := _summaryUsecase.NewSummaryUsecase(timeout, courseUsecase, userUsecase, spesializationUsecae)
+	summaryController := _summaryController.NewSummaryController(summaryUsecase)
 
 	mysqlModulRepository := _driversFectory.NewMysqlModulRepository(conn)
 	modulUsecase := _modulsUsecase.NewModulUsecase(mysqlModulRepository, courseUsecase, timeout)
 	modulCtrl := _modulController.NewModulsController(modulUsecase)
 
 	mysqlMateriesRepository := _driversFectory.NewMysqlMateriesRepository(conn)
-	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, userCourseUsecase, timeout)
+	materiesUsecase := _materiesUsecase.NewMateriesUsecase(mysqlMateriesRepository, userCourseUsecase, modulUsecase, timeout)
 	materiesController := materies.NewMateriesController(materiesUsecase)
 
 	myzqlQuizRepository := _driversFectory.NewMysqlQuizsRepository(conn)
-	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, timeout)
+	quizsUsecase := _quizsUsecase.NewQuizUsecase(myzqlQuizRepository, modulUsecase, userCourseUsecase, timeout)
 	quizController := quizs.NewQuizsController(quizsUsecase)
+
+	mysqlFeedbackRepository := _driversFectory.NewMysqlFeedbackRepository(conn)
+	feedbackUsecase := _feedbackUsecase.NewFeedbackUsecase(mysqlFeedbackRepository, timeout)
+	feedbackController := feedback.NewFeedbackController(feedbackUsecase)
+
+	mysqlRequestUserRepo := _driversFectory.NewRequestUserRepository(conn)
+	requestUsecase := _requestUsersUsecase.NewRequestUserUsecase(mysqlRequestUserRepo, timeout)
+	requestUserController := requestusers.NewRequestUserController(requestUsecase)
 
 	routesInit := routes.ControllerList{
 		UserController:           *userCtrl,
@@ -144,6 +162,8 @@ func main() {
 		SpesializationController: *spesializationController,
 		MateriesController:       *materiesController,
 		QuizController:           *quizController,
+		FeedbackController: 		*feedbackController,
+		RequestUserController: 		*requestUserController,
 	}
 
 	routesInit.RouteRegister(e)

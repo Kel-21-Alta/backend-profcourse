@@ -10,6 +10,31 @@ type mysqlModulsRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlModulsRepository) CalculateScoreCourse(ctx context.Context, domain *moduls.ScoreUserModul) (moduls.ScoreUserModul, error) {
+	var result int
+	err := m.Conn.Table("skor_user_moduls").Select("SUM(nilai) as result").Where("user_course_id = ?", domain.UserCourseId).Scan(&result).Error
+	if err != nil {
+		return moduls.ScoreUserModul{}, err
+
+	}
+
+	return moduls.ScoreUserModul{Nilai: result}, nil
+}
+
+func (m mysqlModulsRepository) CreateScoreModul(ctx context.Context, domain *moduls.ScoreUserModul) (moduls.ScoreUserModul, error) {
+	var req = FromDomainToScoreUserModul(domain)
+	var err error
+
+	if m.Conn.Model(&req).Where("modul_id = ?", req.ModulId).Where("user_course_id = ?", req.UserCourseId).Updates(&req).RowsAffected == 0 {
+		m.Conn.Create(&req)
+	}
+	if err != nil {
+		return moduls.ScoreUserModul{}, err
+	}
+
+	return req.ToDomain(), err
+}
+
 func (m mysqlModulsRepository) GetAllModulCourse(ctx context.Context, domain *moduls.Domain) ([]moduls.Domain, error) {
 	var recs []Moduls
 
@@ -89,5 +114,5 @@ func (m mysqlModulsRepository) CreateModul(ctx context.Context, domain *moduls.D
 }
 
 func NewMysqlRepository(conn *gorm.DB) moduls.Repository {
-	return mysqlModulsRepository{Conn: conn}
+	return &mysqlModulsRepository{Conn: conn}
 }

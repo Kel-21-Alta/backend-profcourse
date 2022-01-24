@@ -13,6 +13,9 @@ type Domain struct {
 	ModulId    string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+
+	Skor       int
+	ModulTitle string
 }
 
 type Usecase interface {
@@ -22,6 +25,7 @@ type Usecase interface {
 	DeleteQuiz(ctx context.Context, id string) (string, error)
 	GetAllQuizModul(ctx context.Context, domain *Domain) ([]Domain, error)
 	GetOneQuiz(ctx context.Context, domain *Domain) (Domain, error)
+	CalculateScoreQuiz(ctx context.Context, domain []Domain, userId string) (Domain, error)
 }
 
 type Repository interface {
