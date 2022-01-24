@@ -12,6 +12,10 @@ type RequestUserUsecase struct {
 	ContextTimeOut            time.Duration
 }
 
+func (r *RequestUserUsecase) DeleteRequestUset(ctx context.Context, domain *Domain) (Domain, error) {
+	return Domain{}, nil
+}
+
 func (r *RequestUserUsecase) GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error) {
 	if domain.Query.Sort == "" {
 		domain.Query.Sort = "asc"

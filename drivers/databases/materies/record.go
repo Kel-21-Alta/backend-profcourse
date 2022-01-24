@@ -21,7 +21,7 @@ type Materi struct {
 	ModulID   string `gorm:"not null;size:191"`
 	Order     int8   `gorm:"not null"`
 	Type      TYPE   `gorm:"not null"`
-	UrlMateri string `gorm:"not null"`
+	UrlMateri string
 
 	MateriUserComplate []MateriUserComplate `gorm:"foreignKey:MateriId;references:ID"`
 
