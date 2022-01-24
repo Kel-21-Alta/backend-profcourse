@@ -84,3 +84,21 @@ func (ctr *RequestUserController) GetAllRequestUser(c echo.Context) error {
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getAllRequestUser.FromListDomain(result))
 }
+
+func (ctr *RequestUserController) DeleteRequestUser(c echo.Context) error {
+
+	var domain request_users.Domain
+
+	domain.Id = c.Param("requestusers")
+
+	ctx := c.Request().Context()
+	_, err := ctr.RequestUserUsecase.DeleteRequestUset(ctx, &domain)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	type Message struct {
+		 Message string
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: "Request dengan id :" + domain.Id + " telah terhapus"} )
+}

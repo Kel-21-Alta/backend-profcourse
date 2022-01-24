@@ -13,7 +13,17 @@ type RequestUserUsecase struct {
 }
 
 func (r *RequestUserUsecase) DeleteRequestUset(ctx context.Context, domain *Domain) (Domain, error) {
-	return Domain{}, nil
+	if domain.Id == "" {
+		return Domain{}, controller.ID_REQUEST_USER
+	}
+
+	result, err := r.RequestUsercaseRepository.DeleteRequestUset(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
 }
 
 func (r *RequestUserUsecase) GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error) {

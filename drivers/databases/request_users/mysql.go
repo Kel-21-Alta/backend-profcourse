@@ -12,7 +12,12 @@ type RequestUserRepo struct {
 }
 
 func (r *RequestUserRepo) DeleteRequestUset(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
-	return request_users.Domain{}, nil
+	var rec RequestUser
+	err := r.Conn.Delete(&rec, "id = ?", domain.Id).Error
+	if err != nil {
+		return request_users.Domain{}, err
+	}
+	return rec.ToDomain(), nil
 }
 
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
