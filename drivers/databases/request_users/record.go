@@ -65,8 +65,8 @@ func FromDomain(domain *request_users.Domain) *RequestUser {
 			CreatedAt: domain.Category.CreatedAt,
 			UpdatedAt: domain.Category.UpdatedAt,
 		},
-		CreatedAt:         domain.CreatedAt,
-		UpdatedAt:         domain.UpdatedAt,
+		CreatedAt: domain.CreatedAt,
+		UpdatedAt: domain.UpdatedAt,
 	}
 }
 
@@ -85,4 +85,19 @@ func (r *RequestUser) ToDomain() request_users.Domain {
 		CreatedAt: r.CreatedAt,
 		UpdatedAt: r.UpdatedAt,
 	}
+}
+
+func ToListCategoryDomain(recs []CategoryRequest) []request_users.Category {
+	var listCategory []request_users.Category
+
+	for _, rec := range recs {
+		listCategory = append(listCategory, request_users.Category{
+			ID:        rec.ID,
+			Title:     rec.Title,
+			CreatedAt: rec.CreatedAt,
+			UpdatedAt: rec.UpdatedAt,
+		})
+	}
+
+	return listCategory
 }
