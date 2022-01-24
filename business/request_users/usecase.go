@@ -18,8 +18,16 @@ func (r *RequestUserUsecase) CreateRequest(ctx context.Context, domain *Domain) 
 	if domain.UserId == "" {
 		return Domain{}, controller.ID_EMPTY
 	}
-	// TODO: Pengecekan category ID
-	result, err := r.RequestUsercaseRepository.CreateRequest(ctx, domain)
+	if domain.CategoryID == "" {
+		return Domain{}, controller.CATEGORY_EMPTY
+	}
+	resultCreateReuqust , err := r.RequestUsercaseRepository.CreateRequest(ctx, domain)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	result, err := r.RequestUsercaseRepository.GetOneRequest(ctx, &resultCreateReuqust)
+
 	if err != nil {
 		return Domain{}, err
 	}

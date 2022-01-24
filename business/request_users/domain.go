@@ -28,4 +28,5 @@ type Usecase interface {
 
 type Repository interface {
 	CreateRequest(ctx context.Context, domain *Domain) (Domain, error)
+	GetOneRequest(ctx context.Context, domain *Domain) (Domain, error)
 }

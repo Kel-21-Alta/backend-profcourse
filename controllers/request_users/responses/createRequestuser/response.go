@@ -9,5 +9,5 @@ type CreateRequestUser struct {
 }
 
 func FromDomain(domain request_users.Domain) *CreateRequestUser {
-	return &CreateRequestUser{Topik: domain.Request, CategoryRequestId: domain.Category.ID, CategoryRequest: domain.Category.Title}
+	return &CreateRequestUser{Topik: domain.Request, CategoryRequestId: domain.CategoryID, CategoryRequest: domain.Category.Title}
 }

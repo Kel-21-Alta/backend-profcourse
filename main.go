@@ -162,8 +162,8 @@ func main() {
 		SpesializationController: *spesializationController,
 		MateriesController:       *materiesController,
 		QuizController:           *quizController,
-		FeedbackController: *feedbackController,
-		RequestUserController: *requestUserController,
+		FeedbackController: 		*feedbackController,
+		RequestUserController: 		*requestUserController,
 	}
 
 	routesInit.RouteRegister(e)

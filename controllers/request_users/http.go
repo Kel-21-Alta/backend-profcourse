@@ -6,6 +6,7 @@ import (
 	"profcourse/business/request_users"
 	controller "profcourse/controllers"
 	"profcourse/controllers/request_users/requests"
+	createrequestuser "profcourse/controllers/request_users/responses/createRequestuser"
 
 	"github.com/labstack/echo/v4"
 )
@@ -42,5 +43,5 @@ func (ctr *RequestUserController) CreateRequest(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 
-	return controller.NewResponseSuccess(c, http.StatusOK, result)
+	return controller.NewResponseSuccess(c, http.StatusOK, createrequestuser.FromDomain(result))
 }

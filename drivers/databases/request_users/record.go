@@ -11,7 +11,7 @@ import (
 type RequestUser struct {
 	ID                string `gorm:"primaryKey;unique;not null"`
 	UserId            string `gorm:"not null"`
-	CategoryRequestId string
+	CategoryRequestId string `gorm:"size:191"`
 	Request           string `gorm:"not null"`
 
 	CategoryRequest CategoryRequest `gorm:"foreignKey:CategoryRequestId"`
@@ -22,7 +22,7 @@ type RequestUser struct {
 }
 
 type CategoryRequest struct {
-	ID        string `gorm:"primaryKey;unique;not null`
+	ID        string `gorm:"primaryKey;unique;not null"`
 	Title     string `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -59,6 +59,12 @@ func FromDomain(domain *request_users.Domain) *RequestUser {
 		UserId:            domain.UserId,
 		CategoryRequestId: domain.CategoryID,
 		Request:           domain.Request,
+		CategoryRequest: CategoryRequest{
+			ID:        domain.Category.ID,
+			Title:     domain.Category.Title,
+			CreatedAt: domain.Category.CreatedAt,
+			UpdatedAt: domain.Category.UpdatedAt,
+		},
 		CreatedAt:         domain.CreatedAt,
 		UpdatedAt:         domain.UpdatedAt,
 	}
