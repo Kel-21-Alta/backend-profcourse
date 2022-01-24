@@ -1,6 +1,7 @@
 package requestusers
 
 import (
+	"github.com/labstack/echo/v4"
 	"net/http"
 	"profcourse/app/middlewares"
 	"profcourse/business/request_users"
@@ -10,7 +11,6 @@ import (
 	getAllCategoryRequestUser "profcourse/controllers/request_users/responses/getAllCategoryRequestUser"
 	"profcourse/controllers/request_users/responses/getAllRequestUser"
 	"strconv"
-	"github.com/labstack/echo/v4"
 )
 
 type RequestUserController struct {
