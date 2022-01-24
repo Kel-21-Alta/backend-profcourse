@@ -101,3 +101,26 @@ func ToListCategoryDomain(recs []CategoryRequest) []request_users.Category {
 
 	return listCategory
 }
+
+func ToListRequestUserDomain(recs []RequestUser) []request_users.Domain {
+	var list []request_users.Domain
+
+	for _, rec := range recs {
+		list = append(list, request_users.Domain{
+			Id:         rec.ID,
+			UserId:     rec.UserId,
+			CategoryID: rec.CategoryRequestId,
+			Request:    rec.Request,
+			Category:   request_users.Category{
+				ID:        rec.CategoryRequest.ID,
+				Title:     rec.CategoryRequest.Title,
+				CreatedAt: rec.CategoryRequest.CreatedAt,
+				UpdatedAt: rec.CategoryRequest.UpdatedAt,
+			},
+			CreatedAt:  rec.CreatedAt,
+			UpdatedAt:  rec.UpdatedAt,
+		})
+	}
+
+	return list
+}

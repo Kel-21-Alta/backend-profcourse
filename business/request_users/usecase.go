@@ -3,12 +3,37 @@ package request_users
 import (
 	"context"
 	controller "profcourse/controllers"
+	"profcourse/helpers"
 	"time"
 )
 
 type RequestUserUsecase struct {
 	RequestUsercaseRepository Repository
 	ContextTimeOut            time.Duration
+}
+
+func (r *RequestUserUsecase) GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error) {
+	if domain.Query.Sort == "" {
+		domain.Query.Sort = "asc"
+	}
+
+	if domain.Query.Sort == "dsc" {
+		domain.Query.Sort = "desc"
+	}
+
+	// menvalidasi sort by yang diizinkan
+	sortByAllow := []string{"asc", "desc"}
+	if !helpers.CheckItemInSlice(sortByAllow, domain.Query.Sort) {
+		return []Domain{}, controller.INVALID_PARAMS
+	}
+
+	result, err := r.RequestUsercaseRepository.GetAllRequestUser(ctx, domain)
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
 }
 
 func (r *RequestUserUsecase) GetAllCategoryRequest(ctx context.Context) ([]Category, error) {

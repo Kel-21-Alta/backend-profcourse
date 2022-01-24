@@ -20,8 +20,8 @@ type Domain struct {
 type Query struct {
 	Sort string
 	Search string
-	Limit string
-	Offset string
+	Limit int
+	Offset int
 }
 
 type Category struct {

@@ -9,6 +9,7 @@ import (
 	createrequestuser "profcourse/controllers/request_users/responses/createRequestuser"
 	getAllCategoryRequestUser "profcourse/controllers/request_users/responses/getAllCategoryRequestUser"
 	"profcourse/controllers/request_users/responses/getAllRequestUser"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -58,15 +59,15 @@ func (ctr *RequestUserController) GetAllCategoryRequest(c echo.Context) error {
 	return controller.NewResponseSuccess(c, http.StatusOK, getAllCategoryRequestUser.FromListDomain(result))
 }
 
-func (ctr *RequestUserController) GetAllRequestCategory(c echo.Context) error {
+func (ctr *RequestUserController) GetAllRequestUser(c echo.Context) error {
 
 	ctx := c.Request().Context()
 
 	var domain request_users.Domain
 
 	domain.Query.Sort = c.QueryParam("sort")
-	domain.Query.Offset = c.QueryParam("offset")
-	domain.Query.Limit = c.QueryParam("limit")
+	domain.Query.Offset, _ = strconv.Atoi(c.QueryParam("offset"))
+	domain.Query.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
 	domain.Query.Search = c.QueryParam("s")
 
 	result, err := ctr.RequestUserUsecase.GetAllRequestUser(ctx, &domain)
