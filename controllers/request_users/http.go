@@ -8,6 +8,7 @@ import (
 	"profcourse/controllers/request_users/requests"
 	createrequestuser "profcourse/controllers/request_users/responses/createRequestuser"
 	getAllCategoryRequestUser "profcourse/controllers/request_users/responses/getAllCategoryRequestUser"
+	"profcourse/controllers/request_users/responses/getAllRequestUser"
 
 	"github.com/labstack/echo/v4"
 )
@@ -74,5 +75,5 @@ func (ctr *RequestUserController) GetAllRequestCategory(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 
-	return controller.NewResponseSuccess(c, http.StatusOK, result)
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllRequestUser.FromListDomain(result))
 }
