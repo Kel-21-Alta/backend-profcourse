@@ -58,6 +58,29 @@ func (_m *Repository) GetAllCategoryRequest(ctx context.Context) ([]request_user
 	return r0, r1
 }
 
+// GetAllRequestUser provides a mock function with given fields: ctx, domain
+func (_m *Repository) GetAllRequestUser(ctx context.Context, domain *request_users.Domain) ([]request_users.Domain, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 []request_users.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, *request_users.Domain) []request_users.Domain); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]request_users.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *request_users.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetOneRequest provides a mock function with given fields: ctx, domain
 func (_m *Repository) GetOneRequest(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
 	ret := _m.Called(ctx, domain)
