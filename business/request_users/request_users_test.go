@@ -171,6 +171,11 @@ func setupGetAllRequestUser() {
 
 func TestRequestUserUsecase_GetAllRequestUser(t *testing.T) {
 	t.Run("Test case 1 | success", func(t *testing.T) {
-		
+		setupGetAllRequestUser()
+		mysqlRequestUser.On("GetAllRequestUser", mock.Anything, mock.Anything).Return(listRequest, nil).Once()
+
+		_, err := requestUserService.GetAllRequestUser(context.Background(), &request_users.Domain{UserId: "123"})
+
+		assert.Nil(t, err)
 	})
 }

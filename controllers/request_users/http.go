@@ -64,6 +64,13 @@ func (ctr *RequestUserController) GetAllRequestUser(c echo.Context) error {
 
 	var domain request_users.Domain
 
+	token, err := middlewares.ExtractClaims(c)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain.UserId = token.Userid
 	domain.Query.Sort = c.QueryParam("sort")
 	domain.Query.Offset, _ = strconv.Atoi(c.QueryParam("offset"))
 	domain.Query.Limit, _ = strconv.Atoi(c.QueryParam("limit"))

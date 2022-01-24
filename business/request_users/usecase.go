@@ -21,6 +21,10 @@ func (r *RequestUserUsecase) GetAllRequestUser(ctx context.Context, domain *Doma
 		domain.Query.Sort = "desc"
 	}
 
+	if domain.UserId == "" {
+		return []Domain{}, controller.ID_EMPTY
+	}
+
 	// menvalidasi sort by yang diizinkan
 	sortByAllow := []string{"asc", "desc"}
 	if !helpers.CheckItemInSlice(sortByAllow, domain.Query.Sort) {
