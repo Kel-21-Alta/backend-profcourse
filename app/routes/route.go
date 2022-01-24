@@ -6,6 +6,7 @@ import (
 	"profcourse/controllers/materies"
 	"profcourse/controllers/moduls"
 	"profcourse/controllers/quizs"
+	requestusers "profcourse/controllers/request_users"
 	"profcourse/controllers/spesializations"
 	"profcourse/controllers/summary"
 	"profcourse/controllers/users"
@@ -26,6 +27,7 @@ type ControllerList struct {
 	MateriesController       materies.MateriesController
 	QuizController           quizs.QuizsController
 	FeedbackController       feedback.FeedbackController
+	RequestUserController    requestusers.RequestUserController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -90,4 +92,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.POST("feedback", cl.FeedbackController.CreateFeedback)
 	withJWT.GET("feedback/course/:courseid", cl.FeedbackController.GetAllFeedbackByCourse)
 	withJWT.DELETE("feedback/:feedbackid", cl.FeedbackController.DeleteFeedback)
+
+	// Request User
+	withJWT.POST("requestusers", cl.RequestUserController.CreateRequest)
 }
