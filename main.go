@@ -108,7 +108,7 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.CORS())
 	e.Static("/public", "public")
-	e.Static("/pdf", "/")
+	e.Static("/pdf", "")
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))

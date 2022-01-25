@@ -4,6 +4,7 @@ on:
     branches:
       - development
       - createCICD
+      - feature/generate-report-user
   pull_request:
     branches:
       - development
