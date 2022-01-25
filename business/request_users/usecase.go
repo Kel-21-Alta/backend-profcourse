@@ -3,12 +3,120 @@ package request_users
 import (
 	"context"
 	controller "profcourse/controllers"
+	"profcourse/helpers"
 	"time"
 )
 
 type RequestUserUsecase struct {
 	RequestUsercaseRepository Repository
 	ContextTimeOut            time.Duration
+}
+
+func (r *RequestUserUsecase) AdminGetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error) {
+	if domain.Query.Sort == "" {
+		domain.Query.Sort = "asc"
+	}
+
+	if domain.Query.Sort == "dsc" {
+		domain.Query.Sort = "desc"
+	}
+
+	if domain.RoleUser != 1 {
+		return []Domain{}, controller.FORBIDDIN_USER
+	}
+
+	// menvalidasi sort by yang diizinkan
+	sortByAllow := []string{"asc", "desc"}
+	if !helpers.CheckItemInSlice(sortByAllow, domain.Query.Sort) {
+		return []Domain{}, controller.INVALID_PARAMS
+	}
+
+	result, err := r.RequestUsercaseRepository.AdminGetAllRequestUser(ctx, domain)
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
+}
+
+func (r *RequestUserUsecase) GetOneRequestUser(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.Id == "" {
+		return Domain{}, controller.ID_REQUEST_USER
+	}
+	result, err := r.RequestUsercaseRepository.GetOneRequestUser(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
+func (r *RequestUserUsecase) UpdateRequestUser(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.Id == "" {
+		return Domain{}, controller.ID_REQUEST_USER
+	}
+	if domain.Request == "" {
+		return Domain{}, controller.REQUEST_EMPTY
+	}
+	if domain.UserId == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	if domain.CategoryID == "" {
+		return Domain{}, controller.CATEGORY_EMPTY
+	}
+
+	result, err := r.RequestUsercaseRepository.UpdateRequestUser(ctx, domain)
+	if err != nil {
+		return Domain{}, err
+	}
+	return result, nil
+}
+
+func (r *RequestUserUsecase) DeleteRequestUser(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.Id == "" {
+		return Domain{}, controller.ID_REQUEST_USER
+	}
+
+	result, err := r.RequestUsercaseRepository.DeleteRequestUser(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
+func (r *RequestUserUsecase) GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error) {
+	if domain.Query.Sort == "" {
+		domain.Query.Sort = "asc"
+	}
+
+	if domain.Query.Sort == "dsc" {
+		domain.Query.Sort = "desc"
+	}
+
+	if domain.UserId == "" {
+		return []Domain{}, controller.ID_EMPTY
+	}
+
+	// menvalidasi sort by yang diizinkan
+	sortByAllow := []string{"asc", "desc"}
+	if !helpers.CheckItemInSlice(sortByAllow, domain.Query.Sort) {
+		return []Domain{}, controller.INVALID_PARAMS
+	}
+	var err error
+	var result []Domain
+
+	result, err = r.RequestUsercaseRepository.GetAllRequestUser(ctx, domain)
+
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
 }
 
 func (r *RequestUserUsecase) GetAllCategoryRequest(ctx context.Context) ([]Category, error) {

@@ -176,6 +176,10 @@ func (u MateriesUsecase) CreateMateri(ctx context.Context, domain *Domain) (Doma
 
 	resultValidasi, err := u.ValidasiMateri(ctx, domain)
 
+	if err != nil {
+		return Domain{}, err
+	}
+
 	materi, err := u.MateriesRepository.CreateMateri(ctx, resultValidasi)
 
 	if err != nil {

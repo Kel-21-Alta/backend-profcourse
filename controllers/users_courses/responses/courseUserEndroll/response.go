@@ -13,7 +13,7 @@ type CourseUserEndrollResponse struct {
 	UserID      string `json:"user_id"`
 	Name        string `json:"name"`
 	CountCourse int    `json:"count_course"`
-	Courses     []Courses
+	Courses     []Courses `json:"courses"`
 }
 
 func FromDomain(domain users_courses.User) *CourseUserEndrollResponse {
