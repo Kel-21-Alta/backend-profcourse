@@ -115,9 +115,10 @@ func main() {
 	timeout := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	smtpRepository := _driversFectory.NewSmtpRepository(congfigSmtp)
+	pdfGenerater := _driversFectory.NewGeneratePDFRepostUser()
 
 	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
-	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository, configJwt)
+	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository,pdfGenerater, configJwt)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	mysqlCourseRepository := _driversFectory.NewMysqlCourseRepository(conn)

@@ -22,6 +22,7 @@ import (
 	"profcourse/drivers/databases/spesialization"
 	"profcourse/drivers/databases/users"
 	"profcourse/drivers/databases/users_courses"
+	"profcourse/drivers/pdf"
 	"profcourse/drivers/thirdparties/mail"
 	"profcourse/drivers/uploadLocals"
 )
@@ -68,4 +69,8 @@ func NewMysqlFeedbackRepository(conn *gorm.DB) _feedbackUsecase.Repository {
 
 func NewRequestUserRepository(conn *gorm.DB) _requestUsersUsecase.Repository {
 	return requestusers.NewMysqlRepository(conn)
+}
+
+func NewGeneratePDFRepostUser() _userUsecase.PDF {
+	return pdf.NewGeneratePDF()
 }

@@ -92,3 +92,7 @@ type Repository interface {
 	GetAllUser(ctx context.Context, domain *Domain) ([]Domain, error)
 	GetCourseUser(ctx context.Context, domain *Domain) ([]Course, error)
 }
+
+type PDF interface {
+	GeneratePDFDataReport(user Domain, course []Course) (string, error)
+}
