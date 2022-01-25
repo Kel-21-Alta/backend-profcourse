@@ -12,6 +12,20 @@ type RequestUserUsecase struct {
 	ContextTimeOut            time.Duration
 }
 
+
+func (r *RequestUserUsecase) GetOneRequestUser(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.Id == "" {
+		return Domain{}, controller.ID_REQUEST_USER
+	}
+	result, err := r.RequestUsercaseRepository.GetOneRequestUser(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+
 func (r *RequestUserUsecase) UpdateRequestUser(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.Id == "" {
 		return Domain{}, controller.ID_REQUEST_USER

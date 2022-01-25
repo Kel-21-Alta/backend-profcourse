@@ -10,6 +10,8 @@ import (
 	createrequestuser "profcourse/controllers/request_users/responses/createRequestuser"
 	getAllCategoryRequestUser "profcourse/controllers/request_users/responses/getAllCategoryRequestUser"
 	"profcourse/controllers/request_users/responses/getAllRequestUser"
+	"profcourse/controllers/request_users/responses/getOneRequestUser"
+	"profcourse/controllers/request_users/responses/updateRequest"
 	"strconv"
 )
 
@@ -92,7 +94,7 @@ func (ctr *RequestUserController) DeleteRequestUser(c echo.Context) error {
 	domain.Id = c.Param("requestusers")
 
 	ctx := c.Request().Context()
-	_, err := ctr.RequestUserUsecase.DeleteRequestUset(ctx, &domain)
+	_, err := ctr.RequestUserUsecase.DeleteRequestUser(ctx, &domain)
 	if err != nil {
 		return controller.NewResponseError(c, err)
 	}
@@ -101,4 +103,46 @@ func (ctr *RequestUserController) DeleteRequestUser(c echo.Context) error {
 		 Message string
 	}
 	return controller.NewResponseSuccess(c, http.StatusOK, Message{Message: "Request dengan id :" + domain.Id + " telah terhapus"} )
+}
+
+func (ctr *RequestUserController) UpdateRequestUser(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	var req requests.UpdateRequestUser
+
+	if err := c.Bind(&req); err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	var domain = req.ToDomain()
+
+	token, err := middlewares.ExtractClaims(c)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain.Id = c.Param("requestusers")
+	domain.UserId = token.Userid
+
+	result, err := ctr.RequestUserUsecase.UpdateRequestUser(ctx, &domain)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, updateRequest.FromDomain(result))
+}
+
+func (ctr *RequestUserController) GetOneRequestUser(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	var domain = request_users.Domain{Id: c.Param("requestusers")}
+
+	result, err := ctr.RequestUserUsecase.GetOneRequestUser(ctx, &domain)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getOneRequestUser.FromDomain(result))
 }

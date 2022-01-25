@@ -37,6 +37,7 @@ type Usecase interface {
 	GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error)
 	DeleteRequestUser(ctx context.Context, domain *Domain) (Domain, error)
 	UpdateRequestUser(ctx context.Context, domain *Domain) (Domain, error)
+	GetOneRequestUser(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
@@ -46,4 +47,5 @@ type Repository interface {
 	GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error)
 	DeleteRequestUser(ctx context.Context, domain *Domain) (Domain, error)
 	UpdateRequestUser(ctx context.Context, domain *Domain) (Domain, error)
+	GetOneRequestUser(ctx context.Context, domain *Domain) (Domain, error)
 }
