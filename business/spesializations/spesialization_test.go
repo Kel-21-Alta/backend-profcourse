@@ -18,6 +18,7 @@ var spesializationService spesializations.Usecase
 var spesializationDomain spesializations.Domain
 var listSpesializationDomain []spesializations.Domain
 var spesializationCourse spesializations.Course
+var summary spesializations.Summary
 
 func setUpGetOneSpesialization() {
 	spesializationService = spesializations.NewSpesializationUsecase(&mysqlSpesializationRepository, time.Hour*1)
@@ -152,5 +153,27 @@ func TestSpesializationUsecase_GetAllSpesializations(t *testing.T) {
 		result, err := spesializationService.GetAllSpesializations(context.Background(), &spesializations.Domain{})
 		assert.Nil(t, err)
 		assert.Equal(t, 2, len(result))
+	})
+}
+
+func setUpGetCountSpesialization() {
+	spesializationService = spesializations.NewSpesializationUsecase(&mysqlSpesializationRepository, time.Hour*1)
+	summary = spesializations.Summary{CountSpesialization: 2}
+}
+
+
+func TestSpesializationUsecase_GetCountSpesializations(t *testing.T) {
+	t.Run("test case 1 | success mendapatkan data", func(t *testing.T) {
+		setUpGetCountSpesialization()
+		mysqlSpesializationRepository.On("GetCountSpesializations", mock.Anything).Return(summary, nil).Once()
+		result, err := spesializationService.GetCountSpesializations(context.Background())
+		assert.Nil(t, err)
+		assert.Equal(t, summary.CountSpesialization, result.CountSpesialization)
+	})
+	t.Run("test case 2 | err db", func(t *testing.T) {
+		setUpGetCountSpesialization()
+		mysqlSpesializationRepository.On("GetCountSpesializations", mock.Anything).Return(summary, errors.New("err")).Once()
+		_, err := spesializationService.GetCountSpesializations(context.Background())
+		assert.NotNil(t, err)
 	})
 }
