@@ -326,3 +326,53 @@ func TestRequestUserUsecase_UpdateRequestUser(t *testing.T) {
 		assert.Equal(t, controller.REQUEST_EMPTY, err)
 	})
 }
+
+func setupGetOneRequest() {
+	requestUserService = request_users.NewRequestUserUsecase(&mysqlRequestUser, time.Hour*1)
+
+	requestUserDomain = request_users.Domain{
+		Id:         "123",
+		UserId:     "234",
+		CategoryID: "345",
+		Request:    "Hai",
+		Category: request_users.Category{
+			ID:        "234",
+			Title:     "Online Course",
+			CreatedAt: time.Time{},
+			UpdatedAt: time.Time{},
+		},
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+	}
+}
+
+func TestRequestUserUsecase_GetOneRequestUser(t *testing.T) {
+	t.Run("test case 1 | success get one request user", func(t *testing.T) {
+		setupGetOneRequest()
+
+		mysqlRequestUser.On("GetOneRequestUser", mock.Anything, mock.Anything).Return(requestUserDomain, nil).Once()
+		result, err := requestUserService.GetOneRequestUser(context.Background(), &request_users.Domain{
+			Id: "123",
+		})
+		assert.Nil(t, err)
+		assert.Equal(t, requestUserDomain.Id, result.Id)
+	})
+	t.Run("test case 2 | err db get one request user", func(t *testing.T) {
+		setupGetOneRequest()
+
+		mysqlRequestUser.On("GetOneRequestUser", mock.Anything, mock.Anything).Return(requestUserDomain, errors.New("err db")).Once()
+		_, err := requestUserService.GetOneRequestUser(context.Background(), &request_users.Domain{
+			Id: "123",
+		})
+		assert.NotNil(t, err)
+	})
+	t.Run("test case 2 | err id empty get one request user", func(t *testing.T) {
+		setupGetOneRequest()
+
+		_, err := requestUserService.GetOneRequestUser(context.Background(), &request_users.Domain{
+			Id: "",
+		})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_REQUEST_USER, err)
+	})
+}

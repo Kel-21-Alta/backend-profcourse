@@ -13,7 +13,7 @@ type RequestUserRepo struct {
 
 func (r *RequestUserRepo) GetOneRequestUser(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
 	var rec RequestUser
-	err := r.Conn.Preload("CategoryRequest").First(&rec).Error
+	err := r.Conn.Preload("CategoryRequest").First(&rec, "id = ?", domain.Id).Error
 
 	if err != nil {
 		return request_users.Domain{}, err
