@@ -16,7 +16,7 @@ func buildHeading(m pdf.Maroto, user users.Domain) {
 	m.RegisterHeader(func() {
 		m.Row(30, func() {
 			m.Col(12, func() {
-				err := m.FileImage("public/img/logo.png", props.Rect{
+				err := m.FileImage("./public/img/logo.png", props.Rect{
 					Percent: 75,
 					Center:  true,
 				})
