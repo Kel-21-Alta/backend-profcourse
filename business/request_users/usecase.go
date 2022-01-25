@@ -12,7 +12,28 @@ type RequestUserUsecase struct {
 	ContextTimeOut            time.Duration
 }
 
-func (r *RequestUserUsecase) DeleteRequestUset(ctx context.Context, domain *Domain) (Domain, error) {
+func (r *RequestUserUsecase) UpdateRequestUser(ctx context.Context, domain *Domain) (Domain, error) {
+	if domain.Id == "" {
+		return Domain{}, controller.ID_REQUEST_USER
+	}
+	if domain.Request == "" {
+		return Domain{}, controller.REQUEST_EMPTY
+	}
+	if domain.UserId == "" {
+		return Domain{}, controller.ID_EMPTY
+	}
+	if domain.CategoryID == "" {
+		return Domain{}, controller.CATEGORY_EMPTY
+	}
+
+	result, err := r.RequestUsercaseRepository.UpdateRequestUser(ctx, domain)
+	if err != nil {
+		return Domain{}, err
+	}
+	return result, nil
+}
+
+func (r *RequestUserUsecase) DeleteRequestUser(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.Id == "" {
 		return Domain{}, controller.ID_REQUEST_USER
 	}
