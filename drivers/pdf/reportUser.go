@@ -136,7 +136,7 @@ func (g *GeneratePDF)GeneratePDFDataReport(user users.Domain, course []users.Cou
 	if err != nil {
 		return "", err
 	}
-	return path, nil
+	return "/pdf/" + path, nil
 }
 
 
