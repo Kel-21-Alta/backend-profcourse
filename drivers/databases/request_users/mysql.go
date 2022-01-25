@@ -11,7 +11,7 @@ type RequestUserRepo struct {
 	Conn *gorm.DB
 }
 
-func (r *RequestUserRepo) DeleteRequestUset(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
+func (r *RequestUserRepo) DeleteRequestUser(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
 	var rec RequestUser
 	err := r.Conn.Delete(&rec, "id = ?", domain.Id).Error
 	if err != nil {
@@ -65,7 +65,6 @@ func (r *RequestUserRepo) GetOneRequest(ctx context.Context, domain *request_use
 	}
 	return rec.ToDomain(), nil
 }
-
 
 func (r *RequestUserRepo) CreateRequest(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
 

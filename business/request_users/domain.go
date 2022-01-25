@@ -18,9 +18,9 @@ type Domain struct {
 }
 
 type Query struct {
-	Sort string
+	Sort   string
 	Search string
-	Limit int
+	Limit  int
 	Offset int
 }
 
@@ -43,5 +43,5 @@ type Repository interface {
 	GetOneRequest(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllCategoryRequest(ctx context.Context) ([]Category, error)
 	GetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error)
-	DeleteRequestUset(ctx context.Context, domain *Domain) (Domain, error)
+	DeleteRequestUser(ctx context.Context, domain *Domain) (Domain, error)
 }

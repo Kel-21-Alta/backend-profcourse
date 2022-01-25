@@ -36,7 +36,7 @@ func (_m *Repository) CreateRequest(ctx context.Context, domain *request_users.D
 }
 
 // DeleteRequestUset provides a mock function with given fields: ctx, domain
-func (_m *Repository) DeleteRequestUset(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
+func (_m *Repository) DeleteRequestUser(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
 	ret := _m.Called(ctx, domain)
 
 	var r0 request_users.Domain
