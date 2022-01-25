@@ -108,6 +108,7 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.CORS())
 	e.Static("/public", "public")
+	e.Static("/pdf", "/")
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
@@ -118,7 +119,7 @@ func main() {
 	pdfGenerater := _driversFectory.NewGeneratePDFRepostUser()
 
 	mysqlUserRepository := _driversFectory.NewMysqlUserRepository(conn)
-	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository,pdfGenerater, configJwt)
+	userUsecase := _userUsecase.NewUserUsecase(mysqlUserRepository, timeout, smtpRepository, pdfGenerater, configJwt)
 	userCtrl := _userController.NewUserController(userUsecase)
 
 	mysqlCourseRepository := _driversFectory.NewMysqlCourseRepository(conn)
@@ -166,8 +167,8 @@ func main() {
 		SpesializationController: *spesializationController,
 		MateriesController:       *materiesController,
 		QuizController:           *quizController,
-		FeedbackController: 		*feedbackController,
-		RequestUserController: 		*requestUserController,
+		FeedbackController:       *feedbackController,
+		RequestUserController:    *requestUserController,
 	}
 
 	routesInit.RouteRegister(e)
