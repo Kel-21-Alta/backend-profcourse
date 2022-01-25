@@ -4,10 +4,38 @@ import (
 	"context"
 	"gorm.io/gorm"
 	"profcourse/business/users"
+	"profcourse/drivers/databases/users_courses"
 )
 
 type mysqlUserRepository struct {
 	Conn *gorm.DB
+}
+
+func (m mysqlUserRepository) GetCourseUser(ctx context.Context, domain *users.Domain) ([]users.Course, error) {
+	var rec []users_courses.UsersCourses
+	// Ganti Querynya
+
+	err := m.Conn.Where("user_id = ?", domain.ID).Find(&rec).Order("progress desc").Error
+
+	if err !=nil {
+		return []users.Course{}, err
+	}
+	
+	var list = []users.Course{}
+
+	for _, course := range rec {
+		list = append(list, users.Course{
+			ID:          course.ID,
+			UserId:      course.UserId,
+			CourseId:    course.CourseId,
+			Progres:     course.Progress,
+			Score:       course.Skor,
+			CourseTitle: "",
+		})
+
+	}
+	
+	return list,nil
 }
 
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
