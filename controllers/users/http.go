@@ -10,9 +10,11 @@ import (
 	"profcourse/controllers/users/reseponses/currentUser"
 	"profcourse/controllers/users/reseponses/deleteUser"
 	"profcourse/controllers/users/reseponses/forgetPassword"
+	"profcourse/controllers/users/reseponses/getAllUser"
 	"profcourse/controllers/users/reseponses/login"
 	"profcourse/controllers/users/reseponses/updateUser"
 	"profcourse/controllers/users/reseponses/userCreated"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -23,6 +25,31 @@ type UserController struct {
 
 func NewUserController(uc users.Usecase) *UserController {
 	return &UserController{userUsecase: uc}
+}
+
+func (ctrl UserController) GetAllUser(c echo.Context) error {
+	var domain users.Domain
+
+	token, err := middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain.Role = token.Role
+	domain.Query.Search = c.QueryParam("s")
+	domain.Query.Sort = c.QueryParam("sort")
+	domain.Query.SortBy = c.QueryParam("sortby")
+	domain.Query.Offset, _ = strconv.Atoi(c.QueryParam("offset"))
+	domain.Query.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
+
+	ctx := c.Request().Context()
+	result, err := ctrl.userUsecase.GetAllUser(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllUser.FromListDomain(result))
 }
 
 func (ctrl UserController) DeleteUser(c echo.Context) error {

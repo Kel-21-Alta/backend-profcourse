@@ -56,6 +56,29 @@ func (_m *Repository) DeleteUser(ctx context.Context, domain users.Domain) (user
 	return r0, r1
 }
 
+// GetAllUser provides a mock function with given fields: ctx, domain
+func (_m *Repository) GetAllUser(ctx context.Context, domain *users.Domain) ([]users.Domain, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 []users.Domain
+	if rf, ok := ret.Get(0).(func(context.Context, *users.Domain) []users.Domain); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]users.Domain)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *users.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetCountUser provides a mock function with given fields: ctx
 func (_m *Repository) GetCountUser(ctx context.Context) (*users.Summary, error) {
 	ret := _m.Called(ctx)

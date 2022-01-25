@@ -24,10 +24,23 @@ type Domain struct {
 	IdUser  string
 	Message string
 
+	TakenCourse int
+	Point       int
+
+	Query Query
+
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	Token       string
 	PasswordNew string
+}
+
+type Query struct {
+	Sort string
+	SortBy string
+	Limit int
+	Search string
+	Offset int
 }
 
 type Summary struct {
@@ -45,6 +58,7 @@ type Usecase interface {
 	GetCountUser(ctx context.Context) (*Summary, error)
 	UpdateUser(ctx context.Context, domain Domain) (Domain, error)
 	UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllUser(ctx context.Context, domain *Domain) ([]Domain, error)
 }
 
 type Repository interface {
@@ -56,4 +70,5 @@ type Repository interface {
 	UpdateUser(ctx context.Context, domain Domain) (Domain, error)
 	GetCountUser(ctx context.Context) (*Summary, error)
 	UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error)
+	GetAllUser(ctx context.Context, domain *Domain) ([]Domain, error)
 }
