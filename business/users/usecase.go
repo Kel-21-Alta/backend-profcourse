@@ -27,7 +27,7 @@ type userUsecase struct {
 
 func buildHeading(m pdf.Maroto, user Domain) {
 	m.RegisterHeader(func() {
-		m.Row(50, func() {
+		m.Row(30, func() {
 			m.Col(12, func() {
 				err := m.FileImage("public/img/logo.png", props.Rect{
 					Percent: 75,
@@ -92,7 +92,7 @@ func buildCourseList(m pdf.Maroto, course []Course) {
 	contents := [][]string{}
 
 	for _, u := range course {
-		contents = append(contents, []string{u.CourseId, strconv.Itoa(u.Progres), strconv.Itoa(u.Score)})
+		contents = append(contents, []string{u.CourseTitle, strconv.Itoa(u.Progres), strconv.Itoa(u.Score)})
 	}
 
 	lightPurpleColor := getLightPurpleColor()
@@ -116,11 +116,11 @@ func buildCourseList(m pdf.Maroto, course []Course) {
 
 	m.TableList(tableHeadings, contents, props.TableList{
 		HeaderProp: props.TableListContent{
-			Size:      9,
+			Size:      11,
 			GridSizes: []uint{7, 3, 2},
 		},
 		ContentProp: props.TableListContent{
-			Size:      8,
+			Size:      10,
 			GridSizes: []uint{7, 3, 2},
 		},
 		Align:                consts.Left,
@@ -150,6 +150,21 @@ func getDarkPurpleColor() color.Color {
 		Blue:  99,
 	}
 }
+func GeneratePDFDataReport(user Domain, course []Course) (string, error) {
+	m := pdf.NewMaroto(consts.Portrait, consts.A4)
+	m.SetPageMargins(20, 10, 20)
+
+	buildHeading(m, user)
+	buildCourseList(m, course)
+
+	var path = "public/" + user.ID + "-" + user.Email + ".pdf"
+
+	err := m.OutputFileAndClose(path)
+	if err != nil {
+		return "", err
+	}
+	return path, nil
+}
 
 func (u *userUsecase) GenerateReportUser(ctx context.Context, domain *Domain) (Domain, error) {
 
@@ -161,18 +176,13 @@ func (u *userUsecase) GenerateReportUser(ctx context.Context, domain *Domain) (D
 
 	course, err := u.UserRepository.GetCourseUser(ctx, domain)
 
-	m := pdf.NewMaroto(consts.Portrait, consts.A4)
-	m.SetPageMargins(20, 10, 20)
+	result, err := GeneratePDFDataReport(user, course)
 
-	buildHeading(m, user)
-	buildCourseList(m, course)
-
-	err = m.OutputFileAndClose("public/div_rhino_fruit.pdf")
 	if err != nil {
 		return Domain{}, err
 	}
 
-	return Domain{ImgProfile: "public/div_rhino_fruit.pdf"}, nil
+	return Domain{FileReport: result}, nil
 }
 
 func (u *userUsecase) GetAllUser(ctx context.Context, domain *Domain) ([]Domain, error) {

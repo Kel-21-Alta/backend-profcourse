@@ -4,7 +4,6 @@ import (
 	"context"
 	"gorm.io/gorm"
 	"profcourse/business/users"
-	"profcourse/drivers/databases/users_courses"
 )
 
 type mysqlUserRepository struct {
@@ -12,10 +11,18 @@ type mysqlUserRepository struct {
 }
 
 func (m mysqlUserRepository) GetCourseUser(ctx context.Context, domain *users.Domain) ([]users.Course, error) {
-	var rec []users_courses.UsersCourses
-	// Ganti Querynya
+	type Result struct {
+		CourseName string
+		Progress int
+		Skor int
+		CourseId string
+		UserId string
+		ID string
+	}
 
-	err := m.Conn.Where("user_id = ?", domain.ID).Find(&rec).Order("progress desc").Error
+	var rec []Result
+
+	err := m.Conn.Table("users_courses").Select("users_courses.id as id, progress, skor, course_id, user_id, courses.title as CourseName").Joins("INNER JOIN courses ON users_courses.course_id = courses.id").Scan(&rec).Error
 
 	if err !=nil {
 		return []users.Course{}, err
@@ -30,7 +37,7 @@ func (m mysqlUserRepository) GetCourseUser(ctx context.Context, domain *users.Do
 			CourseId:    course.CourseId,
 			Progres:     course.Progress,
 			Score:       course.Skor,
-			CourseTitle: "",
+			CourseTitle: course.CourseName,
 		})
 
 	}

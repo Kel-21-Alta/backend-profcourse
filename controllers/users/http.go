@@ -39,7 +39,11 @@ func (ctrl UserController) GenerateReportUser(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 
-	return controller.NewResponseSuccess(c, http.StatusOK, result)
+	type Response struct {
+		FileReport string
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, Response{FileReport: result.FileReport})
 }
 
 func (ctrl UserController) GetAllUser(c echo.Context) error {
