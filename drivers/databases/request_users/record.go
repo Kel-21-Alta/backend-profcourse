@@ -2,6 +2,7 @@ package requestusers
 
 import (
 	"profcourse/business/request_users"
+	"profcourse/drivers/databases/users"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -10,11 +11,12 @@ import (
 
 type RequestUser struct {
 	ID                string `gorm:"primaryKey;unique;not null"`
-	UserId            string `gorm:"not null"`
+	UserId            string `gorm:"not null;size:191"`
 	CategoryRequestId string `gorm:"size:191"`
 	Request           string `gorm:"not null"`
 
 	CategoryRequest CategoryRequest `gorm:"foreignKey:CategoryRequestId"`
+	User users.User `gorm:"foreignKey:UserId"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -82,6 +84,10 @@ func (r *RequestUser) ToDomain() request_users.Domain {
 			CreatedAt: r.CategoryRequest.CreatedAt,
 			UpdatedAt: r.CategoryRequest.UpdatedAt,
 		},
+		User: request_users.User{
+			Name: r.User.Name,
+			Id:   r.User.ID,
+		},
 		CreatedAt: r.CreatedAt,
 		UpdatedAt: r.UpdatedAt,
 	}
@@ -116,6 +122,10 @@ func ToListRequestUserDomain(recs []RequestUser) []request_users.Domain {
 				Title:     rec.CategoryRequest.Title,
 				CreatedAt: rec.CategoryRequest.CreatedAt,
 				UpdatedAt: rec.CategoryRequest.UpdatedAt,
+			},
+			User: request_users.User{
+				Name: rec.User.Name,
+				Id:   rec.User.ID,
 			},
 			CreatedAt:  rec.CreatedAt,
 			UpdatedAt:  rec.UpdatedAt,

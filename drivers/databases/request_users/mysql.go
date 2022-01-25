@@ -19,7 +19,7 @@ func (r *RequestUserRepo) GetOneRequestUser(ctx context.Context, domain *request
 		return request_users.Domain{}, err
 	}
 
-	return  rec.ToDomain(), nil
+	return rec.ToDomain(), nil
 }
 
 func (r *RequestUserRepo) UpdateRequestUser(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
@@ -68,6 +68,18 @@ func (r *RequestUserRepo) GetAllRequestUser(ctx context.Context, domain *request
 	var recs []RequestUser
 	var err error
 	err = r.Conn.Preload("CategoryRequest").Scopes(Paginate(*domain)).Order("created_at "+domain.Query.Sort).Where("user_id = ?", domain.UserId).Where("request Like ?", "%"+domain.Query.Search+"%").Find(&recs).Error
+
+	if err != nil {
+		return []request_users.Domain{}, err
+	}
+
+	return ToListRequestUserDomain(recs), nil
+}
+
+func (r *RequestUserRepo) AdminGetAllRequestUser(ctx context.Context, domain *request_users.Domain) ([]request_users.Domain, error) {
+	var recs []RequestUser
+	var err error
+	err = r.Conn.Preload("CategoryRequest").Preload("User").Scopes(Paginate(*domain)).Order("created_at "+domain.Query.Sort).Where("request Like ?", "%"+domain.Query.Search+"%").Find(&recs).Error
 
 	if err != nil {
 		return []request_users.Domain{}, err

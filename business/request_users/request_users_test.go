@@ -180,6 +180,17 @@ func TestRequestUserUsecase_GetAllRequestUser(t *testing.T) {
 	})
 }
 
+func TestRequestUserUsecase_AdminGetAllRequestUser(t *testing.T) {
+	t.Run("Test case 1 | success", func(t *testing.T) {
+		setupGetAllRequestUser()
+		mysqlRequestUser.On("AdminGetAllRequestUser", mock.Anything, mock.Anything).Return(listRequest, nil).Once()
+
+		_, err := requestUserService.AdminGetAllRequestUser(context.Background(), &request_users.Domain{RoleUser: 1, UserId: "123"})
+
+		assert.Nil(t, err)
+	})
+}
+
 func setDeleteRequestUser() {
 	requestUserService = request_users.NewRequestUserUsecase(&mysqlRequestUser, time.Hour*1)
 
