@@ -11,6 +11,38 @@ type RequestUserRepo struct {
 	Conn *gorm.DB
 }
 
+func (r *RequestUserRepo) GetOneRequestUser(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
+	var rec RequestUser
+	err := r.Conn.Preload("CategoryRequest").First(&rec, "id = ?", domain.Id).Error
+
+	if err != nil {
+		return request_users.Domain{}, err
+	}
+
+	return  rec.ToDomain(), nil
+}
+
+func (r *RequestUserRepo) UpdateRequestUser(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
+	var rec RequestUser
+	var err error
+
+	err = r.Conn.Where("user_id = ?", domain.UserId).First(&rec, "id = ?", domain.Id).Error
+	if err != nil {
+		return request_users.Domain{}, err
+	}
+
+	rec.Request = domain.Request
+	rec.CategoryRequestId = domain.CategoryID
+
+	err = r.Conn.Save(&rec).Error
+
+	if err != nil {
+		return request_users.Domain{}, err
+	}
+
+	return rec.ToDomain(), nil
+}
+
 func (r *RequestUserRepo) DeleteRequestUser(ctx context.Context, domain *request_users.Domain) (request_users.Domain, error) {
 	var rec RequestUser
 	err := r.Conn.Delete(&rec, "id = ?", domain.Id).Error
