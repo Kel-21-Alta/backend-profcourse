@@ -27,6 +27,25 @@ func NewUserController(uc users.Usecase) *UserController {
 	return &UserController{userUsecase: uc}
 }
 
+func (ctrl UserController) GenerateReportUser(c echo.Context) error {
+
+	var domain users.Domain
+
+	domain.ID = c.Param("userid")
+
+	ctx := c.Request().Context()
+	result, err := ctrl.userUsecase.GenerateReportUser(ctx, &domain)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	type Response struct {
+		FileReport string
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, Response{FileReport: result.FileReport})
+}
+
 func (ctrl UserController) GetAllUser(c echo.Context) error {
 	var domain users.Domain
 

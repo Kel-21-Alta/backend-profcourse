@@ -17,6 +17,31 @@ type userUsecase struct {
 	UserRepository Repository
 	SmtpRepository send_email.Repository
 	JWTConfig      middlewares.ConfigJwt
+	PDFGenerater PDF
+}
+
+
+func (u *userUsecase) GenerateReportUser(ctx context.Context, domain *Domain) (Domain, error) {
+
+	user, err := u.UserRepository.GetUserById(ctx, domain.ID)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	course, err := u.UserRepository.GetCourseUser(ctx, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	result, err := u.PDFGenerater.GeneratePDFDataReport(user, course)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return Domain{FileReport: result}, nil
 }
 
 func (u *userUsecase) GetAllUser(ctx context.Context, domain *Domain) ([]Domain, error) {
@@ -373,11 +398,12 @@ func (u *userUsecase) CreateUser(ctx context.Context, domain Domain) (Domain, er
 	return resultDomain, nil
 }
 
-func NewUserUsecase(r Repository, timeout time.Duration, smtpRepo send_email.Repository, configJwt middlewares.ConfigJwt) Usecase {
+func NewUserUsecase(r Repository, timeout time.Duration, smtpRepo send_email.Repository, pdf PDF, configJwt middlewares.ConfigJwt) Usecase {
 	return &userUsecase{
 		ContextTimeout: timeout,
 		UserRepository: r,
 		SmtpRepository: smtpRepo,
 		JWTConfig:      configJwt,
+		PDFGenerater: pdf,
 	}
 }

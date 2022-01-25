@@ -10,6 +10,41 @@ type mysqlUserRepository struct {
 	Conn *gorm.DB
 }
 
+func (m mysqlUserRepository) GetCourseUser(ctx context.Context, domain *users.Domain) ([]users.Course, error) {
+	type Result struct {
+		CourseName string
+		Progress int
+		Skor int
+		CourseId string
+		UserId string
+		ID string
+	}
+
+	var rec []Result
+
+	err := m.Conn.Table("users_courses").Select("users_courses.id as id, progress, skor, course_id, user_id, courses.title as CourseName").Joins("INNER JOIN courses ON users_courses.course_id = courses.id").Scan(&rec).Error
+
+	if err !=nil {
+		return []users.Course{}, err
+	}
+	
+	var list = []users.Course{}
+
+	for _, course := range rec {
+		list = append(list, users.Course{
+			ID:          course.ID,
+			UserId:      course.UserId,
+			CourseId:    course.CourseId,
+			Progres:     course.Progress,
+			Score:       course.Skor,
+			CourseTitle: course.CourseName,
+		})
+
+	}
+	
+	return list,nil
+}
+
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
 func Paginate(domain users.Domain) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {

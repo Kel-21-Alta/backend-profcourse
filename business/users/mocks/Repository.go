@@ -102,6 +102,29 @@ func (_m *Repository) GetCountUser(ctx context.Context) (*users.Summary, error) 
 	return r0, r1
 }
 
+// GetCourseUser provides a mock function with given fields: ctx, domain
+func (_m *Repository) GetCourseUser(ctx context.Context, domain *users.Domain) ([]users.Course, error) {
+	ret := _m.Called(ctx, domain)
+
+	var r0 []users.Course
+	if rf, ok := ret.Get(0).(func(context.Context, *users.Domain) []users.Course); ok {
+		r0 = rf(ctx, domain)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]users.Course)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *users.Domain) error); ok {
+		r1 = rf(ctx, domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetUserByEmail provides a mock function with given fields: ctx, email
 func (_m *Repository) GetUserByEmail(ctx context.Context, email string) (users.Domain, error) {
 	ret := _m.Called(ctx, email)

@@ -29,6 +29,8 @@ type Domain struct {
 
 	Query Query
 
+	FileReport string
+
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	Token       string
@@ -36,15 +38,31 @@ type Domain struct {
 }
 
 type Query struct {
-	Sort string
+	Sort   string
 	SortBy string
-	Limit int
+	Limit  int
 	Search string
 	Offset int
 }
 
 type Summary struct {
 	CountUser int
+}
+
+type Course struct {
+	ID          string
+	UserId      string
+	CourseId    string
+	Progres     int
+	LastVideoId string
+	LastModulId string
+	Score       int
+
+	CourseTitle string
+	UrlImage string
+
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type Usecase interface {
@@ -59,6 +77,7 @@ type Usecase interface {
 	UpdateUser(ctx context.Context, domain Domain) (Domain, error)
 	UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllUser(ctx context.Context, domain *Domain) ([]Domain, error)
+	GenerateReportUser(ctx context.Context, domain *Domain) (Domain, error)
 }
 
 type Repository interface {
@@ -71,4 +90,9 @@ type Repository interface {
 	GetCountUser(ctx context.Context) (*Summary, error)
 	UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error)
 	GetAllUser(ctx context.Context, domain *Domain) ([]Domain, error)
+	GetCourseUser(ctx context.Context, domain *Domain) ([]Course, error)
+}
+
+type PDF interface {
+	GeneratePDFDataReport(user Domain, course []Course) (string, error)
 }
