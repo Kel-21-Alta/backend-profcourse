@@ -1,7 +1,6 @@
 package pdf
 
 import (
-	"fmt"
 	"github.com/johnfercher/maroto/pkg/color"
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/johnfercher/maroto/pkg/pdf"
@@ -13,19 +12,6 @@ import (
 type GeneratePDF struct {}
 
 func buildHeading(m pdf.Maroto, user users.Domain) {
-	m.RegisterHeader(func() {
-		m.Row(30, func() {
-			m.Col(12, func() {
-				err := m.FileImage("https://ik.imagekit.io/vaxlsmoqbhw/logo_4lf8Iw7fc.png?ik-sdk-version=javascript-1.4.3&updatedAt=1643127128767", props.Rect{
-					Percent: 75,
-					Center:  true,
-				})
-				if err != nil {
-					fmt.Println("Image file was not loaded 😱 - ", err)
-				}
-			})
-		})
-	})
 	m.Row(10, func() {
 		m.Col(12, func() {
 			m.Text("Laporan Perkembangan User", props.Text{
