@@ -96,6 +96,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// Request User
 	withJWT.POST("requestusers", cl.RequestUserController.CreateRequest)
 	withJWT.GET("requestusers", cl.RequestUserController.GetAllRequestUser)
+	withJWT.GET("admin/requestusers", cl.RequestUserController.AdminGetAllRequestUser)
 	withJWT.DELETE("requestusers/:requestusers", cl.RequestUserController.DeleteRequestUser)
 	withJWT.PUT("requestusers/:requestusers", cl.RequestUserController.UpdateRequestUser)
 	withJWT.GET("requestusers/:requestusers", cl.RequestUserController.GetOneRequestUser)

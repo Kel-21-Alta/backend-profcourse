@@ -7,6 +7,7 @@ import (
 	"profcourse/business/request_users"
 	controller "profcourse/controllers"
 	"profcourse/controllers/request_users/requests"
+	"profcourse/controllers/request_users/responses/adminGetAllRequestUser"
 	createrequestuser "profcourse/controllers/request_users/responses/createRequestuser"
 	getAllCategoryRequestUser "profcourse/controllers/request_users/responses/getAllCategoryRequestUser"
 	"profcourse/controllers/request_users/responses/getAllRequestUser"
@@ -85,6 +86,34 @@ func (ctr *RequestUserController) GetAllRequestUser(c echo.Context) error {
 	}
 
 	return controller.NewResponseSuccess(c, http.StatusOK, getAllRequestUser.FromListDomain(result))
+}
+
+func (ctr *RequestUserController) AdminGetAllRequestUser(c echo.Context) error {
+
+	ctx := c.Request().Context()
+
+	var domain request_users.Domain
+
+	token, err := middlewares.ExtractClaims(c)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain.UserId = token.Userid
+	domain.RoleUser = token.Role
+	domain.Query.Sort = c.QueryParam("sort")
+	domain.Query.Offset, _ = strconv.Atoi(c.QueryParam("offset"))
+	domain.Query.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
+	domain.Query.Search = c.QueryParam("s")
+
+	result, err := ctr.RequestUserUsecase.AdminGetAllRequestUser(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, adminGetAllRequestUser.FromListDomain(result))
 }
 
 func (ctr *RequestUserController) DeleteRequestUser(c echo.Context) error {

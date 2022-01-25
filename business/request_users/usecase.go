@@ -12,6 +12,33 @@ type RequestUserUsecase struct {
 	ContextTimeOut            time.Duration
 }
 
+func (r *RequestUserUsecase) AdminGetAllRequestUser(ctx context.Context, domain *Domain) ([]Domain, error) {
+	if domain.Query.Sort == "" {
+		domain.Query.Sort = "asc"
+	}
+
+	if domain.Query.Sort == "dsc" {
+		domain.Query.Sort = "desc"
+	}
+
+	if domain.RoleUser != 1 {
+		return []Domain{}, controller.FORBIDDIN_USER
+	}
+
+	// menvalidasi sort by yang diizinkan
+	sortByAllow := []string{"asc", "desc"}
+	if !helpers.CheckItemInSlice(sortByAllow, domain.Query.Sort) {
+		return []Domain{}, controller.INVALID_PARAMS
+	}
+
+	result, err := r.RequestUsercaseRepository.AdminGetAllRequestUser(ctx, domain)
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
+}
 
 func (r *RequestUserUsecase) GetOneRequestUser(ctx context.Context, domain *Domain) (Domain, error) {
 	if domain.Id == "" {
@@ -79,8 +106,11 @@ func (r *RequestUserUsecase) GetAllRequestUser(ctx context.Context, domain *Doma
 	if !helpers.CheckItemInSlice(sortByAllow, domain.Query.Sort) {
 		return []Domain{}, controller.INVALID_PARAMS
 	}
+	var err error
+	var result []Domain
 
-	result, err := r.RequestUsercaseRepository.GetAllRequestUser(ctx, domain)
+	result, err = r.RequestUsercaseRepository.GetAllRequestUser(ctx, domain)
+
 
 	if err != nil {
 		return []Domain{}, err
