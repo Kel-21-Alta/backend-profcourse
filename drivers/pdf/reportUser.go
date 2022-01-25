@@ -130,7 +130,7 @@ func (g *GeneratePDF)GeneratePDFDataReport(user users.Domain, course []users.Cou
 	buildHeading(m, user)
 	buildCourseList(m, course)
 
-	var path = "public/" + user.ID + "-" + user.Email + ".pdf"
+	var path = 	user.ID + "-" + user.Email + ".pdf"
 
 	err := m.OutputFileAndClose(path)
 	if err != nil {
