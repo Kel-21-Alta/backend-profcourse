@@ -22,7 +22,7 @@ func (m mysqlUserRepository) GetCourseUser(ctx context.Context, domain *users.Do
 
 	var rec []Result
 
-	err := m.Conn.Table("users_courses").Select("users_courses.id as id, progress, skor, course_id, user_id, courses.title as CourseName").Joins("INNER JOIN courses ON users_courses.course_id = courses.id").Scan(&rec).Error
+	err := m.Conn.Table("users_courses").Select("users_courses.id as id, progress, skor, course_id, user_id, courses.title as CourseName").Joins("INNER JOIN courses ON users_courses.course_id = courses.id").Where("user_id = ?", domain.ID).Scan(&rec).Error
 
 	if err !=nil {
 		return []users.Course{}, err
