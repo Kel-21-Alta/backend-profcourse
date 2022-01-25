@@ -17,7 +17,7 @@ func (r *RequestUserUsecase) DeleteRequestUset(ctx context.Context, domain *Doma
 		return Domain{}, controller.ID_REQUEST_USER
 	}
 
-	result, err := r.RequestUsercaseRepository.DeleteRequestUset(ctx, domain)
+	result, err := r.RequestUsercaseRepository.DeleteRequestUser(ctx, domain)
 
 	if err != nil {
 		return Domain{}, err

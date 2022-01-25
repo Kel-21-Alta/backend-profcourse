@@ -179,3 +179,46 @@ func TestRequestUserUsecase_GetAllRequestUser(t *testing.T) {
 		assert.Nil(t, err)
 	})
 }
+
+func setDeleteRequestUser() {
+	requestUserService = request_users.NewRequestUserUsecase(&mysqlRequestUser, time.Hour*1)
+
+	requestUserDoamin = request_users.Domain{
+		Id:         "123",
+		UserId:     "234",
+		CategoryID: "345",
+		Request:    "Hai",
+		Category: request_users.Category{
+			ID:        "234",
+			Title:     "Online Course",
+			CreatedAt: time.Time{},
+			UpdatedAt: time.Time{},
+		},
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+	}
+}
+
+func TestRequestUserUsecase_DeleteRequestUset(t *testing.T) {
+	t.Run("Test 1 | Success delete", func(t *testing.T) {
+		setDeleteRequestUser()
+		mysqlRequestUser.On("DeleteRequestUser", mock.Anything, mock.Anything).Return(requestUserDoamin, nil).Once()
+
+		_, err := requestUserService.DeleteRequestUset(context.Background(), &request_users.Domain{Id: "123"})
+		assert.Nil(t, err)
+	})
+	t.Run("Test 2 | id empty", func(t *testing.T) {
+		setDeleteRequestUser()
+
+		_, err := requestUserService.DeleteRequestUset(context.Background(), &request_users.Domain{Id: ""})
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_REQUEST_USER, err)
+	})
+	t.Run("Test 3 | err db", func(t *testing.T) {
+		setDeleteRequestUser()
+		mysqlRequestUser.On("DeleteRequestUser", mock.Anything, mock.Anything).Return(requestUserDoamin, errors.New("err")).Once()
+
+		_, err := requestUserService.DeleteRequestUset(context.Background(), &request_users.Domain{Id: "123"})
+		assert.NotNil(t, err)
+	})
+}
