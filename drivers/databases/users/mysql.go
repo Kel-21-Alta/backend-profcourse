@@ -2,13 +2,54 @@ package users
 
 import (
 	"context"
-	"profcourse/business/users"
-
 	"gorm.io/gorm"
+	"profcourse/business/users"
 )
 
 type mysqlUserRepository struct {
 	Conn *gorm.DB
+}
+
+// Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
+func Paginate(domain users.Domain) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		offset := domain.Query.Offset
+		limit := domain.Query.Limit
+		if limit == 0 {
+			limit = 10
+		}
+		return db.Offset(offset).Limit(limit)
+	}
+}
+
+func (m mysqlUserRepository) GetAllUser(ctx context.Context, domain *users.Domain) ([]users.Domain, error) {
+	type Result struct {
+		Name string
+		ImgProfile string
+		Id string
+		TakenCourse int
+		Point int
+	}
+	var rec []Result
+
+	err := m.Conn.Scopes(Paginate(*domain)).Table("users").Select("name, img_profile, users.id as Id, COUNT(users_courses.user_id) as TakenCourse, SUM(users_courses.skor) as Point, users.created_at as created_at").Joins("LEFT JOIN users_courses ON users_courses.user_id = users.id").Group("Id").Where("name Like ?", "%"+domain.Query.Search+"%").Order(domain.Query.SortBy + " " + domain.Query.Sort).Scan(&rec).Error
+
+	if err != nil {
+		return []users.Domain{}, err
+	}
+	var listDomain []users.Domain
+
+	for _, re := range rec {
+		listDomain = append(listDomain, users.Domain{
+			ID:           re.Id,
+			Name:         re.Name,
+			ImgProfile:   re.ImgProfile,
+			TakenCourse:  re.TakenCourse,
+			Point:        re.Point,
+		})
+	}
+
+	return listDomain, nil
 }
 
 func (m mysqlUserRepository) UpdateDataCurrentUser(ctx context.Context, domain *users.Domain) (users.Domain, error) {

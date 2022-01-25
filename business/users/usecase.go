@@ -5,6 +5,7 @@ import (
 	"profcourse/app/middlewares"
 	"profcourse/business/send_email"
 	controller "profcourse/controllers"
+	"profcourse/helpers"
 	"profcourse/helpers/encrypt"
 	"profcourse/helpers/randomString"
 	"profcourse/helpers/validators"
@@ -16,6 +17,44 @@ type userUsecase struct {
 	UserRepository Repository
 	SmtpRepository send_email.Repository
 	JWTConfig      middlewares.ConfigJwt
+}
+
+func (u *userUsecase) GetAllUser(ctx context.Context, domain *Domain) ([]Domain, error) {
+	if domain.Role != 1 {
+		return []Domain{}, controller.FORBIDDIN_USER
+	}
+
+	if domain.Query.Sort == "" {
+		domain.Query.Sort = "asc"
+	}
+
+	if domain.Query.Sort == "dsc" {
+		domain.Query.Sort = "desc"
+	}
+
+	if domain.Query.SortBy == "" {
+		domain.Query.SortBy = "created_at"
+	}
+
+	// menvalidasi sort by yang diizinkan
+	sortByAllow := []string{"asc", "desc"}
+	if !helpers.CheckItemInSlice(sortByAllow, domain.Query.Sort) {
+		return []Domain{}, controller.INVALID_PARAMS
+	}
+
+	// Menvalidasi sort yang diizinkan
+	sortAllow := []string{"created_at", "name", "point", "jumlah_kursus"}
+	if !helpers.CheckItemInSlice(sortAllow, domain.Query.SortBy) {
+		return []Domain{}, controller.INVALID_PARAMS
+	}
+
+	result, err := u.UserRepository.GetAllUser(ctx, domain)
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
 }
 
 func (u *userUsecase) UpdateDataCurrentUser(ctx context.Context, domain *Domain) (Domain, error) {
@@ -65,7 +104,7 @@ func (u *userUsecase) DeleteUser(ctx context.Context, domain Domain) (Domain, er
 
 func (u *userUsecase) UpdateUser(ctx context.Context, domain Domain) (Domain, error) {
 	// Cek apakah yang mengirimkan request adalah admin
-	if (domain.Role != 1) {
+	if domain.Role != 1 {
 		return Domain{}, controller.FORBIDDIN_USER
 	}
 	// Cek apakah admin mengirim user id yang akan dihapus

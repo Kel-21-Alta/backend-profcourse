@@ -39,12 +39,15 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	withJWT := ev1.Group("")
 	withJWT.Use(middleware.JWTWithConfig(cl.JWTMiddleware))
+
+	// User
 	withJWT.POST("users", cl.UserController.CreateUser)
 	withJWT.DELETE("users/:userid", cl.UserController.DeleteUser)
 	withJWT.PUT("users/:userid", cl.UserController.UpdateUser)
 	withJWT.GET("currentuser", cl.UserController.GetCurrentUser)
 	withJWT.PUT("currentuser", cl.UserController.UpdateCurrentUserFromUser)
 	withJWT.PUT("changepassword", cl.UserController.ChangePassword)
+	withJWT.GET("users", cl.UserController.GetAllUser)
 
 	// course
 	withJWT.POST("courses", cl.CourseController.CreateCourse)
