@@ -13,6 +13,7 @@ import (
 	_localsRepository "profcourse/business/uploads"
 	_userUsecase "profcourse/business/users"
 	_usersCoursesUsecase "profcourse/business/users_courses"
+	_userSpesializationsUsecase "profcourse/business/users_spesializations"
 	"profcourse/drivers/databases/courses"
 	"profcourse/drivers/databases/feedback"
 	"profcourse/drivers/databases/materies"
@@ -22,6 +23,7 @@ import (
 	"profcourse/drivers/databases/spesialization"
 	"profcourse/drivers/databases/users"
 	"profcourse/drivers/databases/users_courses"
+	"profcourse/drivers/databases/users_spesializations"
 	"profcourse/drivers/pdf"
 	"profcourse/drivers/thirdparties/mail"
 	"profcourse/drivers/uploadLocals"
@@ -73,4 +75,8 @@ func NewRequestUserRepository(conn *gorm.DB) _requestUsersUsecase.Repository {
 
 func NewGeneratePDFRepostUser() _userUsecase.PDF {
 	return pdf.NewGeneratePDF()
+}
+
+func NewUsersSpesializationsRepository(conn *gorm.DB) _userSpesializationsUsecase.Repository {
+	return users_spesializations.NewMyslRepository(conn)
 }

@@ -11,23 +11,25 @@ import (
 	"profcourse/controllers/summary"
 	"profcourse/controllers/users"
 	"profcourse/controllers/users_courses"
+	"profcourse/controllers/users_spesializations"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 type ControllerList struct {
-	JWTMiddleware            middleware.JWTConfig
-	UserController           users.UserController
-	CourseController         courses.CourseController
-	UserCourseController     users_courses.UsersCoursesController
-	ModulController          moduls.ModulController
-	SummaryController        summary.SummaryController
-	SpesializationController spesializations.SpesializationController
-	MateriesController       materies.MateriesController
-	QuizController           quizs.QuizsController
-	FeedbackController       feedback.FeedbackController
-	RequestUserController    requestusers.RequestUserController
+	JWTMiddleware                  middleware.JWTConfig
+	UserController                 users.UserController
+	CourseController               courses.CourseController
+	UserCourseController           users_courses.UsersCoursesController
+	ModulController                moduls.ModulController
+	SummaryController              summary.SummaryController
+	SpesializationController       spesializations.SpesializationController
+	MateriesController             materies.MateriesController
+	QuizController                 quizs.QuizsController
+	FeedbackController             feedback.FeedbackController
+	RequestUserController          requestusers.RequestUserController
+	UsersSpesializationsController users_spesializations.UsersSpesializationController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -91,6 +93,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	withJWT.POST("spesializations", cl.SpesializationController.CreateSpesialization)
 	withJWT.GET("spesializations/:spesializationid", cl.SpesializationController.GetOneSpesialization)
 	withJWT.GET("spesializations", cl.SpesializationController.GetAllSpesialization)
+
+	//user spesialization
+	withJWT.POST("spesialization/register", cl.UsersSpesializationsController.RegisterSpesialization)
 
 	//	feedback
 	withJWT.POST("feedback", cl.FeedbackController.CreateFeedback)
