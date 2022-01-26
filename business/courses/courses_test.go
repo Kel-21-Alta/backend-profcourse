@@ -323,3 +323,38 @@ func TestCoursesUsecase_DeleteCourse(t *testing.T) {
 		assert.Equal(t, controller.ID_EMPTY, err)
 	})
 }
+
+func TestCoursesUsecase_GetAllCourseUser(t *testing.T) {
+	t.Run("test case 1 | Success", func(t *testing.T) {
+		setupGetAllCourses()
+		courseMysqlRepository.On("GetAllCourseUser", mock.Anything, mock.Anything).Return(listCourse, nil).Once()
+
+		_, err := courseService.GetAllCourseUser(context.Background(), &courses.Domain{TeacherId: "123"})
+
+		assert.Nil(t, err)
+	})
+	t.Run("test case 2 | Error user id empty", func(t *testing.T) {
+		setupGetAllCourses()
+
+		_, err := courseService.GetAllCourseUser(context.Background(), &courses.Domain{TeacherId: ""})
+
+		assert.NotNil(t, err)
+		assert.Equal(t, controller.ID_EMPTY, err)
+	})
+	t.Run("test case 3 | Success walau sort diisi dsc", func(t *testing.T) {
+		setupGetAllCourses()
+		courseMysqlRepository.On("GetAllCourseUser", mock.Anything, mock.Anything).Return(listCourse, nil).Once()
+
+		_, err := courseService.GetAllCourseUser(context.Background(), &courses.Domain{TeacherId: "123", Sort: "dsc"})
+
+		assert.Nil(t, err)
+	})
+	t.Run("test case 4 | err db", func(t *testing.T) {
+		setupGetAllCourses()
+		courseMysqlRepository.On("GetAllCourseUser", mock.Anything, mock.Anything).Return(listCourse, errors.New("err")).Once()
+
+		_, err := courseService.GetAllCourseUser(context.Background(), &courses.Domain{TeacherId: "123", Sort: "dsc"})
+
+		assert.NotNil(t, err)
+	})
+}

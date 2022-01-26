@@ -37,14 +37,17 @@ func (f FeedbackUsecase) GetAllFeedbackByCourse(ctx context.Context, domain *Cou
 		return CourseReviews{}, err
 	}
 
-	ratingAll, err := f.FeedbackRepository.GetAvegareRatingCourse(ctx, domain)
+	if len(result.Review) > 0 {
+		ratingAll, err := f.FeedbackRepository.GetAvegareRatingCourse(ctx, domain)
 
-	if err != nil {
-		return CourseReviews{}, err
+		result.RatingAll = ratingAll.RatingAll
+
+		if err != nil {
+			return CourseReviews{}, err
+		}
 	}
 
 	result.CourseId = domain.CourseId
-	result.RatingAll = ratingAll.RatingAll
 
 	return result, nil
 }

@@ -128,3 +128,28 @@ func (cc CourseController) DeleteCourse(c echo.Context) error {
 
 	return controller.NewResponseSuccess(c, http.StatusOK, deletecourse.DeleteCourseResponse{Message: "Kursus berhasil dihapus"})
 }
+
+func (cc CourseController) GetAllCoursesUser(c echo.Context) error {
+	var domain courses.Domain
+
+	token, err := middlewares.ExtractClaims(c)
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	domain.Limit, _ = strconv.Atoi(c.QueryParam("limit"))
+	domain.Offset, _ = strconv.Atoi(c.QueryParam("offset"))
+	domain.Sort = c.QueryParam("sort")
+	domain.KeywordSearch = c.QueryParam("s")
+	domain.ParamStatus, _ = strconv.Atoi(c.QueryParam("status"))
+	domain.TeacherId = token.Userid
+
+	ctx := c.Request().Context()
+	result, err := cc.CourseUsecase.GetAllCourseUser(ctx, &domain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllCourses.FromListDomain(&result))
+}

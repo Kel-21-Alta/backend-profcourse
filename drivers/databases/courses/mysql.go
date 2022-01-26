@@ -12,6 +12,22 @@ type mysqlCourseRepository struct {
 	Conn *gorm.DB
 }
 
+func (r *mysqlCourseRepository) GetAllCourseUser(ctx context.Context, domain *courses.Domain) ([]courses.Domain, error) {
+	var coursesResult []*Courses
+	var err error
+	if domain.ParamStatus != 0 {
+		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.SortBy+" "+domain.Sort).Where("teacher_id = ?", domain.TeacherId).Where("title Like ?", "%"+domain.KeywordSearch+"%").Where("status = ?", domain.ParamStatus).Find(&coursesResult).Error
+	} else {
+		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.SortBy+" "+domain.Sort).Where("teacher_id = ?", domain.TeacherId).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&coursesResult).Error
+	}
+
+	if err != nil {
+		return []courses.Domain{}, err
+	}
+
+	return *ToListDomain(coursesResult), nil
+}
+
 func (r *mysqlCourseRepository) DeleteCourseForUser(ctx context.Context, id string, token courses.Token) (courses.Domain, error) {
 	var rec Courses
 	var err error
