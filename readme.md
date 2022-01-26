@@ -1,5 +1,8 @@
 ## Prof Course
 
+### Endpoint
+
+http://3.133.85.122:9090
 
 ### Running project
 
