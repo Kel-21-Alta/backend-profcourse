@@ -80,17 +80,19 @@ func (u MateriesUsecase) GetAllMateri(ctx context.Context, domain *Domain) (AllM
 		return AllMateriModul{}, err
 	}
 
-	userCourse, err := u.UserCourse.GetOneUserCourse(ctx, &users_courses.Domain{CourseId: modulDomain.CourseId, UserId: domain.User.ID})
-	if err != nil {
-		return AllMateriModul{}, err
-	}
+	userCourse, _ := u.UserCourse.GetOneUserCourse(ctx, &users_courses.Domain{CourseId: modulDomain.CourseId, UserId: domain.User.ID})
 
 	domain.UserCourse.UserCourseId = userCourse.ID
 
 	result, err := u.MateriesRepository.GetAllMateri(ctx, domain)
-
 	if err != nil {
 		return AllMateriModul{}, err
+	}
+
+	if userCourse.ID == "" {
+		result.IsRegisterUser = false
+	} else {
+		result.IsRegisterUser = true
 	}
 
 	return result, nil
