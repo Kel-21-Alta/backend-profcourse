@@ -4,6 +4,10 @@
 
 http://3.133.85.122:9090
 
+### Dokumentasi
+
+https://app.swaggerhub.com/apis-docs/kampusmerdek/ProfCourse/1.0.0
+
 ### Running project
 
 ```
