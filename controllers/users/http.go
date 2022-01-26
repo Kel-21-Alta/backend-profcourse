@@ -239,3 +239,20 @@ func (ctrl *UserController) UpdateCurrentUserFromUser(c echo.Context) error {
 
 	return controller.NewResponseSuccess(c, http.StatusOK, updateUser.FromDomain(result))
 }
+
+func (ctrl *UserController) GetDetailUser(c echo.Context)error {
+	tokenJwt, _ := middlewares.ExtractClaims(c)
+
+	if tokenJwt.Role != 1 {
+		return controller.NewResponseError(c, controller.FORBIDDIN_USER)
+	}
+
+	ctx := c.Request().Context()
+	userDomain := users.Domain{ID: c.Param("userid")}
+	clean, err := ctrl.userUsecase.GetCurrentUser(ctx, userDomain)
+
+	if err != nil {
+		return controller.NewResponseError(c, err)
+	}
+	return controller.NewResponseSuccess(c, http.StatusOK, currentUser.FromDomain(clean))
+}
