@@ -12,6 +12,46 @@ type coursesUsecase struct {
 	ContextTimeOut        time.Duration
 }
 
+func (c *coursesUsecase) GetAllCourseUser(ctx context.Context, domain *Domain) ([]Domain, error) {
+
+	if domain.TeacherId == "" {
+		return []Domain{}, controller.ID_EMPTY
+	}
+
+	if domain.Sort == "" {
+		domain.Sort = "asc"
+	}
+
+	if domain.Sort == "dsc" {
+		domain.Sort = "desc"
+	}
+
+	if domain.SortBy == "" {
+		domain.SortBy = "created_at"
+	}
+
+	// menvalidasi sort by yang diizinkan
+	sortByAllow := []string{"asc", "desc"}
+	if !helpers.CheckItemInSlice(sortByAllow, domain.Sort) {
+		return []Domain{}, controller.INVALID_PARAMS
+	}
+
+	// Menvalidasi sort yang diizinkan
+	sortAllow := []string{"created_at", "title"} // TODO: disini kurang sort review dan sort popular
+	if !helpers.CheckItemInSlice(sortAllow, domain.SortBy) {
+		return []Domain{}, controller.INVALID_PARAMS
+	}
+
+	result, err := c.CourseMysqlRepository.GetAllCourseUser(ctx, domain)
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return result, nil
+
+}
+
 func (c *coursesUsecase) DeleteCourse(ctx context.Context, id string, token Token) (Domain, error) {
 	var err error
 	var result Domain
