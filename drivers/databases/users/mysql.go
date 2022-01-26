@@ -13,21 +13,21 @@ type mysqlUserRepository struct {
 func (m mysqlUserRepository) GetCourseUser(ctx context.Context, domain *users.Domain) ([]users.Course, error) {
 	type Result struct {
 		CourseName string
-		Progress int
-		Skor int
-		CourseId string
-		UserId string
-		ID string
+		Progress   int
+		Skor       int
+		CourseId   string
+		UserId     string
+		ID         string
 	}
 
 	var rec []Result
 
 	err := m.Conn.Table("users_courses").Select("users_courses.id as id, progress, skor, course_id, user_id, courses.title as CourseName").Joins("INNER JOIN courses ON users_courses.course_id = courses.id").Where("user_id = ?", domain.ID).Scan(&rec).Error
 
-	if err !=nil {
+	if err != nil {
 		return []users.Course{}, err
 	}
-	
+
 	var list = []users.Course{}
 
 	for _, course := range rec {
@@ -41,8 +41,8 @@ func (m mysqlUserRepository) GetCourseUser(ctx context.Context, domain *users.Do
 		})
 
 	}
-	
-	return list,nil
+
+	return list, nil
 }
 
 // Paginate Fungsi ini untuk mengimplementasikan pagination pada list course
@@ -59,15 +59,15 @@ func Paginate(domain users.Domain) func(db *gorm.DB) *gorm.DB {
 
 func (m mysqlUserRepository) GetAllUser(ctx context.Context, domain *users.Domain) ([]users.Domain, error) {
 	type Result struct {
-		Name string
-		ImgProfile string
-		Id string
+		Name        string
+		ImgProfile  string
+		Id          string
 		TakenCourse int
-		Point int
+		Point       int
 	}
 	var rec []Result
 
-	err := m.Conn.Scopes(Paginate(*domain)).Table("users").Select("name, img_profile, users.id as Id, COUNT(users_courses.user_id) as TakenCourse, SUM(users_courses.skor) as Point, users.created_at as created_at").Joins("LEFT JOIN users_courses ON users_courses.user_id = users.id").Group("Id").Where("users.deleted_at = ?", nil).Where("name Like ?", "%"+domain.Query.Search+"%").Order(domain.Query.SortBy + " " + domain.Query.Sort).Scan(&rec).Error
+	err := m.Conn.Scopes(Paginate(*domain)).Table("users").Select("name, img_profile, users.id as Id, COUNT(users_courses.user_id) as TakenCourse, SUM(users_courses.skor) as Point, users.created_at as created_at").Joins("LEFT JOIN users_courses ON users_courses.user_id = users.id").Group("Id").Where("users.deleted_at IS NULL").Where("name Like ?", "%"+domain.Query.Search+"%").Order(domain.Query.SortBy + " " + domain.Query.Sort).Scan(&rec).Error
 
 	if err != nil {
 		return []users.Domain{}, err
@@ -76,11 +76,11 @@ func (m mysqlUserRepository) GetAllUser(ctx context.Context, domain *users.Domai
 
 	for _, re := range rec {
 		listDomain = append(listDomain, users.Domain{
-			ID:           re.Id,
-			Name:         re.Name,
-			ImgProfile:   re.ImgProfile,
-			TakenCourse:  re.TakenCourse,
-			Point:        re.Point,
+			ID:          re.Id,
+			Name:        re.Name,
+			ImgProfile:  re.ImgProfile,
+			TakenCourse: re.TakenCourse,
+			Point:       re.Point,
 		})
 	}
 
