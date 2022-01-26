@@ -21,8 +21,9 @@ type Domain struct {
 }
 
 type AllMateriModul struct {
-	JawabanMateri int `json:"jawaban_materi"`
-	Materi        []Domain
+	IsRegisterUser bool
+	JawabanMateri  int `json:"jawaban_materi"`
+	Materi         []Domain
 }
 
 type CurrentUser struct {
