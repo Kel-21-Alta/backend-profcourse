@@ -19,6 +19,7 @@ import (
 	_summaryUsecase "profcourse/business/summary"
 	_userUsecase "profcourse/business/users"
 	_usersCourseUsercase "profcourse/business/users_courses"
+	_userSpesializationsUsecase "profcourse/business/users_spesializations"
 	"profcourse/controllers/courses"
 	"profcourse/controllers/feedback"
 	"profcourse/controllers/materies"
@@ -29,6 +30,7 @@ import (
 	_summaryController "profcourse/controllers/summary"
 	_userController "profcourse/controllers/users"
 	_usersCourseController "profcourse/controllers/users_courses"
+	"profcourse/controllers/users_spesializations"
 	_driversFectory "profcourse/drivers"
 	_coursesMysqlRepo "profcourse/drivers/databases/courses"
 	_feedbackMysqlRepo "profcourse/drivers/databases/feedback"
@@ -39,6 +41,7 @@ import (
 	_spesializationMysqlRepo "profcourse/drivers/databases/spesialization"
 	_userMysqlRepo "profcourse/drivers/databases/users"
 	_usersCourseMysqlRepo "profcourse/drivers/databases/users_courses"
+	_usersSpesializationMysqlRepo "profcourse/drivers/databases/users_spesializations"
 	_dbDriver "profcourse/drivers/mysql"
 	"profcourse/drivers/thirdparties/mail"
 	"time"
@@ -71,6 +74,7 @@ func DbMigration(db *gorm.DB) {
 		&_feedbackMysqlRepo.Feedback{},
 		&_requestuserMysqlRepo.RequestUser{},
 		&_requestuserMysqlRepo.CategoryRequest{},
+		&_usersSpesializationMysqlRepo.UsersSpesializations{},
 	)
 
 	if err != nil {
@@ -157,6 +161,10 @@ func main() {
 	requestUsecase := _requestUsersUsecase.NewRequestUserUsecase(mysqlRequestUserRepo, timeout)
 	requestUserController := requestusers.NewRequestUserController(requestUsecase)
 
+	mysqlUserSpesializationRepo := _driversFectory.NewUsersSpesializationsRepository(conn)
+	usersSpesializationUsecase := _userSpesializationsUsecase.NewUsersSpesializationsUsecase(mysqlUserSpesializationRepo, spesializationUsecae, userCourseUsecase, timeout)
+	usersSpesializationController := users_spesializations.NewUsersSpesializationController(usersSpesializationUsecase)
+
 	routesInit := routes.ControllerList{
 		UserController:           *userCtrl,
 		CourseController:         *couserCtrl,
@@ -169,6 +177,7 @@ func main() {
 		QuizController:           *quizController,
 		FeedbackController:       *feedbackController,
 		RequestUserController:    *requestUserController,
+		UsersSpesializationsController: *usersSpesializationController,
 	}
 
 	routesInit.RouteRegister(e)

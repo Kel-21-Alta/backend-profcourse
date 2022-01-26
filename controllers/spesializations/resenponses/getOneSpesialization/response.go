@@ -3,6 +3,7 @@ package getOneSpesialization
 import "profcourse/business/spesializations"
 
 type Course struct {
+	ID string `json:"id"`
 	Title       string  `json:"title"`
 	Description string  `json:"description"`
 	Rating      float32 `json:"rating"`
@@ -23,6 +24,7 @@ func FromDomain(domain spesializations.Domain) Response {
 			Title:       course.Title,
 			Description: course.Description,
 			Rating:      course.Rating,
+			ID: course.ID,
 		})
 	}
 
