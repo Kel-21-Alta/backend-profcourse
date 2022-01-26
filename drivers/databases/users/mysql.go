@@ -67,7 +67,7 @@ func (m mysqlUserRepository) GetAllUser(ctx context.Context, domain *users.Domai
 	}
 	var rec []Result
 
-	err := m.Conn.Scopes(Paginate(*domain)).Table("users").Select("name, img_profile, users.id as Id, COUNT(users_courses.user_id) as TakenCourse, SUM(users_courses.skor) as Point, users.created_at as created_at").Joins("LEFT JOIN users_courses ON users_courses.user_id = users.id").Group("Id").Where("name Like ?", "%"+domain.Query.Search+"%").Order(domain.Query.SortBy + " " + domain.Query.Sort).Scan(&rec).Error
+	err := m.Conn.Scopes(Paginate(*domain)).Table("users").Select("name, img_profile, users.id as Id, COUNT(users_courses.user_id) as TakenCourse, SUM(users_courses.skor) as Point, users.created_at as created_at").Joins("LEFT JOIN users_courses ON users_courses.user_id = users.id").Group("Id").Where("users.deleted_at = ?", nil).Where("name Like ?", "%"+domain.Query.Search+"%").Order(domain.Query.SortBy + " " + domain.Query.Sort).Scan(&rec).Error
 
 	if err != nil {
 		return []users.Domain{}, err
