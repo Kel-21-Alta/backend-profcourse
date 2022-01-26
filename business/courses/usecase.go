@@ -22,18 +22,18 @@ func (c *coursesUsecase) GetAllCourseUser(ctx context.Context, domain *Domain) (
 	}
 
 	if domain.SortBy == "" {
-		domain.Sort = "created_at"
+		domain.SortBy = "created_at"
 	}
 
 	// menvalidasi sort by yang diizinkan
 	sortByAllow := []string{"asc", "desc"}
-	if !helpers.CheckItemInSlice(sortByAllow, domain.SortBy) {
+	if !helpers.CheckItemInSlice(sortByAllow, domain.Sort) {
 		return []Domain{}, controller.INVALID_PARAMS
 	}
 
 	// Menvalidasi sort yang diizinkan
 	sortAllow := []string{"created_at", "title"} // TODO: disini kurang sort review dan sort popular
-	if !helpers.CheckItemInSlice(sortAllow, domain.Sort) {
+	if !helpers.CheckItemInSlice(sortAllow, domain.SortBy) {
 		return []Domain{}, controller.INVALID_PARAMS
 	}
 

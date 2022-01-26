@@ -151,5 +151,5 @@ func (cc CourseController) GetAllCoursesUser(c echo.Context) error {
 		return controller.NewResponseError(c, err)
 	}
 
-	return controller.NewResponseSuccess(c, http.StatusOK, result)
+	return controller.NewResponseSuccess(c, http.StatusOK, getAllCourses.FromListDomain(&result))
 }
