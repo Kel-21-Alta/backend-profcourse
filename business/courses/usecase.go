@@ -13,6 +13,11 @@ type coursesUsecase struct {
 }
 
 func (c *coursesUsecase) GetAllCourseUser(ctx context.Context, domain *Domain) ([]Domain, error) {
+
+	if domain.TeacherId == "" {
+		return []Domain{}, controller.ID_EMPTY
+	}
+
 	if domain.Sort == "" {
 		domain.Sort = "asc"
 	}
