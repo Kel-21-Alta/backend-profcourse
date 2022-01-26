@@ -5,5 +5,4 @@ ex.config.json
 config.json
 config-prod.json
 ./cli/
-public/
 cover.out

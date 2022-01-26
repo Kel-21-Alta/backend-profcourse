@@ -19,14 +19,16 @@ import (
 var userMysqlRepository _mockUserMysqlRepo.Repository
 var smtpEmailRepository _mockSmtpEmailRepo.Repository
 var configJwt middlewares.ConfigJwt
+var pdfGenerater _mockUserMysqlRepo.PDF
 
 var userService users.Usecase
 var userDomain users.Domain
 var userSummary users.Summary
 var adminDomain users.Domain
+var courseDomain []users.Course
 
 func setUpGetCountUser() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userSummary = users.Summary{CountUser: 9}
 }
 
@@ -51,7 +53,7 @@ func TestUserUsecase_GetCountUser(t *testing.T) {
 }
 
 func setUpCreateUser() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userDomain = users.Domain{
 		ID:           uuid.NewV4().String(),
 		Name:         "test",
@@ -128,7 +130,7 @@ func TestUserUsecase_CreateUser(t *testing.T) {
 }
 
 func setUpLogin() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userDomain = users.Domain{
 		ID:           uuid.NewV4().String(),
 		Name:         "test",
@@ -209,7 +211,7 @@ func TestUserUsecase_Login(t *testing.T) {
 }
 
 func setUpAdminLogin() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	adminDomain = users.Domain{
 		ID:           uuid.NewV4().String(),
 		Name:         "test",
@@ -315,7 +317,7 @@ func TestUserUsecase_LoginAdmin(t *testing.T) {
 }
 
 func setForgetPassword() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userDomain = users.Domain{
 		ID:           uuid.NewV4().String(),
 		Name:         "test",
@@ -402,7 +404,7 @@ func TestUserUsecase_ForgetPassword(t *testing.T) {
 }
 
 func setUpCurrentUser() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userDomain = users.Domain{
 		ID:           uuid.NewV4().String(),
 		Name:         "test",
@@ -445,7 +447,7 @@ func TestUserUsecase_GetCurrentUser(t *testing.T) {
 }
 
 func setUpChangePassword() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userDomain = users.Domain{
 		ID:           "756f702e-69ae-45e2-8ab2-870c11f7ba51",
 		Name:         "test",
@@ -521,7 +523,7 @@ func TestUserUsecase_ChangePassword(t *testing.T) {
 	})
 }
 func setUpUpdateUser() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userDomain = users.Domain{
 		ID:         uuid.NewV4().String(),
 		Name:       "Adrian",
@@ -616,7 +618,7 @@ func TestUserUsecase_UpdateUser(t *testing.T) {
 	})
 }
 func setUpDelete() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userDomain = users.Domain{
 		ID:           "756f702e-69ae-45e2-8ab2-870c11f7ba51",
 		Name:         "test",
@@ -657,7 +659,7 @@ func TestUserUsecase_DeleteUser(t *testing.T) {
 }
 
 func setUpUpdateCurrentUset() {
-	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, configJwt)
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
 	userDomain = users.Domain{
 		ID:           "756f702e-69ae-45e2-8ab2-870c11f7ba51",
 		Name:         "test",
@@ -688,5 +690,46 @@ func TestUserUsecase_UpdateDataCurrentUser(t *testing.T) {
 		_, err := userService.UpdateDataCurrentUser(context.Background(), &users.Domain{ID: "756f702e-69ae-45e2-8ab2-870c11f7ba51", Name: ""})
 
 		assert.Equal(t, controller.EMPTY_NAME, err)
+	})
+}
+
+func setUpGenerateReportUser() {
+	userService = users.NewUserUsecase(&userMysqlRepository, time.Hour*1, &smtpEmailRepository, &pdfGenerater, configJwt)
+	userDomain = users.Domain{
+		ID:           "756f702e-69ae-45e2-8ab2-870c11f7ba51",
+		Name:         "test",
+		Email:        "test1@gmail.com",
+		Password:     "kQPPSkyR",
+		HashPassword: "$2a$04$nHHmj1KfuzixIZ8nf9PFH.szVVWeCDsBG6bYYqbMGKhdAzGwzh35K",
+		PasswordNew:  "test1",
+	}
+	courseDomain = []users.Course {
+		users.Course{
+			ID:          "",
+			UserId:      "",
+			CourseId:    "",
+			Progres:     0,
+			LastVideoId: "",
+			LastModulId: "",
+			Score:       0,
+			CourseTitle: "",
+			UrlImage:    "",
+			CreatedAt:   time.Time{},
+			UpdatedAt:   time.Time{},
+		},
+	}
+}
+
+func TestUserUsecase_GenerateReportUser(t *testing.T) {
+	t.Run("Test case | success generate report", func(t *testing.T) {
+		setUpGenerateReportUser()
+		userMysqlRepository.On("GetUserById", mock.Anything, mock.Anything).Return(userDomain, nil).Once()
+		userMysqlRepository.On("GetCourseUser", mock.Anything, mock.Anything).Return(courseDomain, nil).Once()
+		pdfGenerater.On("GeneratePDFDataReport", mock.Anything, mock.Anything).Return("public/test.pdf", nil).Once()
+
+		result, err := userService.GenerateReportUser(context.Background(), &users.Domain{ID: "qwe"})
+
+		assert.Nil(t, err)
+		assert.Equal(t, "public/test.pdf", result.FileReport)
 	})
 }
