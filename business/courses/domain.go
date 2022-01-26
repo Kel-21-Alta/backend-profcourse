@@ -76,6 +76,7 @@ type Usecase interface {
 	GetCountCourse(ctx context.Context) (*Summary, error)
 	UpdateCourse(ctx context.Context, domain *Domain, token *Token) (Domain, error)
 	DeleteCourse(ctx context.Context, id string, token Token) (Domain, error)
+	GetAllCourseUser(ctx context.Context, domain *Domain) ([]Domain, error)
 }
 
 type Repository interface {
@@ -87,4 +88,5 @@ type Repository interface {
 	UpdateCourseForUser(ctx context.Context, domain *Domain, token *Token) (Domain, error)
 	DeleteCourseForAdmin(ctx context.Context, id string) (Domain, error)
 	DeleteCourseForUser(ctx context.Context, id string, token Token) (Domain, error)
+	GetAllCourseUser(ctx context.Context, domain *Domain) ([]Domain, error)
 }
