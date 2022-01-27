@@ -16,9 +16,9 @@ func (r *mysqlCourseRepository) GetAllCourseUser(ctx context.Context, domain *co
 	var coursesResult []*Courses
 	var err error
 	if domain.ParamStatus != 0 {
-		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.SortBy+" "+domain.Sort).Where("teacher_id = ?", domain.TeacherId).Where("title Like ?", "%"+domain.KeywordSearch+"%").Where("status = ?", domain.ParamStatus).Find(&coursesResult).Error
+		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.SortBy+" "+domain.Sort).Where("courses.deleted_at IS NULL").Where("teacher_id = ?", domain.TeacherId).Where("title Like ?", "%"+domain.KeywordSearch+"%").Where("status = ?", domain.ParamStatus).Find(&coursesResult).Error
 	} else {
-		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.SortBy+" "+domain.Sort).Where("teacher_id = ?", domain.TeacherId).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&coursesResult).Error
+		err = r.Conn.Scopes(Paginate(*domain)).Order(domain.SortBy+" "+domain.Sort).Where("courses.deleted_at IS NULL").Where("teacher_id = ?", domain.TeacherId).Where("title Like ?", "%"+domain.KeywordSearch+"%").Find(&coursesResult).Error
 	}
 
 	if err != nil {
@@ -67,6 +67,7 @@ func (r *mysqlCourseRepository) UpdateCourseForUser(ctx context.Context, domain 
 	rec.Title = domain.Title
 	rec.Description = domain.Description
 	rec.ImgUrl = domain.ImgUrl
+	rec.Status = STATUS(domain.Status)
 
 	err = r.Conn.Save(&rec).Error
 	if err != nil {
@@ -88,6 +89,7 @@ func (r *mysqlCourseRepository) UpdateCourseForAdmin(ctx context.Context, domain
 	rec.Title = domain.Title
 	rec.Description = domain.Description
 	rec.ImgUrl = domain.ImgUrl
+	rec.Status = STATUS(domain.Status)
 
 	err = r.Conn.Save(&rec).Error
 	if err != nil {

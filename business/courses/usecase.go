@@ -86,6 +86,10 @@ func (c *coursesUsecase) UpdateCourse(ctx context.Context, domain *Domain, token
 		return Domain{}, controller.IMAGE_EMPTY
 	}
 
+	if domain.Status == 0 {
+		domain.Status = 2
+	}
+
 	var err error
 	var result Domain
 
