@@ -112,11 +112,14 @@ func (cc CourseController) DeleteCourse(c echo.Context) error {
 	var err error
 	var token *middlewares.JwtCustomClaims
 	token, err = middlewares.ExtractClaims(c)
+
 	if err != nil {
 		return controller.NewResponseError(c, err)
 	}
+
 	id = c.Param("courseid")
 	ctx := c.Request().Context()
+
 	_, err = cc.CourseUsecase.DeleteCourse(ctx, id, courses.Token{
 		UserId: token.Userid,
 		Role:   token.Role,
