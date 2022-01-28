@@ -5,6 +5,7 @@ on:
       - development
       - createCICD
       - feature/generate-report-user
+      - presentasi
   pull_request:
     branches:
       - development
